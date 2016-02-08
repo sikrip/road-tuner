@@ -12,7 +12,7 @@ import javax.swing.*;
 import org.jfree.chart.ChartPanel;
 
 import sikrip.roaddyno.engine.DynoSimulator;
-import sikrip.roaddyno.logreader.CarLogReader;
+import sikrip.roaddyno.logreader.EcuLogReader;
 import sikrip.roaddyno.logreader.MegasquirtLogReader;
 import sikrip.roaddyno.model.DynoSimulationResult;
 import sikrip.roaddyno.model.LogEntry;
@@ -89,7 +89,7 @@ final class RoadDynoGui extends JFrame implements ActionListener {
 	private void addRun() {
 		if (dynoRunAddDialog.showDynoDialog()) {
 			try {
-				CarLogReader logReader = new MegasquirtLogReader();
+				EcuLogReader logReader = new MegasquirtLogReader();
 				List<LogEntry> logEntries = logReader.readLog(dynoRunAddDialog.getRunFilePath(), TPS_START_THRESHOLD);
 
 				DynoSimulationResult run = DynoSimulator.run(
