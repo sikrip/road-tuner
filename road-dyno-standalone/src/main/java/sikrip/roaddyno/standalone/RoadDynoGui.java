@@ -11,7 +11,7 @@ import javax.swing.*;
 
 import org.jfree.chart.ChartPanel;
 
-import sikrip.roaddyno.engine.Dyno;
+import sikrip.roaddyno.engine.DynoSimulator;
 import sikrip.roaddyno.logreader.CarLogReader;
 import sikrip.roaddyno.logreader.MegasquirtLogReader;
 import sikrip.roaddyno.model.DynoSimulationResult;
@@ -92,7 +92,7 @@ final class RoadDynoGui extends JFrame implements ActionListener {
 				CarLogReader logReader = new MegasquirtLogReader();
 				List<LogEntry> logEntries = logReader.readLog(dynoRunAddDialog.getRunFilePath(), TPS_START_THRESHOLD);
 
-				DynoSimulationResult run = Dyno.run(
+				DynoSimulationResult run = DynoSimulator.run(
 						logEntries,
 						dynoRunAddDialog.getRunName(),
 						dynoRunAddDialog.getFGR(),
@@ -146,7 +146,7 @@ final class RoadDynoGui extends JFrame implements ActionListener {
 
 	void updateRun(DynoRunGuiEntry dynoRunGuiEntry) {
 		try {
-			DynoSimulationResult run = Dyno.run(
+			DynoSimulationResult run = DynoSimulator.run(
 					dynoRunGuiEntry.getLogEntries(),
 					dynoRunGuiEntry.getInfo().getName(),
 					dynoRunGuiEntry.getInfo().getFinalGearRatio(),

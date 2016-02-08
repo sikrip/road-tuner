@@ -13,9 +13,9 @@ import sikrip.roaddyno.model.LogEntry;
 /**
  * Simulates a dyno for a given run based on the log values, gearing weight and aerodynamic attributes of the car.
  */
-public final class Dyno {
+public final class DynoSimulator {
 
-	private Dyno() {
+	private DynoSimulator() {
 	}
 
 	/**
