@@ -6,6 +6,8 @@
 
     <artifactId>road-dyno-engine</artifactId>
     <version>1.0-SNAPSHOT</version>
+    <name>Road dyno engine</name>
+    <description>The road dyno engine</description>
 
     <parent>
         <groupId>sikrip-road-dyno</groupId>

@@ -6,6 +6,8 @@
 
     <artifactId>road-dyno-model</artifactId>
     <version>1.0-SNAPSHOT</version>
+	<name>Road dyno model</name>
+	<description>The model of the road dyno</description>
 
 	<parent>
 		<groupId>sikrip-road-dyno</groupId>

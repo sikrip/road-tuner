@@ -6,6 +6,8 @@
 
     <artifactId>road-dyno-standalone</artifactId>
     <version>1.0-SNAPSHOT</version>
+    <name>Road dyno standalone</name>
+    <description>A Java Swing Standalone application</description>
 
     <parent>
         <groupId>sikrip-road-dyno</groupId>
