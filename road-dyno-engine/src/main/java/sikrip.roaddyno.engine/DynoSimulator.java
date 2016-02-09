@@ -40,6 +40,8 @@ public final class DynoSimulator {
 		LogEntry to = null;
 		List<DynoSimulationEntry> dynoRunEntries = new ArrayList<>();
 
+		double totalWeight = carWeight + occupantsWeight;
+
 		while (logEntryIterator.hasNext()) {
 			if (from == null) {
 				from = logEntryIterator.next();
@@ -57,7 +59,6 @@ public final class DynoSimulator {
 				double fromTime = from.getTime().getValue();
 				double toTime = to.getTime().getValue();
 
-				double totalWeight = carWeight + occupantsWeight;
 
 				double accelerationPower = PowerCalculator.calculateAccelerationPower(totalWeight, fromSpeed, toSpeed, fromTime, toTime);
 				double airDragPower = PowerCalculator.calculateDragPower(toSpeed, fa, cd);
