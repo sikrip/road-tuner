@@ -14,6 +14,7 @@
         <module>road-dyno-engine</module>
         <module>road-dyno-log-reader</module>
         <module>road-dyno-standalone</module>
+        <module>road-dyno-web</module>
     </modules>
 
     <build>
