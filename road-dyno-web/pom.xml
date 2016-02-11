@@ -20,11 +20,11 @@
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<java.version>1.8</java.version>
+		<java.version>1.7</java.version>
 	</properties>
 
 	<dependencies>
-
+		<!-- Spring -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
@@ -52,6 +52,25 @@
 			<version>2.1.4</version>
 		</dependency>
 
+		<!-- Road Dyno -->
+		<dependency>
+			<groupId>sikrip-road-dyno</groupId>
+			<artifactId>road-dyno-model</artifactId>
+			<version>1.0-SNAPSHOT</version>
+		</dependency>
+
+		<dependency>
+			<groupId>sikrip-road-dyno</groupId>
+			<artifactId>road-dyno-engine</artifactId>
+			<version>1.0-SNAPSHOT</version>
+		</dependency>
+
+		<dependency>
+			<groupId>sikrip-road-dyno</groupId>
+			<artifactId>road-dyno-log-reader</artifactId>
+			<version>1.0-SNAPSHOT</version>
+		</dependency>
+
 		<!-- Test Dependencies -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -68,6 +87,5 @@
 			</plugin>
 		</plugins>
 	</build>
-	
 
 </project>

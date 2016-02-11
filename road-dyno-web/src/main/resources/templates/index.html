@@ -13,81 +13,18 @@
 
 <body>
 
-<script type="text/javascript">
+<script type="text/javascript" th:inline="javascript">
+    /*<![CDATA[*/
+    var chartText = /*[[${chartDef}]]*/ 'Sebastian';
+    var chartDef = JSON.parse(chartText);
 
-    AmCharts.makeChart("chartdiv",
-            {
-                "type": "serial",
-                "categoryField": "category",
-                "startDuration": 1,
-                "categoryAxis": {
-                    "gridPosition": "start"
-                },
-                "trendLines": [],
-                "graphs": [
-                    {
-                        "balloonText": "[[title]] of [[category]]:[[value]]",
-                        "bullet": "round",
-                        "id": "AmGraph-1",
-                        "title": "graph 1",
-                        "type": "smoothedLine",
-                        "valueField": "column-1"
-                    },
-                    {
-                        "balloonText": "[[title]] of [[category]]:[[value]]",
-                        "bullet": "square",
-                        "id": "AmGraph-2",
-                        "title": "graph 2",
-                        "type": "smoothedLine",
-                        "valueField": "column-2"
-                    }
-                ],
-                "guides": [],
-                "valueAxes": [
-                    {
-                        "id": "ValueAxis-1",
-                        "title": "Axis title"
-                    }
-                ],
-                "allLabels": [],
-                "balloon": {},
-                "legend": {
-                    "enabled": true,
-                    "useGraphSettings": true
-                },
-                "titles": [
-                    {
-                        "id": "Title-1",
-                        "size": 15,
-                        "text": "Chart Title"
-                    }
-                ],
-                "dataProvider": [
-                    {
-                        "category": "category 1",
-                        "column-1": 8,
-                        "column-2": 5
-                    },
-                    {
-                        "category": "category 2",
-                        "column-1": 6,
-                        "column-2": 7
-                    },
-                    {
-                        "category": "category 3",
-                        "column-1": 2,
-                        "column-2": 3
-                    }
-                ]
-            }
-    );
+    AmCharts.makeChart("chartdiv", chartDef);
+    /*]]>*/
 </script>
 
 <h1>Road Dyno</h1>
 
-<p th:text="${chartJson}"></p>
-
-<div id="chartdiv" style="width: 100%; height: 400px; background-color: #FFFFFF;" ></div>
+<div id="chartdiv" style="width: 100%; height: 600px; background-color: #FFFFFF;" ></div>
 
 <div th:include="fragments/footer :: copy"></div>
 </body>
