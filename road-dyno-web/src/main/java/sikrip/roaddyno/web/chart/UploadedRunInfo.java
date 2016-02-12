@@ -1,4 +1,4 @@
-package sikrip.roaddyno.web.model;
+package sikrip.roaddyno.web.chart;
 
 import sikrip.roaddyno.model.DynoRunInfo;
 

@@ -11,7 +11,7 @@
 <h1 th:replace="fragments/fragments :: header"></h1>
 
 <div class="container">
-    <form class="form-horizontal" th:object="${runInfo}" th:action="@{/dynoplot}" method="post" enctype="multipart/form-data">
+    <form class="form-horizontal" th:object="${runInfo}" th:action="@{/addrun}" method="post" enctype="multipart/form-data">
 
         <div class="form-group">
             <label class="col-sm-2 control-label">Log file:</label>
