@@ -77,6 +77,14 @@ public class RoadDynoController {
 		try {
 			String chartDef = objectMapper.writeValueAsString(new ChartDataProvider().createJsonData(simulationResults, new PlotColorProvider()));
 			model.addAttribute("chartDef", chartDef);
+
+			List<UploadedRunInfo> runInfoList = new ArrayList<>();
+			PlotColorProvider colorProvider = new PlotColorProvider();
+			for (DynoSimulationResult simulationResult : simulationResults) {
+				runInfoList.add(new UploadedRunInfo(simulationResult, colorProvider.pop()));
+			}
+			model.addAttribute("runInfoList", runInfoList);
+
 			return "dynoplot";
 		} catch (JsonProcessingException e) {
 			// TODO hanle

@@ -18,7 +18,24 @@
 
 <div class="container">
     <div class="row">
-        <div class="col-md-3"><a th:href="@{/newrun}">Add run</a></div>
+        <div class="col-md-3">
+            <form class="form-horizontal" th:each="runInfo : ${runInfoList}">
+                <h4 th:attr="style='color:' + ${runInfo.color}" th:text="${runInfo.name}">name</h4>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">FGR: </label>
+                    <div lass="col-sm-10">
+                        <p class="form-control-static" th:text="${runInfo.finalGearRatio}">name</p>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">Gear ratio:</label>
+                    <div lass="col-sm-10">
+                        <p class="form-control-static" th:text="${runInfo.gearRatio}">name</p>
+                    </div>
+                </div>
+            </form>
+            <a th:href="@{/newrun}">Add run</a>
+        </div>
         <div id="chartdiv" class="col-md-9" style="height: 600px; background-color: #FFFFFF;"></div>
     </div>
 </div>
@@ -29,7 +46,6 @@
     /*<![CDATA[*/
     var chartText = /*[[${chartDef}]]*/ '{}';
     var chartDef = JSON.parse(chartText);
-
     AmCharts.makeChart("chartdiv", chartDef);
     /*]]>*/
 </script>

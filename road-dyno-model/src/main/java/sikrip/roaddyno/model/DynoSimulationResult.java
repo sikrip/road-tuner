@@ -119,14 +119,6 @@ public class DynoSimulationResult implements DynoRunInfo {
 		return maxTorque;
 	}
 
-	public double minRpm() {
-		return entries.get(0).getRpm();
-	}
-
-	public double maxRpm() {
-		return entries.get(entries.size() - 1).getRpm();
-	}
-
 	public DynoSimulationEntry getAt(double rpm) {
 		for (DynoSimulationEntry entry : entries) {
 			if (entry.getRpm() == rpm) {

@@ -71,8 +71,6 @@ public class ChartDataProvider {
 					String torque = df.format(simulationEntry.getTorque());
 					dataEntry.put(POWER_FIELD + "_" + iRun, power);
 					dataEntry.put(TORQUE_FIELD + "_" + iRun, torque);
-				} else {
-					System.out.println("");
 				}
 
 			}

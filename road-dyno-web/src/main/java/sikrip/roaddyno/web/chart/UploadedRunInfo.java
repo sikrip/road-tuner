@@ -12,6 +12,22 @@ public class UploadedRunInfo implements DynoRunInfo {
 	private double occupantsWeight = 85;
 	private double frontalArea = 1.7;
 	private double coefficientOfDrag = 0.34;
+	private String color;
+
+	public UploadedRunInfo() {
+	}
+
+	public UploadedRunInfo(DynoRunInfo runInfo, String color) {
+		this.name = runInfo.getName();
+		this.finalGearRatio = runInfo.getFinalGearRatio();
+		this.gearRatio = runInfo.getGearRatio();
+		this.tyreDiameter = runInfo.getTyreDiameter();
+		this.carWeight = runInfo.getCarWeight();
+		this.occupantsWeight = runInfo.getOccupantsWeight();
+		this.frontalArea = runInfo.getFrontalArea();
+		this.coefficientOfDrag = runInfo.getCoefficientOfDrag();
+		this.color = color;
+	}
 
 	public void setName(String name) {
 		this.name = name;
@@ -43,6 +59,14 @@ public class UploadedRunInfo implements DynoRunInfo {
 
 	public void setCoefficientOfDrag(double coefficientOfDrag) {
 		this.coefficientOfDrag = coefficientOfDrag;
+	}
+
+	public void setColor(String color) {
+		this.color = color;
+	}
+
+	public String getColor() {
+		return color;
 	}
 
 	@Override
