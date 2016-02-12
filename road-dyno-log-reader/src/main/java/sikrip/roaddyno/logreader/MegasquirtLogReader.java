@@ -2,8 +2,10 @@ package sikrip.roaddyno.logreader;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -25,50 +27,55 @@ public final class MegasquirtLogReader implements EcuLogReader {
 
 	@Override
 	public final List<LogEntry> readLog(String filePath, double tpsStartThreshold) throws IOException {
-
 		File logFile = new File(filePath);
-		try (BufferedReader logReader = new BufferedReader(new FileReader(logFile));) {
-
-			List<String> headers = new ArrayList<>();
-			List<String> units = new ArrayList<>();
-
-			String timeColumnKey = null;
-			String rpmColumnKey = null;
-			String tpsColumnKey = null;
-
-			String logLine;
-			List<LogEntry> logEntries = new ArrayList<>();
-			while ((logLine = logReader.readLine()) != null) {
-				List<String> elements = Arrays.asList((logLine.split("\t")));
-
-				if (elements.size() > 1) {
-					if (headers.size() == 0) {
-						// headers line
-						headers.addAll(elements);
-						timeColumnKey = headers.indexOf("Time") != -1 ? "Time" : null;
-						rpmColumnKey = headers.indexOf("RPM") != -1 ? "RPM" : null;
-						tpsColumnKey = headers.indexOf("TPS") != -1 ? "TPS" : null;
-
-						if (timeColumnKey == null || rpmColumnKey == null || tpsColumnKey == null) {
-							throw new IllegalArgumentException("Invalid log file. Cannot find Time, RPM or TPS column.");
-						}
-					} else if (units.size() == 0) {
-						// units line
-						units.addAll(elements);
-					} else {
-						// data line
-						LogEntry current = createLogEntry(headers, units, elements, timeColumnKey, rpmColumnKey, tpsColumnKey);
-						if (current.getTps().getValue() > tpsStartThreshold) {
-							logEntries.add(current);
-						}
-					}
-				}
-			}
-
-			return removeRpmNoise(logEntries);
+		try (InputStream fileStream = new FileInputStream(logFile);) {
+			return readLog(fileStream, tpsStartThreshold);
 		} catch (IOException e) {
 			throw e;
 		}
+	}
+
+	@Override
+	public List<LogEntry> readLog(InputStream inputStream, double tpsStartThreshold) throws IOException {
+		BufferedReader logReader = new BufferedReader(new InputStreamReader(inputStream));
+
+		List<String> headers = new ArrayList<>();
+		List<String> units = new ArrayList<>();
+
+		String timeColumnKey = null;
+		String rpmColumnKey = null;
+		String tpsColumnKey = null;
+
+		String logLine;
+		List<LogEntry> logEntries = new ArrayList<>();
+		while ((logLine = logReader.readLine()) != null) {
+			List<String> elements = Arrays.asList((logLine.split("\t")));
+
+			if (elements.size() > 1) {
+				if (headers.size() == 0) {
+					// headers line
+					headers.addAll(elements);
+					timeColumnKey = headers.indexOf("Time") != -1 ? "Time" : null;
+					rpmColumnKey = headers.indexOf("RPM") != -1 ? "RPM" : null;
+					tpsColumnKey = headers.indexOf("TPS") != -1 ? "TPS" : null;
+
+					if (timeColumnKey == null || rpmColumnKey == null || tpsColumnKey == null) {
+						throw new IllegalArgumentException("Invalid log file. Cannot find Time, RPM or TPS column.");
+					}
+				} else if (units.size() == 0) {
+					// units line
+					units.addAll(elements);
+				} else {
+					// data line
+					LogEntry current = createLogEntry(headers, units, elements, timeColumnKey, rpmColumnKey, tpsColumnKey);
+					if (current.getTps().getValue() > tpsStartThreshold) {
+						logEntries.add(current);
+					}
+				}
+			}
+		}
+
+		return removeRpmNoise(logEntries);
 
 	}
 

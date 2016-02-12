@@ -1,4 +1,4 @@
-package sikrip.roaddyno.web.chartmodel;
+package sikrip.roaddyno.web.model;
 
 import sikrip.roaddyno.model.DynoSimulationEntry;
 import sikrip.roaddyno.model.DynoSimulationResult;
@@ -29,6 +29,7 @@ public class ChartJsonData {
         root.put("type", "serial");
         root.put("categoryField", RPM_AXIS);
         root.put("startDuration", 1);
+        root.put("startEffect", "easeOutSine");
 
         Map<String, Object> categoryAxis = new HashMap<>();
         categoryAxis.put("gridPosition", "start");
