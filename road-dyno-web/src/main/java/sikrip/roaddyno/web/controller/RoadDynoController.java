@@ -42,10 +42,10 @@ public class RoadDynoController {
 		return "index";
 	}
 
-	@RequestMapping("/newrun")
-	public String newRun(Model model) {
+	@RequestMapping("/addrun")
+	public String addRun(Model model) {
 		model.addAttribute("runInfo", new UploadedRunInfo());
-		return "newrun";
+		return "add_run_form";
 	}
 
 	@RequestMapping(value = "/addrun", method = RequestMethod.POST)
