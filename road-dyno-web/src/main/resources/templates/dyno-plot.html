@@ -17,9 +17,9 @@
 
 <div class="container-fluid">
     <div class="row">
-        <div class="col-md-3">
+        <div class="col-md-4">
             <div th:if="${not #lists.isEmpty(runInfoList)}">
-                <span th:each="runInfo : ${runInfoList}">
+                <div th:each="runInfo : ${runInfoList}">
                     <h4 th:attr="style='color:' + ${runInfo.color}" th:text="${runInfo.name}">name</h4>
                     <table class="table table-striped">
                         <tr>
@@ -30,6 +30,7 @@
                             <th>Occ. Weight</th>
                             <th>Frontal Area</th>
                             <th>Coeff. of Drag</th>
+                            <th colspan="2"></th>
                         </tr>
                         <tr>
                             <td th:text="${runInfo.finalGearRatio}">fgr</td>
@@ -39,14 +40,17 @@
                             <td th:text="${runInfo.occupantsWeight}">occupantsWeight</td>
                             <td th:text="${runInfo.frontalArea}">frontalArea</td>
                             <td th:text="${runInfo.coefficientOfDrag}">coefficientOfDrag</td>
+                            <td><a th:href="${'/edit/' + runInfo.id}">edit</a></td>
                             <td><a th:href="${'/remove/' + runInfo.id}">rem</a></td>
                         </tr>
                     </table>
-                </span>
+                </div>
             </div>
             <a th:href="@{/addrun}">Add run</a>
         </div>
-        <div id="chartdiv" class="col-md-9" style="min-height: 800px;"></div>
+        <div class="col-md-8">
+            <div id="chartdiv" style="min-height: 800px;"></div>
+        </div>
     </div>
 </div>
 

@@ -48,11 +48,11 @@ public class RoadDynoController {
 	@RequestMapping("/addrun")
 	public String addRun(Model model) {
 		model.addAttribute("runInfo", new UploadedRunInfo());
-		return "add_run_form";
+		return "add-run-form";
 	}
 
 	@RequestMapping(value = "/addrun", method = RequestMethod.POST)
-	public String addRun(UploadedRunInfo runInfo, @RequestParam("file") MultipartFile file, Model model) {
+	public String addRun(UploadedRunInfo runInfo, @RequestParam("file") MultipartFile file) {
 		if (!file.isEmpty()) {
 			try {
 				EcuLogReader logReader = new MegasquirtLogReader();
@@ -79,6 +79,44 @@ public class RoadDynoController {
 		return "redirect:/dynoplot";
 	}
 
+	@RequestMapping(value = "/updaterun", method = RequestMethod.POST)
+	public String updateRun(UploadedRunInfo updatedRunInfo) {
+
+		UploadedRunInfo existingRunInfo = null;
+		for (UploadedRunInfo uploadedRun : uploadedRuns) {
+			if (uploadedRun.getId().equals(updatedRunInfo.getId())) {
+				existingRunInfo = uploadedRun;
+			}
+		}
+
+		if (existingRunInfo != null) {
+			existingRunInfo.setFinalGearRatio(updatedRunInfo.getFinalGearRatio());
+			existingRunInfo.setGearRatio(updatedRunInfo.getGearRatio());
+			existingRunInfo.setTyreDiameter(updatedRunInfo.getTyreDiameter());
+			existingRunInfo.setCarWeight(updatedRunInfo.getCarWeight());
+			existingRunInfo.setOccupantsWeight(updatedRunInfo.getOccupantsWeight());
+			existingRunInfo.setFrontalArea(updatedRunInfo.getFrontalArea());
+			existingRunInfo.setCoefficientOfDrag(updatedRunInfo.getCoefficientOfDrag());
+
+			DynoSimulationResult result = DynoSimulator.run(existingRunInfo.getDynoSimulationResult().getLogEntries(),
+					existingRunInfo.getName(),
+					existingRunInfo.getFinalGearRatio(),
+					existingRunInfo.getGearRatio(),
+					existingRunInfo.getTyreDiameter(),
+					existingRunInfo.getCarWeight(),
+					existingRunInfo.getOccupantsWeight(),
+					existingRunInfo.getFrontalArea(),
+					existingRunInfo.getCoefficientOfDrag());
+
+			existingRunInfo.setDynoSimulationResult(result);
+
+			return "redirect:/dynoplot";
+		} else {
+			return "error";
+		}
+
+	}
+
 	@RequestMapping("/dynoplot")
 	public String dynoPlot(Model model) {
 		try {
@@ -87,11 +125,29 @@ public class RoadDynoController {
 			model.addAttribute("chartDef", chartDef);
 			model.addAttribute("runInfoList", uploadedRuns);
 
-			return "dynoplot";
+			return "dyno-plot";
 		} catch (JsonProcessingException e) {
 			// TODO hanle
 			return "error";
 		}
+	}
+
+	@RequestMapping("edit/{id}")
+	public String edit(@PathVariable String id, Model model) {
+
+		UploadedRunInfo runInfo = null;
+		for (UploadedRunInfo uploadedRun : uploadedRuns) {
+			if (uploadedRun.getId().equals(id)) {
+				runInfo = uploadedRun;
+			}
+		}
+
+		if (runInfo != null) {
+			model.addAttribute("runInfo", runInfo);
+			return "update-run-form";
+		}
+		// TODO hanle
+		return "error";
 	}
 
 	@RequestMapping("remove/{id}")

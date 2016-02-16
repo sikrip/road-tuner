@@ -8,7 +8,7 @@ import sikrip.roaddyno.model.DynoSimulationResult;
 public class UploadedRunInfo implements DynoRunInfo {
 
 	private String name;
-	private final String id;
+	private String id;
 	private String color;
 
 	private DynoSimulationResult dynoSimulationResult;
@@ -67,6 +67,10 @@ public class UploadedRunInfo implements DynoRunInfo {
 
 	public String getId() {
 		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
 	}
 
 	public DynoSimulationResult getDynoSimulationResult() {
