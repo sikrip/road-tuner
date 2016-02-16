@@ -57,12 +57,14 @@ public class RoadDynoController {
 			try {
 				EcuLogReader logReader = new MegasquirtLogReader();
 				List<LogEntry> logEntries = logReader.readLog(file.getInputStream(), TPS_START_THRESHOLD);
-				DynoSimulationResult result = DynoSimulator.run(logEntries, file.getOriginalFilename(),
-						runInfo.getFinalGearRatio(), runInfo.getGearRatio(),
-						runInfo.getTyreDiameter(), runInfo.getCarWeight(),
-						runInfo.getOccupantsWeight(),
-						runInfo.getFrontalArea(),
-						runInfo.getCoefficientOfDrag());
+				DynoSimulationResult result = DynoSimulator.run(logEntries,
+																runInfo.getFinalGearRatio(),
+																runInfo.getGearRatio(),
+																runInfo.getTyreDiameter(),
+																runInfo.getCarWeight(),
+																runInfo.getOccupantsWeight(),
+																runInfo.getFrontalArea(),
+																runInfo.getCoefficientOfDrag());
 				runInfo.setName(file.getOriginalFilename());
 				runInfo.setDynoSimulationResult(result);
 				runInfo.setColor(colorProvider.pop());
@@ -99,7 +101,6 @@ public class RoadDynoController {
 			existingRunInfo.setCoefficientOfDrag(updatedRunInfo.getCoefficientOfDrag());
 
 			DynoSimulationResult result = DynoSimulator.run(existingRunInfo.getDynoSimulationResult().getLogEntries(),
-					existingRunInfo.getName(),
 					existingRunInfo.getFinalGearRatio(),
 					existingRunInfo.getGearRatio(),
 					existingRunInfo.getTyreDiameter(),

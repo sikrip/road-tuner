@@ -34,10 +34,10 @@ final class AuxiliaryChart {
 
         final XYPlot plot = createPlot();
 
-        for (DynoRunGuiEntry runWrapper : runs) {
+        for (DynoRunGuiEntry run : runs) {
 
-            if (runWrapper.isActive()) {
-                DynoSimulationResult run = runWrapper.getDynoSimulationResult();
+            if (run.isActive()) {
+                DynoSimulationResult result = run.getDynoSimulationResult();
 
                 int dataSetIdx = plot.getDatasetCount(); // one based
 
@@ -51,12 +51,12 @@ final class AuxiliaryChart {
                 xySplineRenderer.setBaseToolTipGenerator(toolTipGenerator);
 
                 xySplineRenderer.setSeriesStroke(0, new BasicStroke(2f));
-                xySplineRenderer.setSeriesPaint(0, runWrapper.getColor());
+                xySplineRenderer.setSeriesPaint(0, run.getColor());
 
                 xySplineRenderer.setSeriesShapesVisible(0, false);
 
                 DefaultXYDataset dataset = new DefaultXYDataset();
-                dataset.addSeries(run.getName() + " " + valueKey, getDataSet(valueKey, run, runWrapper.getLogEntries()));
+                dataset.addSeries(run.getInfo().getName() + " " + valueKey, getDataSet(valueKey, result, run.getLogEntries()));
 
                 plot.setDataset(dataSetIdx, dataset);
                 plot.setRenderer(dataSetIdx, xySplineRenderer);

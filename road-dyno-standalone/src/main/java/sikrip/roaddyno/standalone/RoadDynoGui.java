@@ -94,7 +94,6 @@ final class RoadDynoGui extends JFrame implements ActionListener {
 
 				DynoSimulationResult run = DynoSimulator.run(
 						logEntries,
-						dynoRunAddDialog.getRunName(),
 						dynoRunAddDialog.getFGR(),
 						dynoRunAddDialog.getGearRatio(),
 						dynoRunAddDialog.getTyreDiameter(),
@@ -103,7 +102,15 @@ final class RoadDynoGui extends JFrame implements ActionListener {
 						dynoRunAddDialog.getFrontalArea(),
 						dynoRunAddDialog.getCD());
 
-				DynoRunGuiEntry runGuiEntry = new DynoRunGuiEntry(run, ColorProvider.pop());
+				DynoRunGuiEntry runGuiEntry = new DynoRunGuiEntry(run, ColorProvider.pop(),
+						dynoRunAddDialog.getName(),
+						dynoRunAddDialog.getFGR(),
+						dynoRunAddDialog.getGearRatio(),
+						dynoRunAddDialog.getTyreDiameter(),
+						dynoRunAddDialog.getCarWeight(),
+						dynoRunAddDialog.getOccupantsWeight(),
+						dynoRunAddDialog.getFrontalArea(),
+						dynoRunAddDialog.getCD());
 				runGuiEntry.getPanel().setMaximumSize(new Dimension(310, 200));
 
 				runsPanel.add(runGuiEntry.getPanel());
@@ -148,7 +155,6 @@ final class RoadDynoGui extends JFrame implements ActionListener {
 		try {
 			DynoSimulationResult run = DynoSimulator.run(
 					dynoRunGuiEntry.getLogEntries(),
-					dynoRunGuiEntry.getInfo().getName(),
 					dynoRunGuiEntry.getInfo().getFinalGearRatio(),
 					dynoRunGuiEntry.getInfo().getGearRatio(),
 					dynoRunGuiEntry.getInfo().getTyreDiameter(),

@@ -5,7 +5,7 @@ import java.util.List;
 /**
  * A dyno simulation result.
  */
-public class DynoSimulationResult implements DynoRunInfo {
+public class DynoSimulationResult {
 
 	/**
 	 * The raw log entries that produced this result.
@@ -17,58 +17,9 @@ public class DynoSimulationResult implements DynoRunInfo {
 	 */
 	private final List<DynoSimulationEntry> entries;
 
-	/**
-	 * A name for the run.
-	 */
-	private final String name;
-
-	/**
-	 * The final gear ratio.
-	 */
-	private final double fgr;
-
-	/**
-	 * The ration of the gear used in the run.
-	 */
-	private final double gr;
-
-	/**
-	 * The diameter of the driving tyres in mm.
-	 */
-	private final double tyreDiameter;
-
-	/**
-	 * The total weight of the vehicle in kg.
-	 */
-	private final double carWeight;
-
-	/**
-	 * The total weight of the occupants in kg.
-	 */
-	private final double occupantsWeight;
-
-	/**
-	 * The frontal area of the car in m^2.
-	 */
-	private final double fa;
-
-	/**
-	 * The coefficient of drag of the car.
-	 */
-	private final double cd;
-
-	public DynoSimulationResult(List<LogEntry> logEntries, List<DynoSimulationEntry> entries, String name, double fgr, double gr,
-			double tyreDiameter, double carWeight, double occupantsWeight, double fa, double cd) {
+	public DynoSimulationResult(List<LogEntry> logEntries, List<DynoSimulationEntry> entries) {
 		this.logEntries = logEntries;
 		this.entries = entries;
-		this.name = name;
-		this.fgr = fgr;
-		this.gr = gr;
-		this.tyreDiameter = tyreDiameter;
-		this.carWeight = carWeight;
-		this.occupantsWeight = occupantsWeight;
-		this.fa = fa;
-		this.cd = cd;
 	}
 
 	public DynoSimulationEntry minPower() {
@@ -158,48 +109,4 @@ public class DynoSimulationResult implements DynoRunInfo {
 		return logEntries;
 	}
 
-	@Override
-	public String getName() {
-		return name;
-	}
-
-	@Override
-	public double getFinalGearRatio() {
-		return fgr;
-	}
-
-	@Override
-	public double getGearRatio() {
-		return gr;
-	}
-
-	@Override
-	public double getTyreDiameter() {
-		return tyreDiameter;
-	}
-
-	@Override
-	public double getCarWeight() {
-		return carWeight;
-	}
-
-	@Override
-	public double getOccupantsWeight() {
-		return occupantsWeight;
-	}
-
-	@Override
-	public double getFrontalArea() {
-		return fa;
-	}
-
-	@Override
-	public double getCoefficientOfDrag() {
-		return cd;
-	}
-
-	@Override
-	public String toString() {
-		return name;
-	}
 }

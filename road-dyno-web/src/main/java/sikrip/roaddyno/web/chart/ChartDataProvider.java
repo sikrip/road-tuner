@@ -133,9 +133,11 @@ public class ChartDataProvider {
 
 		for (int iRun = 0; iRun < runs.size(); iRun++) {
 
-			DynoSimulationResult simulationResult = runs.get(iRun).getDynoSimulationResult();
+			UploadedRunInfo run = runs.get(iRun);
 
-			String runColor = runs.get(iRun).getColor();
+			DynoSimulationResult simulationResult = run.getDynoSimulationResult();
+
+			String runColor = run.getColor();
 
 			DynoSimulationEntry maxPower = simulationResult.maxPower();
 			DynoSimulationEntry maxTorque = simulationResult.maxTorque();
@@ -149,7 +151,7 @@ public class ChartDataProvider {
 			graph.put("id", "Graph-" + POWER_FIELD + "_" + iRun);
 			graph.put("lineColor", runColor);
 			graph.put("lineThickness", 3);
-			graph.put("title", simulationResult.getName() + " power " + df.format(maxPower.getPower()) + " hp @" + (int) maxPower.getRpm());
+			graph.put("title", run.getName() + " power " + df.format(maxPower.getPower()) + " hp @" + (int) maxPower.getRpm());
 			graph.put("type", "smoothedLine");
 			graph.put("xField", RPM_AXIS);
 			graph.put("yField", POWER_FIELD + "_" + iRun);
@@ -164,7 +166,7 @@ public class ChartDataProvider {
 			graph.put("dashLength", 4);
 			graph.put("lineColor", runColor);
 			graph.put("lineThickness", 2);
-			graph.put("title", simulationResult.getName() + " torque " + df.format(maxTorque.getTorque()) + " lb/ft @" + (int) maxTorque.getRpm());
+			graph.put("title", run.getName() + " torque " + df.format(maxTorque.getTorque()) + " lb/ft @" + (int) maxTorque.getRpm());
 			graph.put("type", "smoothedLine");
 			graph.put("xField", RPM_AXIS);
 			graph.put("yField", TORQUE_FIELD + "_" + iRun);

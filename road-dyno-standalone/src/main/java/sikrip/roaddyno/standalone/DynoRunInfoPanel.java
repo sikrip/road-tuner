@@ -123,15 +123,15 @@ final class DynoRunInfoPanel extends JPanel implements DynoRunInfo, KeyListener 
 		frontalAreaAlt.addKeyListener(this);
 	}
 
-	void setInfo(DynoRunInfo run) {
-		runName = run.getName();
-		setFgr(run.getFinalGearRatio());
-		setGr(run.getGearRatio());
-		setTyreDiameter(run.getTyreDiameter());
-		setCarWeight(run.getCarWeight());
-		setOccupantsWeight(run.getOccupantsWeight());
-		setFrontalArea(run.getFrontalArea());
-		setCd(run.getCoefficientOfDrag());
+	void setInfo(String name, double fgr, double gr, double tyreDiameter, double carWeight, double occupantsWeight, double fa, double cd) {
+		this.runName = name;
+		setFgr(fgr);
+		setGr(gr);
+		setTyreDiameter(tyreDiameter);
+		setCarWeight(carWeight);
+		setOccupantsWeight(occupantsWeight);
+		setFrontalArea(fa);
+		setCd(cd);
 
 		synchCarWeight();
 		synchFrontalArea();

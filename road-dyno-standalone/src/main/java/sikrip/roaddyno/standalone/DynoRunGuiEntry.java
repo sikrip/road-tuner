@@ -7,8 +7,8 @@ import java.util.List;
 
 import javax.swing.*;
 
-import sikrip.roaddyno.model.DynoSimulationResult;
 import sikrip.roaddyno.model.DynoRunInfo;
+import sikrip.roaddyno.model.DynoSimulationResult;
 import sikrip.roaddyno.model.LogEntry;
 import sikrip.roaddyno.standalone.util.FontUtil;
 
@@ -26,7 +26,8 @@ final class DynoRunGuiEntry implements ActionListener {
 
 	private final DynoRunInfoPanel infoPanel = new DynoRunInfoPanel();
 
-	DynoRunGuiEntry(DynoSimulationResult dynoSimulationResult, Color color) {
+	DynoRunGuiEntry(DynoSimulationResult dynoSimulationResult, Color color, String name, double fgr, double gr, double tyreDiameter,
+			double carWeight, double occupantsWeight, double fa, double cd) {
 
 		this.dynoSimulationResult = dynoSimulationResult;
 		this.color = color;
@@ -44,11 +45,11 @@ final class DynoRunGuiEntry implements ActionListener {
 		north.add(updateButton);
 
 		panel.add(north, BorderLayout.NORTH);
-		runName.setText(dynoSimulationResult.getName());
+		runName.setText(name);
 		runName.setEditable(false);
 		runName.setForeground(color);
 
-		infoPanel.setInfo(dynoSimulationResult);
+		infoPanel.setInfo(name, fgr, gr, tyreDiameter, carWeight, occupantsWeight, fa, cd);
 		panel.add(infoPanel, BorderLayout.CENTER);
 
 		closeButton.addActionListener(this);

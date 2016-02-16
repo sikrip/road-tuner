@@ -22,7 +22,6 @@ public final class DynoSimulator {
 	 * Simulates a dyno for a given run based on the provided log values, gearing weight and aerodynamic attributes of the car.
 	 *
 	 * @param logEntries      the log entries from the run
-	 * @param name            a name for the dyno
 	 * @param fgr             the final gear ratio of the car
 	 * @param gr              the gear ratio used during the run
 	 * @param tyreDiameter    the diameter of the drive tyre(mm)
@@ -32,7 +31,7 @@ public final class DynoSimulator {
 	 * @param cd              the coefficient of drag of the car
 	 * @return a dyno run that holds the result of the dyno simulation
 	 */
-	public static DynoSimulationResult run(List<LogEntry> logEntries, String name, double fgr, double gr, double tyreDiameter,
+	public static DynoSimulationResult run(List<LogEntry> logEntries, double fgr, double gr, double tyreDiameter,
 			double carWeight, double occupantsWeight, double fa, double cd) {
 
 		Iterator<LogEntry> logEntryIterator = smoothRPM(logEntries).iterator();
@@ -68,7 +67,7 @@ public final class DynoSimulator {
 			}
 		}
 
-		return new DynoSimulationResult(logEntries, dynoRunEntries, name, fgr, gr, tyreDiameter, carWeight, occupantsWeight, fa, cd);
+		return new DynoSimulationResult(logEntries, dynoRunEntries);
 	}
 
 	/**
