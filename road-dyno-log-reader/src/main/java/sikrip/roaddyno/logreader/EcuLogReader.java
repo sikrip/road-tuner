@@ -11,8 +11,34 @@ import sikrip.roaddyno.model.LogEntry;
  */
 public interface EcuLogReader {
 
-	List<LogEntry> readLog(String file, double tpsStartThreshold) throws IOException;
+	/**
+	 * Reads the log of the provided file.
+	 *
+	 * @param file
+	 * 		the log file
+	 * @param tpsStartThreshold
+	 * 		the threshold of TPS value above which the reader should start reading
+	 * @return a list of log entries
+	 * @throws IOException
+	 * 		if reading the file goes wrong
+	 * @throws InvalidLogFormatException
+	 * 		if the log format is invalid
+	 */
+	List<LogEntry> readLog(String file, double tpsStartThreshold) throws IOException, InvalidLogFormatException;
 
-	List<LogEntry> readLog(InputStream inputStream, double tpsStartThreshold) throws IOException;
+	/**
+	 * Reads the log from the provided stream.
+	 *
+	 * @param inputStream
+	 * 		the stream
+	 * @param tpsStartThreshold
+	 * 		the threshold of TPS value above which the reader should start reading
+	 * @return a list of log entries
+	 * @throws IOException
+	 * 		if reading the file goes wrong
+	 * @throws InvalidLogFormatException
+	 * 		if the log format is invalid
+	 */
+	List<LogEntry> readLog(InputStream inputStream, double tpsStartThreshold) throws IOException, InvalidLogFormatException;
 
 }

@@ -9,11 +9,11 @@ import java.text.DecimalFormat;
 
 import javax.swing.*;
 
-import sikrip.roaddyno.model.DynoRunInfo;
+import sikrip.roaddyno.model.RunInfo;
 import sikrip.roaddyno.standalone.util.LayoutUtil;
 import sikrip.roaddyno.standalone.util.UnitConverter;
 
-final class DynoRunInfoPanel extends JPanel implements DynoRunInfo, KeyListener {
+final class RunInfoPanel extends JPanel implements RunInfo, KeyListener {
 
 	private DecimalFormat df;
 
@@ -30,7 +30,7 @@ final class DynoRunInfoPanel extends JPanel implements DynoRunInfo, KeyListener 
 	private final JTextField frontalAreaAlt = new JTextField();
 	private final JTextField cd = new JTextField("0.34");
 
-	DynoRunInfoPanel() {
+	RunInfoPanel() {
 		createGui();
 
 		setupListeners();

@@ -24,7 +24,7 @@ import sikrip.roaddyno.model.DynoSimulationResult;
 import sikrip.roaddyno.model.LogEntry;
 import sikrip.roaddyno.web.chart.ChartDataProvider;
 import sikrip.roaddyno.web.chart.PlotColorProvider;
-import sikrip.roaddyno.web.chart.UploadedRunInfo;
+import sikrip.roaddyno.web.chart.UploadedRun;
 
 @Controller
 @Scope("session")
@@ -35,7 +35,7 @@ public class RoadDynoController {
 	@Autowired
 	private ObjectMapper objectMapper;
 
-	private final List<UploadedRunInfo> uploadedRuns = new ArrayList<>();
+	private final List<UploadedRun> uploadedRuns = new ArrayList<>();
 	private final PlotColorProvider colorProvider = new PlotColorProvider();
 
 	@RequestMapping("/")
@@ -47,12 +47,12 @@ public class RoadDynoController {
 
 	@RequestMapping("/addrun")
 	public String addRun(Model model) {
-		model.addAttribute("runInfo", new UploadedRunInfo());
+		model.addAttribute("runInfo", new UploadedRun());
 		return "add-run-form";
 	}
 
 	@RequestMapping(value = "/addrun", method = RequestMethod.POST)
-	public String addRun(UploadedRunInfo runInfo, @RequestParam("file") MultipartFile file) {
+	public String addRun(UploadedRun runInfo, @RequestParam("file") MultipartFile file) {
 		if (!file.isEmpty()) {
 			try {
 				EcuLogReader logReader = new MegasquirtLogReader();
@@ -66,7 +66,7 @@ public class RoadDynoController {
 																runInfo.getFrontalArea(),
 																runInfo.getCoefficientOfDrag());
 				runInfo.setName(file.getOriginalFilename());
-				runInfo.setDynoSimulationResult(result);
+				runInfo.setResult(result);
 				runInfo.setColor(colorProvider.pop());
 
 				uploadedRuns.add(runInfo);
@@ -82,10 +82,10 @@ public class RoadDynoController {
 	}
 
 	@RequestMapping(value = "/updaterun", method = RequestMethod.POST)
-	public String updateRun(UploadedRunInfo updatedRunInfo) {
+	public String updateRun(UploadedRun updatedRunInfo) {
 
-		UploadedRunInfo existingRunInfo = null;
-		for (UploadedRunInfo uploadedRun : uploadedRuns) {
+		UploadedRun existingRunInfo = null;
+		for (UploadedRun uploadedRun : uploadedRuns) {
 			if (uploadedRun.getId().equals(updatedRunInfo.getId())) {
 				existingRunInfo = uploadedRun;
 			}
@@ -100,7 +100,7 @@ public class RoadDynoController {
 			existingRunInfo.setFrontalArea(updatedRunInfo.getFrontalArea());
 			existingRunInfo.setCoefficientOfDrag(updatedRunInfo.getCoefficientOfDrag());
 
-			DynoSimulationResult result = DynoSimulator.run(existingRunInfo.getDynoSimulationResult().getLogEntries(),
+			DynoSimulationResult result = DynoSimulator.run(existingRunInfo.getResult().getLogEntries(),
 					existingRunInfo.getFinalGearRatio(),
 					existingRunInfo.getGearRatio(),
 					existingRunInfo.getTyreDiameter(),
@@ -109,7 +109,7 @@ public class RoadDynoController {
 					existingRunInfo.getFrontalArea(),
 					existingRunInfo.getCoefficientOfDrag());
 
-			existingRunInfo.setDynoSimulationResult(result);
+			existingRunInfo.setResult(result);
 
 			return "redirect:/dynoplot";
 		} else {
@@ -136,8 +136,8 @@ public class RoadDynoController {
 	@RequestMapping("edit/{id}")
 	public String edit(@PathVariable String id, Model model) {
 
-		UploadedRunInfo runInfo = null;
-		for (UploadedRunInfo uploadedRun : uploadedRuns) {
+		UploadedRun runInfo = null;
+		for (UploadedRun uploadedRun : uploadedRuns) {
 			if (uploadedRun.getId().equals(id)) {
 				runInfo = uploadedRun;
 			}
@@ -153,7 +153,7 @@ public class RoadDynoController {
 
 	@RequestMapping("remove/{id}")
 	public String delete(@PathVariable String id) {
-		Iterator<UploadedRunInfo> resultIterator = uploadedRuns.iterator();
+		Iterator<UploadedRun> resultIterator = uploadedRuns.iterator();
 		while (resultIterator.hasNext()) {
 			if (resultIterator.next().getId().equals(id)) {
 				resultIterator.remove();

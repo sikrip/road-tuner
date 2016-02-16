@@ -2,16 +2,33 @@ package sikrip.roaddyno.web.chart;
 
 import java.util.UUID;
 
-import sikrip.roaddyno.model.DynoRunInfo;
+import sikrip.roaddyno.model.RunInfo;
 import sikrip.roaddyno.model.DynoSimulationResult;
 
-public class UploadedRunInfo implements DynoRunInfo {
+/**
+ * Wraps info of a run, including the simulation result, name and identifier and color.
+ */
+public class UploadedRun implements RunInfo {
 
-	private String name;
+	/**
+	 * The id of the run.
+	 */
 	private String id;
+
+	/**
+	 * The name of the run.
+	 */
+	private String name;
+
+	/**
+	 * The color of the run.
+	 */
 	private String color;
 
-	private DynoSimulationResult dynoSimulationResult;
+	/**
+	 * The simulation result of the run.
+	 */
+	private DynoSimulationResult result;
 
 	private double finalGearRatio = 4.312;
 	private double gearRatio = 1.310;
@@ -21,7 +38,7 @@ public class UploadedRunInfo implements DynoRunInfo {
 	private double frontalArea = 1.7;
 	private double coefficientOfDrag = 0.34;
 
-	public UploadedRunInfo() {
+	public UploadedRun() {
 		id = UUID.randomUUID().toString();
 	}
 
@@ -73,12 +90,12 @@ public class UploadedRunInfo implements DynoRunInfo {
 		this.id = id;
 	}
 
-	public DynoSimulationResult getDynoSimulationResult() {
-		return dynoSimulationResult;
+	public DynoSimulationResult getResult() {
+		return result;
 	}
 
-	public void setDynoSimulationResult(DynoSimulationResult dynoSimulationResult) {
-		this.dynoSimulationResult = dynoSimulationResult;
+	public void setResult(DynoSimulationResult result) {
+		this.result = result;
 	}
 
 	@Override

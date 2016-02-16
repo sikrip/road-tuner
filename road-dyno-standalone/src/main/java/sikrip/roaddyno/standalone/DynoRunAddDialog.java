@@ -15,7 +15,7 @@ final class DynoRunAddDialog extends JDialog implements ActionListener {
 	private final JTextField runName = new JTextField();
 	private final JTextField runFile = new JTextField();
 
-	private DynoRunInfoPanel infoPanel = new DynoRunInfoPanel();
+	private RunInfoPanel infoPanel = new RunInfoPanel();
 	private final JButton loadRun = new JButton("Load run");
 	private final JButton cancel = new JButton("Cancel");
 

@@ -26,7 +26,7 @@ public final class MegasquirtLogReader implements EcuLogReader {
 	public static final int RPM_NOISE_THRESHOLD = 800;
 
 	@Override
-	public final List<LogEntry> readLog(String filePath, double tpsStartThreshold) throws IOException {
+	public final List<LogEntry> readLog(String filePath, double tpsStartThreshold) throws IOException, InvalidLogFormatException {
 		File logFile = new File(filePath);
 		try (InputStream fileStream = new FileInputStream(logFile);) {
 			return readLog(fileStream, tpsStartThreshold);
@@ -36,7 +36,7 @@ public final class MegasquirtLogReader implements EcuLogReader {
 	}
 
 	@Override
-	public List<LogEntry> readLog(InputStream inputStream, double tpsStartThreshold) throws IOException {
+	public List<LogEntry> readLog(InputStream inputStream, double tpsStartThreshold) throws IOException, InvalidLogFormatException {
 		BufferedReader logReader = new BufferedReader(new InputStreamReader(inputStream));
 
 		List<String> headers = new ArrayList<>();
@@ -49,25 +49,27 @@ public final class MegasquirtLogReader implements EcuLogReader {
 		String logLine;
 		List<LogEntry> logEntries = new ArrayList<>();
 		while ((logLine = logReader.readLine()) != null) {
-			List<String> elements = Arrays.asList((logLine.split("\t")));
 
-			if (elements.size() > 1) {
+			List<String> rawValues = Arrays.asList((logLine.split("\t")));
+
+			if (rawValues.size() > 1) {
 				if (headers.size() == 0) {
 					// headers line
-					headers.addAll(elements);
+					headers.addAll(rawValues);
 					timeColumnKey = headers.indexOf("Time") != -1 ? "Time" : null;
 					rpmColumnKey = headers.indexOf("RPM") != -1 ? "RPM" : null;
 					tpsColumnKey = headers.indexOf("TPS") != -1 ? "TPS" : null;
 
 					if (timeColumnKey == null || rpmColumnKey == null || tpsColumnKey == null) {
-						throw new IllegalArgumentException("Invalid log file. Cannot find Time, RPM or TPS column.");
+						throw new InvalidLogFormatException("Invalid log file format. Cannot find Time, RPM or TPS column.");
 					}
+
 				} else if (units.size() == 0) {
 					// units line
-					units.addAll(elements);
+					units.addAll(rawValues);
 				} else {
 					// data line
-					LogEntry current = createLogEntry(headers, units, elements, timeColumnKey, rpmColumnKey, tpsColumnKey);
+					LogEntry current = createLogEntry(headers, units, rawValues, timeColumnKey, rpmColumnKey, tpsColumnKey);
 					if (current.getTps().getValue() > tpsStartThreshold) {
 						logEntries.add(current);
 					}
@@ -75,14 +77,20 @@ public final class MegasquirtLogReader implements EcuLogReader {
 			}
 		}
 
-		return removeRpmNoise(logEntries);
+		List<LogEntry> trimmedLogValues = removeRpmNoise(logEntries);
+
+		if(trimmedLogValues.size()==0){
+			throw new InvalidLogFormatException("Invalid log file format. No log entries found!.");
+		}
+		return trimmedLogValues;
 
 	}
 
 	/**
 	 * Removes any entries that RPM noise is found (usually at the high end of the the RPM range near the limiter).
 	 *
-	 * @param logEntries the initial log entries
+	 * @param logEntries
+	 * 		the initial log entries
 	 * @return the trimmed log entries
 	 */
 	private List<LogEntry> removeRpmNoise(List<LogEntry> logEntries) {
@@ -90,7 +98,7 @@ public final class MegasquirtLogReader implements EcuLogReader {
 		int maxIdx = logEntries.size();
 
 		for (int i = 1; i < logEntries.size(); i++) {
-			if (logEntries.get(i).getRpm().getValue() - logEntries.get(i - 1).getRpm().getValue() < -800) {
+			if (logEntries.get(i).getRpm().getValue() - logEntries.get(i - 1).getRpm().getValue() < -RPM_NOISE_THRESHOLD) {
 				maxIdx = i - 1;
 				break;
 			}
@@ -105,14 +113,15 @@ public final class MegasquirtLogReader implements EcuLogReader {
 			String timeColumnKey, String rpmColumnKey, String tpsColumnKey) {
 
 		Map<String, LogValue<Double>> valuesMap = new HashMap<>();
-		for (int i = 0; i < 50/* FIXME headers.size()*/; i++) {
+		for (int i = 0; i < values.size(); i++) {
 			Double value = null;
 			try {
 				value = Double.valueOf(values.get(i));
 			} catch (NumberFormatException e) {
 				/*no op*/
 			}
-			valuesMap.put(headers.get(i), new LogValue<>(value, units.get(i)));
+			valuesMap.put(i < headers.size() ? headers.get(i) : "Unknown",
+					new LogValue<>(value, i < units.size() ? units.get(i) : "Unknown unit"));
 		}
 		return new LogEntry(valuesMap, timeColumnKey, rpmColumnKey, tpsColumnKey);
 	}

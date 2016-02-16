@@ -7,7 +7,7 @@ import java.util.List;
 
 import javax.swing.*;
 
-import sikrip.roaddyno.model.DynoRunInfo;
+import sikrip.roaddyno.model.RunInfo;
 import sikrip.roaddyno.model.DynoSimulationResult;
 import sikrip.roaddyno.model.LogEntry;
 import sikrip.roaddyno.standalone.util.FontUtil;
@@ -24,7 +24,7 @@ final class DynoRunGuiEntry implements ActionListener {
 	private final JTextField runName = new JTextField();
 	private final JButton updateButton = new JButton("update");
 
-	private final DynoRunInfoPanel infoPanel = new DynoRunInfoPanel();
+	private final RunInfoPanel infoPanel = new RunInfoPanel();
 
 	DynoRunGuiEntry(DynoSimulationResult dynoSimulationResult, Color color, String name, double fgr, double gr, double tyreDiameter,
 			double carWeight, double occupantsWeight, double fa, double cd) {
@@ -88,7 +88,7 @@ final class DynoRunGuiEntry implements ActionListener {
 		return activeCheck.isSelected();
 	}
 
-	DynoRunInfo getInfo() {
+	RunInfo getInfo() {
 		return infoPanel;
 	}
 

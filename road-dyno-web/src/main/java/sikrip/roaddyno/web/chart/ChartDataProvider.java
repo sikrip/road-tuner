@@ -24,7 +24,7 @@ public class ChartDataProvider {
 		df.setRoundingMode(RoundingMode.DOWN);
 	}
 
-	public Map<String, Object> createJsonData(List<UploadedRunInfo> runs) {
+	public Map<String, Object> createJsonData(List<UploadedRun> runs) {
 		root.clear();
 
 		root.put("type", "xy");
@@ -50,7 +50,7 @@ public class ChartDataProvider {
 		return root;
 	}
 
-	private void createDataDefinition(List<UploadedRunInfo> runs) {
+	private void createDataDefinition(List<UploadedRun> runs) {
 		List<Map<String, Object>> dataProvider = new ArrayList<>();
 
 		List<Double> rpmValues = mergeRpmValues(runs);
@@ -62,7 +62,7 @@ public class ChartDataProvider {
 
 			for (int iRun = 0; iRun < runs.size(); iRun++) {
 
-				DynoSimulationResult simulationResult = runs.get(iRun).getDynoSimulationResult();
+				DynoSimulationResult simulationResult = runs.get(iRun).getResult();
 
 				DynoSimulationEntry simulationEntry = simulationResult.getAt(rpm);
 
@@ -80,10 +80,10 @@ public class ChartDataProvider {
 		root.put("dataProvider", dataProvider);
 	}
 
-	private List<Double> mergeRpmValues(List<UploadedRunInfo> simulationResults) {
+	private List<Double> mergeRpmValues(List<UploadedRun> simulationResults) {
 		List<Double> rpmValues = new ArrayList<>();
-		for (UploadedRunInfo simulationResult : simulationResults) {
-			for (double rpm : simulationResult.getDynoSimulationResult().powerDataset()[0]) {
+		for (UploadedRun simulationResult : simulationResults) {
+			for (double rpm : simulationResult.getResult().powerDataset()[0]) {
 				rpmValues.add(rpm);
 			}
 		}
@@ -127,15 +127,15 @@ public class ChartDataProvider {
 		root.put("valueAxes", valueAxes);
 	}
 
-	private void createGraphDefinitions(List<UploadedRunInfo> runs) {
+	private void createGraphDefinitions(List<UploadedRun> runs) {
 
 		List<Map<String, Object>> graphs = new ArrayList<>();
 
 		for (int iRun = 0; iRun < runs.size(); iRun++) {
 
-			UploadedRunInfo run = runs.get(iRun);
+			UploadedRun run = runs.get(iRun);
 
-			DynoSimulationResult simulationResult = run.getDynoSimulationResult();
+			DynoSimulationResult simulationResult = run.getResult();
 
 			String runColor = run.getColor();
 
