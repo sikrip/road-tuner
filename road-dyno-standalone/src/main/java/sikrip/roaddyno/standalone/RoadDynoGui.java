@@ -103,7 +103,7 @@ final class RoadDynoGui extends JFrame implements ActionListener {
 						dynoRunAddDialog.getCD());
 
 				DynoRunGuiEntry runGuiEntry = new DynoRunGuiEntry(run, ColorProvider.pop(),
-						dynoRunAddDialog.getName(),
+						dynoRunAddDialog.getRunName(),
 						dynoRunAddDialog.getFGR(),
 						dynoRunAddDialog.getGearRatio(),
 						dynoRunAddDialog.getTyreDiameter(),
