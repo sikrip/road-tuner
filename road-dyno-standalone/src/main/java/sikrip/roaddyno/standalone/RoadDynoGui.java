@@ -92,7 +92,7 @@ final class RoadDynoGui extends JFrame implements ActionListener {
 				EcuLogReader logReader = new MegasquirtLogReader();
 				List<LogEntry> logEntries = logReader.readLog(dynoRunAddDialog.getRunFilePath(), TPS_START_THRESHOLD);
 
-				DynoSimulationResult run = DynoSimulator.run(
+				DynoSimulationResult result = DynoSimulator.run(
 						logEntries,
 						dynoRunAddDialog.getFGR(),
 						dynoRunAddDialog.getGearRatio(),
@@ -102,7 +102,7 @@ final class RoadDynoGui extends JFrame implements ActionListener {
 						dynoRunAddDialog.getFrontalArea(),
 						dynoRunAddDialog.getCD());
 
-				DynoRunGuiEntry runGuiEntry = new DynoRunGuiEntry(run, ColorProvider.pop(),
+				DynoRunGuiEntry runGuiEntry = new DynoRunGuiEntry(result, ColorProvider.pop(),
 						dynoRunAddDialog.getRunName(),
 						dynoRunAddDialog.getFGR(),
 						dynoRunAddDialog.getGearRatio(),
@@ -148,7 +148,6 @@ final class RoadDynoGui extends JFrame implements ActionListener {
 		}
 		chartPanel.setChart(DynoChart.chartForRuns(dynoRuns));
 		auxiliaryChartPanel.setChart(AuxiliaryChart.chartForRuns(dynoRuns, "AFR"));
-		//auxiliaryChartPanel.setChart(AuxiliaryChart.chartForRuns(dynoRuns, "SPK: Spark Advance"));
 	}
 
 	void updateRun(DynoRunGuiEntry dynoRunGuiEntry) {

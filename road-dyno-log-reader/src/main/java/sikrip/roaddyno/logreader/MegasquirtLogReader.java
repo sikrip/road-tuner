@@ -69,31 +69,31 @@ public final class MegasquirtLogReader implements EcuLogReader {
 					units.addAll(rawValues);
 				} else {
 					// data line
-					LogEntry current = createLogEntry(headers, units, rawValues, timeColumnKey, rpmColumnKey, tpsColumnKey);
-					if (current.getTps().getValue() > tpsStartThreshold) {
-						logEntries.add(current);
+					LogEntry entry = createLogEntry(headers, units, rawValues, timeColumnKey, rpmColumnKey, tpsColumnKey);
+					if (entry.getTps().getValue() > tpsStartThreshold) {
+						logEntries.add(entry);
 					}
 				}
 			}
 		}
 
-		List<LogEntry> trimmedLogValues = removeRpmNoise(logEntries);
+		List<LogEntry> trimmedLogValues = trimByRPM(logEntries);
 
-		if(trimmedLogValues.size()==0){
-			throw new InvalidLogFormatException("Invalid log file format. No log entries found!.");
+		if (trimmedLogValues.size() == 0) {
+			throw new InvalidLogFormatException("Invalid log file format. No log entries found.");
 		}
 		return trimmedLogValues;
 
 	}
 
 	/**
-	 * Removes any entries that RPM noise is found (usually at the high end of the the RPM range near the limiter).
+	 * Removes any entries that RPM was abruptly dropped (usually near the end of the WOT run).
 	 *
 	 * @param logEntries
 	 * 		the initial log entries
 	 * @return the trimmed log entries
 	 */
-	private List<LogEntry> removeRpmNoise(List<LogEntry> logEntries) {
+	private List<LogEntry> trimByRPM(List<LogEntry> logEntries) {
 
 		int maxIdx = logEntries.size();
 
