@@ -8,7 +8,7 @@ import java.text.DecimalFormat;
 import org.junit.Before;
 import org.junit.Test;
 
-public class PowerCalculatorTests {
+public class PowerCalculatorTest {
 
     private DecimalFormat df;
 

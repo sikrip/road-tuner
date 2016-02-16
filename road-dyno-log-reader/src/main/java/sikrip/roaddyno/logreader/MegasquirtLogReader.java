@@ -61,7 +61,7 @@ public final class MegasquirtLogReader implements EcuLogReader {
 					tpsColumnKey = headers.indexOf("TPS") != -1 ? "TPS" : null;
 
 					if (timeColumnKey == null || rpmColumnKey == null || tpsColumnKey == null) {
-						throw new InvalidLogFormatException("Invalid log file format. Cannot find Time, RPM or TPS column.");
+						throw new InvalidLogFormatException("Invalid log file format. Cannot find Time, RPM or TPS data.");
 					}
 
 				} else if (units.size() == 0) {

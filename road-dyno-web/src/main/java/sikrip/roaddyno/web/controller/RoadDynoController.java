@@ -18,6 +18,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import sikrip.roaddyno.engine.DynoSimulator;
+import sikrip.roaddyno.engine.InvalidSimulationParameterException;
 import sikrip.roaddyno.logreader.EcuLogReader;
 import sikrip.roaddyno.logreader.MegasquirtLogReader;
 import sikrip.roaddyno.model.DynoSimulationResult;
@@ -58,13 +59,13 @@ public class RoadDynoController {
 				EcuLogReader logReader = new MegasquirtLogReader();
 				List<LogEntry> logEntries = logReader.readLog(file.getInputStream(), TPS_START_THRESHOLD);
 				DynoSimulationResult result = DynoSimulator.run(logEntries,
-																runInfo.getFinalGearRatio(),
-																runInfo.getGearRatio(),
-																runInfo.getTyreDiameter(),
-																runInfo.getCarWeight(),
-																runInfo.getOccupantsWeight(),
-																runInfo.getFrontalArea(),
-																runInfo.getCoefficientOfDrag());
+						runInfo.getFinalGearRatio(),
+						runInfo.getGearRatio(),
+						runInfo.getTyreDiameter(),
+						runInfo.getCarWeight(),
+						runInfo.getOccupantsWeight(),
+						runInfo.getFrontalArea(),
+						runInfo.getCoefficientOfDrag());
 				runInfo.setName(file.getOriginalFilename());
 				runInfo.setResult(result);
 				runInfo.setColor(colorProvider.pop());
@@ -100,19 +101,24 @@ public class RoadDynoController {
 			existingRunInfo.setFrontalArea(updatedRunInfo.getFrontalArea());
 			existingRunInfo.setCoefficientOfDrag(updatedRunInfo.getCoefficientOfDrag());
 
-			DynoSimulationResult result = DynoSimulator.run(existingRunInfo.getResult().getLogEntries(),
-					existingRunInfo.getFinalGearRatio(),
-					existingRunInfo.getGearRatio(),
-					existingRunInfo.getTyreDiameter(),
-					existingRunInfo.getCarWeight(),
-					existingRunInfo.getOccupantsWeight(),
-					existingRunInfo.getFrontalArea(),
-					existingRunInfo.getCoefficientOfDrag());
-
-			existingRunInfo.setResult(result);
+			try {
+				DynoSimulationResult result = DynoSimulator.run(existingRunInfo.getResult().getLogEntries(),
+						existingRunInfo.getFinalGearRatio(),
+						existingRunInfo.getGearRatio(),
+						existingRunInfo.getTyreDiameter(),
+						existingRunInfo.getCarWeight(),
+						existingRunInfo.getOccupantsWeight(),
+						existingRunInfo.getFrontalArea(),
+						existingRunInfo.getCoefficientOfDrag());
+				existingRunInfo.setResult(result);
+			} catch (InvalidSimulationParameterException e) {
+				//TODO handle
+				return "error";
+			}
 
 			return "redirect:/dynoplot";
 		} else {
+			//TODO handle
 			return "error";
 		}
 
