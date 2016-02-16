@@ -24,7 +24,7 @@ public class ChartDataProvider {
 		df.setRoundingMode(RoundingMode.DOWN);
 	}
 
-	public Map<String, Object> createJsonData(List<DynoSimulationResult> simulationResults, PlotColorProvider colorProvider) {
+	public Map<String, Object> createJsonData(List<UploadedRunInfo> runs) {
 		root.clear();
 
 		root.put("type", "xy");
@@ -32,7 +32,7 @@ public class ChartDataProvider {
 
 		root.put("trendLines", new ArrayList<>());
 
-		createGraphDefinitions(simulationResults, colorProvider);
+		createGraphDefinitions(runs);
 
 		root.put("guides", new ArrayList<>());
 
@@ -45,24 +45,24 @@ public class ChartDataProvider {
 
 		createTitlesDefinition();
 
-		createDataDefinition(simulationResults);
+		createDataDefinition(runs);
 
 		return root;
 	}
 
-	private void createDataDefinition(List<DynoSimulationResult> simulationResults) {
+	private void createDataDefinition(List<UploadedRunInfo> runs) {
 		List<Map<String, Object>> dataProvider = new ArrayList<>();
 
-		List<Double> rpmValues = mergeRpmValues(simulationResults);
+		List<Double> rpmValues = mergeRpmValues(runs);
 
 		for (Double rpm : rpmValues) {
 
 			Map<String, Object> dataEntry = new HashMap<>();
 			dataEntry.put(RPM_AXIS, rpm);
 
-			for (int iRun = 0; iRun < simulationResults.size(); iRun++) {
+			for (int iRun = 0; iRun < runs.size(); iRun++) {
 
-				DynoSimulationResult simulationResult = simulationResults.get(iRun);
+				DynoSimulationResult simulationResult = runs.get(iRun).getDynoSimulationResult();
 
 				DynoSimulationEntry simulationEntry = simulationResult.getAt(rpm);
 
@@ -80,10 +80,10 @@ public class ChartDataProvider {
 		root.put("dataProvider", dataProvider);
 	}
 
-	private List<Double> mergeRpmValues(List<DynoSimulationResult> simulationResults) {
+	private List<Double> mergeRpmValues(List<UploadedRunInfo> simulationResults) {
 		List<Double> rpmValues = new ArrayList<>();
-		for (DynoSimulationResult simulationResult : simulationResults) {
-			for (double rpm : simulationResult.powerDataset()[0]) {
+		for (UploadedRunInfo simulationResult : simulationResults) {
+			for (double rpm : simulationResult.getDynoSimulationResult().powerDataset()[0]) {
 				rpmValues.add(rpm);
 			}
 		}
@@ -127,15 +127,15 @@ public class ChartDataProvider {
 		root.put("valueAxes", valueAxes);
 	}
 
-	private void createGraphDefinitions(List<DynoSimulationResult> simulationResults, PlotColorProvider colorProvider) {
+	private void createGraphDefinitions(List<UploadedRunInfo> runs) {
 
 		List<Map<String, Object>> graphs = new ArrayList<>();
 
-		for (int iRun = 0; iRun < simulationResults.size(); iRun++) {
+		for (int iRun = 0; iRun < runs.size(); iRun++) {
 
-			DynoSimulationResult simulationResult = simulationResults.get(iRun);
+			DynoSimulationResult simulationResult = runs.get(iRun).getDynoSimulationResult();
 
-			String runColor = colorProvider.pop();
+			String runColor = runs.get(iRun).getColor();
 
 			DynoSimulationEntry maxPower = simulationResult.maxPower();
 			DynoSimulationEntry maxTorque = simulationResult.maxTorque();

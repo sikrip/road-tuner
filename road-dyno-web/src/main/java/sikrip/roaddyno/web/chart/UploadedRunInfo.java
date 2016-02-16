@@ -1,10 +1,18 @@
 package sikrip.roaddyno.web.chart;
 
+import java.util.UUID;
+
 import sikrip.roaddyno.model.DynoRunInfo;
+import sikrip.roaddyno.model.DynoSimulationResult;
 
 public class UploadedRunInfo implements DynoRunInfo {
 
 	private String name;
+	private final String id;
+	private String color;
+
+	private DynoSimulationResult dynoSimulationResult;
+
 	private double finalGearRatio = 4.312;
 	private double gearRatio = 1.310;
 	private double tyreDiameter = 528;
@@ -12,21 +20,9 @@ public class UploadedRunInfo implements DynoRunInfo {
 	private double occupantsWeight = 85;
 	private double frontalArea = 1.7;
 	private double coefficientOfDrag = 0.34;
-	private String color;
 
 	public UploadedRunInfo() {
-	}
-
-	public UploadedRunInfo(DynoRunInfo runInfo, String color) {
-		this.name = runInfo.getName();
-		this.finalGearRatio = runInfo.getFinalGearRatio();
-		this.gearRatio = runInfo.getGearRatio();
-		this.tyreDiameter = runInfo.getTyreDiameter();
-		this.carWeight = runInfo.getCarWeight();
-		this.occupantsWeight = runInfo.getOccupantsWeight();
-		this.frontalArea = runInfo.getFrontalArea();
-		this.coefficientOfDrag = runInfo.getCoefficientOfDrag();
-		this.color = color;
+		id = UUID.randomUUID().toString();
 	}
 
 	public void setName(String name) {
@@ -67,6 +63,18 @@ public class UploadedRunInfo implements DynoRunInfo {
 
 	public String getColor() {
 		return color;
+	}
+
+	public String getId() {
+		return id;
+	}
+
+	public DynoSimulationResult getDynoSimulationResult() {
+		return dynoSimulationResult;
+	}
+
+	public void setDynoSimulationResult(DynoSimulationResult dynoSimulationResult) {
+		this.dynoSimulationResult = dynoSimulationResult;
 	}
 
 	@Override

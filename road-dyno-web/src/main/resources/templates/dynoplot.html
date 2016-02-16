@@ -4,11 +4,10 @@
 <head lang="en">
     <title>Welcome to Road Dyno!</title>
     <th:block th:include="fragments/includes :: head"></th:block>
+
     <!-- amCharts javascript sources -->
     <script src="http://www.amcharts.com/lib/3/amcharts.js" type="text/javascript"></script>
     <script src="http://www.amcharts.com/lib/3/xy.js" type="text/javascript"></script>
-
-
 </head>
 
 <body>
@@ -16,27 +15,38 @@
 
 <h1 th:replace="fragments/fragments :: header"></h1>
 
-<div class="container">
+<div class="container-fluid">
     <div class="row">
         <div class="col-md-3">
-            <form class="form-horizontal" th:each="runInfo : ${runInfoList}">
-                <h4 th:attr="style='color:' + ${runInfo.color}" th:text="${runInfo.name}">name</h4>
-                <div class="form-group">
-                    <label class="col-sm-2 control-label">FGR: </label>
-                    <div lass="col-sm-10">
-                        <p class="form-control-static" th:text="${runInfo.finalGearRatio}">name</p>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label class="col-sm-2 control-label">Gear ratio:</label>
-                    <div lass="col-sm-10">
-                        <p class="form-control-static" th:text="${runInfo.gearRatio}">name</p>
-                    </div>
-                </div>
-            </form>
+            <div th:if="${not #lists.isEmpty(runInfoList)}">
+                <span th:each="runInfo : ${runInfoList}">
+                    <h4 th:attr="style='color:' + ${runInfo.color}" th:text="${runInfo.name}">name</h4>
+                    <table class="table table-striped">
+                        <tr>
+                            <th>FGR</th>
+                            <th>Gear Ratio</th>
+                            <th>Curb Weight</th>
+                            <th>Occ. Weight</th>
+                            <th>Occ. Weight</th>
+                            <th>Frontal Area</th>
+                            <th>Coeff. of Drag</th>
+                        </tr>
+                        <tr>
+                            <td th:text="${runInfo.finalGearRatio}">fgr</td>
+                            <td th:text="${runInfo.gearRatio}">gear ratio</td>
+                            <td th:text="${runInfo.tyreDiameter}">tyreDiameter</td>
+                            <td th:text="${runInfo.carWeight}">carWeight</td>
+                            <td th:text="${runInfo.occupantsWeight}">occupantsWeight</td>
+                            <td th:text="${runInfo.frontalArea}">frontalArea</td>
+                            <td th:text="${runInfo.coefficientOfDrag}">coefficientOfDrag</td>
+                            <td><a th:href="${'/remove/' + runInfo.id}">rem</a></td>
+                        </tr>
+                    </table>
+                </span>
+            </div>
             <a th:href="@{/addrun}">Add run</a>
         </div>
-        <div id="chartdiv" class="col-md-9" style="height: 600px; background-color: #FFFFFF;"></div>
+        <div id="chartdiv" class="col-md-9" style="min-height: 800px;"></div>
     </div>
 </div>
 
