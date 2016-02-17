@@ -127,8 +127,8 @@ public class RoadDynoController {
 	@RequestMapping("/dynoplot")
 	public String dynoPlot(Model model) {
 		try {
-			String chartDef = objectMapper.writeValueAsString(new ChartDataProvider().createJsonData(uploadedRuns));
-			String auxChartDef = objectMapper.writeValueAsString(new ChartDataProvider().createJsonData(uploadedRuns, "AFR"));
+			String chartDef = objectMapper.writeValueAsString(new ChartDataProvider().createMainChartDefinition(uploadedRuns));
+			String auxChartDef = objectMapper.writeValueAsString(new ChartDataProvider().createAuxuliaryChartDefinition(uploadedRuns, "AFR"));
 
 			model.addAttribute("chartDef", chartDef);
 			model.addAttribute("auxChartDef", auxChartDef);

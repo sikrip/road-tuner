@@ -25,7 +25,7 @@ public class ChartDataProvider {
 		df.setRoundingMode(RoundingMode.DOWN);
 	}
 
-	public Map<String, Object> createJsonData(List<UploadedRun> runs) {
+	public Map<String, Object> createMainChartDefinition(List<UploadedRun> runs) {
 		root.clear();
 
 		root.put("type", "xy");
@@ -37,21 +37,21 @@ public class ChartDataProvider {
 
 		root.put("guides", new ArrayList<>());
 
-		createValueAxisDefinition();
+		createAxesDefinitions("Hp | lb/ft");
 
 		root.put("allLabels", new ArrayList<>());
 		root.put("balloon", new HashMap<>());
 
 		createLegendDefinition();
 
-		createTitlesDefinition();
+		createTitlesDefinition("Wheel power / torque");
 
 		createDataDefinition(runs);
 
 		return root;
 	}
 
-	public Map<String, Object> createJsonData(List<UploadedRun> runs, String field) {
+	public Map<String, Object> createAuxuliaryChartDefinition(List<UploadedRun> runs, String field) {
 		root.clear();
 
 		root.put("type", "xy");
@@ -63,14 +63,12 @@ public class ChartDataProvider {
 
 		root.put("guides", new ArrayList<>());
 
-		createValueAxisDefinition();
+		createAxesDefinitions(field);
 
 		root.put("allLabels", new ArrayList<>());
 		root.put("balloon", new HashMap<>());
 
-		createLegendDefinition();
-
-		createTitlesDefinition();
+		createTitlesDefinition(field);
 
 		createDataDefinition(runs, field);
 
@@ -216,13 +214,13 @@ public class ChartDataProvider {
 		return rpmValues;
 	}
 
-	private void createTitlesDefinition() {
+	private void createTitlesDefinition(String title) {
 		List<Map<String, Object>> titles = new ArrayList<>();
-		Map<String, Object> title = new HashMap<>();
-		title.put("id", "Title-1");
-		title.put("size", 15);
-		title.put("text", "Road Dyno Plot");
-		titles.add(title);
+		Map<String, Object> titleDef = new HashMap<>();
+		titleDef.put("id", "Title-1");
+		titleDef.put("size", 15);
+		titleDef.put("text", title);
+		titles.add(titleDef);
 		root.put("titles", titles);
 	}
 
@@ -233,14 +231,14 @@ public class ChartDataProvider {
 		root.put("legend", legend);
 	}
 
-	private void createValueAxisDefinition() {
+	private void createAxesDefinitions(String yTitle) {
 		List<Map<String, String>> valueAxes = new ArrayList<>();
 
 		Map<String, String> valueAxis = new HashMap<>();
 
 		valueAxis.put("id", "Y-axis");
 		valueAxis.put("position", "left");
-		valueAxis.put("title", "Hp | lb/ft");
+		valueAxis.put("title", yTitle);
 		valueAxes.add(valueAxis);
 
 		valueAxis = new HashMap<>();
