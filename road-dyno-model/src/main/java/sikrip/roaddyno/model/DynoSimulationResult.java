@@ -79,6 +79,16 @@ public class DynoSimulationResult {
 		return null;
 	}
 
+	public LogValue<?> getAt(double rpm, String field) {
+		for (int i = 0; i < entries.size(); i++) {
+			DynoSimulationEntry entry = entries.get(i);
+			if (entry.getRpm() == rpm) {
+				return logEntries.get(i).get(field);
+			}
+		}
+		return null;
+	}
+
 	public double[][] powerDataset() {
 		double[][] dataset = new double[2][entries.size()];
 		for (int i = 0; i < entries.size(); i++) {

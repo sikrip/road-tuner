@@ -10,21 +10,21 @@ import java.util.Map;
 
 import sikrip.roaddyno.model.DynoSimulationEntry;
 import sikrip.roaddyno.model.DynoSimulationResult;
+import sikrip.roaddyno.model.LogEntry;
+import sikrip.roaddyno.model.LogValue;
 
-public class ChartDataProvider {
+public class AuxiliaryChartDataProvider {
 
 	public static final String RPM_AXIS = "rpm";
-	public static final String POWER_FIELD = "power_";
-	public static final String TORQUE_FIELD = "torque_";
 
 	private Map<String, Object> root = new HashMap<>();
 	private DecimalFormat df = new DecimalFormat("#.0");
 
-	public ChartDataProvider() {
+	public AuxiliaryChartDataProvider() {
 		df.setRoundingMode(RoundingMode.DOWN);
 	}
 
-	public Map<String, Object> createJsonData(List<UploadedRun> runs) {
+	public Map<String, Object> createJsonData(List<UploadedRun> runs, String field) {
 		root.clear();
 
 		root.put("type", "xy");
@@ -32,7 +32,7 @@ public class ChartDataProvider {
 
 		root.put("trendLines", new ArrayList<>());
 
-		createGraphDefinitions(runs);
+		createGraphDefinitions(runs, field);
 
 		root.put("guides", new ArrayList<>());
 
@@ -45,12 +45,12 @@ public class ChartDataProvider {
 
 		createTitlesDefinition();
 
-		createDataDefinition(runs);
+		createDataDefinition(runs, field);
 
 		return root;
 	}
 
-	private void createGraphDefinitions(List<UploadedRun> runs) {
+	private void createGraphDefinitions(List<UploadedRun> runs, String field) {
 
 		List<Map<String, Object>> graphs = new ArrayList<>();
 
@@ -66,66 +66,41 @@ public class ChartDataProvider {
 			DynoSimulationEntry maxTorque = simulationResult.maxTorque();
 
 			Map<String, Object> graph = new HashMap<>();
-			graph.put("balloonText", "[[title]] [[value]] @[[category]]");//FIXME
+			graph.put("balloonText", "[[title]] [[value]] @[[category]]");
 
 			//graph.put("bullet", "round");
 			//graph.put("bulletSize", 3);
 
-			graph.put("id", "Graph-" + POWER_FIELD + iRun);
+			graph.put("id", "Graph-" + field + iRun);
 			graph.put("lineColor", runColor);
 			graph.put("lineThickness", 3);
-			graph.put("title", run.getName() + " power " + df.format(maxPower.getPower()) + " hp @" + (int) maxPower.getRpm());
 			graph.put("type", "smoothedLine");
 			graph.put("xField", RPM_AXIS);
-			graph.put("yField", POWER_FIELD + iRun);
-			graphs.add(graph);
-
-			graph = new HashMap<>();
-			graph.put("balloonText", "[[title]] [[value]] @[[category]]");
-
-			//graph.put("bullet", "square");
-
-			graph.put("id", "Graph-" + TORQUE_FIELD + iRun);
-			graph.put("dashLength", 4);
-			graph.put("lineColor", runColor);
-			graph.put("lineThickness", 2);
-			graph.put("title", run.getName() + " torque " + df.format(maxTorque.getTorque()) + " lb/ft @" + (int) maxTorque.getRpm());
-			graph.put("type", "smoothedLine");
-			graph.put("xField", RPM_AXIS);
-			graph.put("yField", TORQUE_FIELD + iRun);
+			graph.put("yField", field + iRun);
 			graphs.add(graph);
 		}
 
 		root.put("graphs", graphs);
 	}
 
-	private void createDataDefinition(List<UploadedRun> runs) {
+	private void createDataDefinition(List<UploadedRun> runs, String field) {
+
 		List<Map<String, Object>> dataProvider = new ArrayList<>();
 
 		List<Double> rpmValues = getRpmValuesUnion(runs);
-
 		for (Double rpm : rpmValues) {
 
 			Map<String, Object> dataEntry = new HashMap<>();
 			dataEntry.put(RPM_AXIS, rpm);
 
 			for (int iRun = 0; iRun < runs.size(); iRun++) {
-
-				DynoSimulationResult simulationResult = runs.get(iRun).getResult();
-
-				DynoSimulationEntry simulationEntry = simulationResult.getAt(rpm);
-
-				if (simulationEntry != null) {
-					String power = df.format(simulationEntry.getPower());
-					String torque = df.format(simulationEntry.getTorque());
-					dataEntry.put(POWER_FIELD  + iRun, power);
-					dataEntry.put(TORQUE_FIELD  + iRun, torque);
+				LogValue<?> logValue = runs.get(iRun).getResult().getAt(rpm, field);
+				if (logValue != null) {
+					dataEntry.put(field  + iRun, df.format(logValue.getValue()));
 				}
-
 			}
 			dataProvider.add(dataEntry);
 		}
-
 		root.put("dataProvider", dataProvider);
 	}
 
