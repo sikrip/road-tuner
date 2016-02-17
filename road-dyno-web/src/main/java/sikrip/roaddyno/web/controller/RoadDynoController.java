@@ -128,8 +128,10 @@ public class RoadDynoController {
 	public String dynoPlot(Model model) {
 		try {
 			String chartDef = objectMapper.writeValueAsString(new ChartDataProvider().createJsonData(uploadedRuns));
+			String auxChartDef = objectMapper.writeValueAsString(new ChartDataProvider().createJsonData(uploadedRuns, "AFR"));
 
 			model.addAttribute("chartDef", chartDef);
+			model.addAttribute("auxChartDef", auxChartDef);
 			model.addAttribute("runInfoList", uploadedRuns);
 
 			return "dyno-plot";

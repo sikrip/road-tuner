@@ -10,6 +10,7 @@ import java.util.Map;
 
 import sikrip.roaddyno.model.DynoSimulationEntry;
 import sikrip.roaddyno.model.DynoSimulationResult;
+import sikrip.roaddyno.model.LogValue;
 
 public class ChartDataProvider {
 
@@ -46,6 +47,32 @@ public class ChartDataProvider {
 		createTitlesDefinition();
 
 		createDataDefinition(runs);
+
+		return root;
+	}
+
+	public Map<String, Object> createJsonData(List<UploadedRun> runs, String field) {
+		root.clear();
+
+		root.put("type", "xy");
+		root.put("startDuration", 1);
+
+		root.put("trendLines", new ArrayList<>());
+
+		createGraphDefinitions(runs, field);
+
+		root.put("guides", new ArrayList<>());
+
+		createValueAxisDefinition();
+
+		root.put("allLabels", new ArrayList<>());
+		root.put("balloon", new HashMap<>());
+
+		createLegendDefinition();
+
+		createTitlesDefinition();
+
+		createDataDefinition(runs, field);
 
 		return root;
 	}
@@ -129,11 +156,60 @@ public class ChartDataProvider {
 		root.put("dataProvider", dataProvider);
 	}
 
-	private List<Double> getRpmValuesUnion(List<UploadedRun> simulationResults) {
+	private void createGraphDefinitions(List<UploadedRun> runs, String field) {
+
+		List<Map<String, Object>> graphs = new ArrayList<>();
+
+		for (int iRun = 0; iRun < runs.size(); iRun++) {
+
+			UploadedRun run = runs.get(iRun);
+
+			String runColor = run.getColor();
+
+			Map<String, Object> graph = new HashMap<>();
+			graph.put("balloonText", "[[title]] [[value]] @[[category]]");
+
+			//graph.put("bullet", "round");
+			//graph.put("bulletSize", 3);
+
+			graph.put("id", "Graph-" + field + iRun);
+			graph.put("lineColor", runColor);
+			graph.put("lineThickness", 3);
+			graph.put("type", "smoothedLine");
+			graph.put("xField", RPM_AXIS);
+			graph.put("yField", field + iRun);
+			graphs.add(graph);
+		}
+
+		root.put("graphs", graphs);
+	}
+
+	private void createDataDefinition(List<UploadedRun> runs, String field) {
+
+		List<Map<String, Object>> dataProvider = new ArrayList<>();
+
+		List<Double> rpmValues = getRpmValuesUnion(runs);
+		for (Double rpm : rpmValues) {
+
+			Map<String, Object> dataEntry = new HashMap<>();
+			dataEntry.put(RPM_AXIS, rpm);
+
+			for (int iRun = 0; iRun < runs.size(); iRun++) {
+				LogValue<?> logValue = runs.get(iRun).getResult().getAt(rpm, field);
+				if (logValue != null) {
+					dataEntry.put(field  + iRun, df.format(logValue.getValue()));
+				}
+			}
+			dataProvider.add(dataEntry);
+		}
+		root.put("dataProvider", dataProvider);
+	}
+
+	private List<Double> getRpmValuesUnion(List<UploadedRun> runs) {
 		List<Double> rpmValues = new ArrayList<>();
-		for (UploadedRun simulationResult : simulationResults) {
-			for (double rpm : simulationResult.getResult().powerDataset()[0]) {//FIXME getSmoothedRpm?
-				rpmValues.add(rpm);
+		for (UploadedRun run : runs) {
+			for (int i=0; i< run.getResult().getEntriesSize(); i++) {
+				rpmValues.add(run.getResult().getSmoothedRpmAt(i));
 			}
 		}
 		Collections.sort(rpmValues);
