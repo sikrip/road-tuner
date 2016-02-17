@@ -31,146 +31,162 @@ import sikrip.roaddyno.web.chart.UploadedRun;
 @Scope("session")
 public class RoadDynoController {
 
-	public static final int TPS_START_THRESHOLD = 98;
+    public static final int TPS_START_THRESHOLD = 98;
 
-	@Autowired
-	private ObjectMapper objectMapper;
+    @Autowired
+    private ObjectMapper objectMapper;
 
-	private final List<UploadedRun> uploadedRuns = new ArrayList<>();
-	private final PlotColorProvider colorProvider = new PlotColorProvider();
+    private final List<UploadedRun> uploadedRuns = new ArrayList<>();
+    private final PlotColorProvider colorProvider = new PlotColorProvider();
 
-	@RequestMapping("/")
-	public String index() {
-		uploadedRuns.clear();
-		colorProvider.reset();
-		return "index";
-	}
+    @RequestMapping("/")
+    public String index() {
+        return "index";
+    }
 
-	@RequestMapping("/addrun")
-	public String addRun(Model model) {
-		model.addAttribute("runInfo", new UploadedRun());
-		return "add-run-form";
-	}
+    @RequestMapping("/addrun")
+    public String addRun(Model model) {
+        model.addAttribute("nav", "onlinedyno");
+        model.addAttribute("runInfo", new UploadedRun());
+        return "add-run-form";
+    }
 
-	@RequestMapping(value = "/addrun", method = RequestMethod.POST)
-	public String addRun(UploadedRun runInfo, @RequestParam("file") MultipartFile file) {
-		if (!file.isEmpty()) {
-			try {
-				EcuLogReader logReader = new MegasquirtLogReader();
-				List<LogEntry> logEntries = logReader.readLog(file.getInputStream(), TPS_START_THRESHOLD);
-				DynoSimulationResult result = DynoSimulator.run(logEntries,
-						runInfo.getFinalGearRatio(),
-						runInfo.getGearRatio(),
-						runInfo.getTyreDiameter(),
-						runInfo.getCarWeight(),
-						runInfo.getOccupantsWeight(),
-						runInfo.getFrontalArea(),
-						runInfo.getCoefficientOfDrag());
-				runInfo.setName(file.getOriginalFilename());
-				runInfo.setResult(result);
-				runInfo.setColor(colorProvider.pop());
+    @RequestMapping("/clearall")
+    public String clearAll(Model model) {
+        uploadedRuns.clear();
+        colorProvider.reset();
+        model.addAttribute("nav", "onlinedyno");
+        return "online-dyno-empty";
+    }
 
-				uploadedRuns.add(runInfo);
-			} catch (Exception e) {
-				// TODO hanle
-				return "error";
-			}
-		} else {
-			// TODO hanle
-			return "error";
-		}
-		return "redirect:/dynoplot";
-	}
+    @RequestMapping("/help")
+    public String help(Model model) {
+        model.addAttribute("nav", "help");
+        return "help";
+    }
 
-	@RequestMapping(value = "/updaterun", method = RequestMethod.POST)
-	public String updateRun(UploadedRun updatedRunInfo) {
+    @RequestMapping(value = "/addrun", method = RequestMethod.POST)
+    public String addRun(UploadedRun runInfo, @RequestParam("file") MultipartFile file) {
+        if (!file.isEmpty()) {
+            try {
+                EcuLogReader logReader = new MegasquirtLogReader();
+                List<LogEntry> logEntries = logReader.readLog(file.getInputStream(), TPS_START_THRESHOLD);
+                DynoSimulationResult result = DynoSimulator.run(logEntries,
+                        runInfo.getFinalGearRatio(),
+                        runInfo.getGearRatio(),
+                        runInfo.getTyreDiameter(),
+                        runInfo.getCarWeight(),
+                        runInfo.getOccupantsWeight(),
+                        runInfo.getFrontalArea(),
+                        runInfo.getCoefficientOfDrag());
+                runInfo.setName(file.getOriginalFilename());
+                runInfo.setResult(result);
+                runInfo.setColor(colorProvider.pop());
 
-		UploadedRun existingRunInfo = null;
-		for (UploadedRun uploadedRun : uploadedRuns) {
-			if (uploadedRun.getId().equals(updatedRunInfo.getId())) {
-				existingRunInfo = uploadedRun;
-			}
-		}
+                uploadedRuns.add(runInfo);
+            } catch (Exception e) {
+                // TODO hanle
+                return "error";
+            }
+        } else {
+            // TODO hanle
+            return "error";
+        }
+        return "redirect:/onlinedyno";
+    }
 
-		if (existingRunInfo != null) {
-			existingRunInfo.setFinalGearRatio(updatedRunInfo.getFinalGearRatio());
-			existingRunInfo.setGearRatio(updatedRunInfo.getGearRatio());
-			existingRunInfo.setTyreDiameter(updatedRunInfo.getTyreDiameter());
-			existingRunInfo.setCarWeight(updatedRunInfo.getCarWeight());
-			existingRunInfo.setOccupantsWeight(updatedRunInfo.getOccupantsWeight());
-			existingRunInfo.setFrontalArea(updatedRunInfo.getFrontalArea());
-			existingRunInfo.setCoefficientOfDrag(updatedRunInfo.getCoefficientOfDrag());
+    @RequestMapping(value = "/updaterun", method = RequestMethod.POST)
+    public String updateRun(UploadedRun updatedRunInfo) {
 
-			try {
-				DynoSimulationResult result = DynoSimulator.run(existingRunInfo.getResult().getLogEntries(),
-						existingRunInfo.getFinalGearRatio(),
-						existingRunInfo.getGearRatio(),
-						existingRunInfo.getTyreDiameter(),
-						existingRunInfo.getCarWeight(),
-						existingRunInfo.getOccupantsWeight(),
-						existingRunInfo.getFrontalArea(),
-						existingRunInfo.getCoefficientOfDrag());
-				existingRunInfo.setResult(result);
-			} catch (InvalidSimulationParameterException e) {
-				//TODO handle
-				return "error";
-			}
+        UploadedRun existingRunInfo = null;
+        for (UploadedRun uploadedRun : uploadedRuns) {
+            if (uploadedRun.getId().equals(updatedRunInfo.getId())) {
+                existingRunInfo = uploadedRun;
+            }
+        }
 
-			return "redirect:/dynoplot";
-		} else {
-			//TODO handle
-			return "error";
-		}
+        if (existingRunInfo != null) {
+            existingRunInfo.setFinalGearRatio(updatedRunInfo.getFinalGearRatio());
+            existingRunInfo.setGearRatio(updatedRunInfo.getGearRatio());
+            existingRunInfo.setTyreDiameter(updatedRunInfo.getTyreDiameter());
+            existingRunInfo.setCarWeight(updatedRunInfo.getCarWeight());
+            existingRunInfo.setOccupantsWeight(updatedRunInfo.getOccupantsWeight());
+            existingRunInfo.setFrontalArea(updatedRunInfo.getFrontalArea());
+            existingRunInfo.setCoefficientOfDrag(updatedRunInfo.getCoefficientOfDrag());
 
-	}
+            try {
+                DynoSimulationResult result = DynoSimulator.run(existingRunInfo.getResult().getLogEntries(),
+                        existingRunInfo.getFinalGearRatio(),
+                        existingRunInfo.getGearRatio(),
+                        existingRunInfo.getTyreDiameter(),
+                        existingRunInfo.getCarWeight(),
+                        existingRunInfo.getOccupantsWeight(),
+                        existingRunInfo.getFrontalArea(),
+                        existingRunInfo.getCoefficientOfDrag());
+                existingRunInfo.setResult(result);
+            } catch (InvalidSimulationParameterException e) {
+                //TODO handle
+                return "error";
+            }
 
-	@RequestMapping("/dynoplot")
-	public String dynoPlot(Model model) {
-		try {
-			String chartDef = objectMapper.writeValueAsString(new ChartDataProvider().createMainChartDefinition(uploadedRuns));
-			String auxChartDef = objectMapper.writeValueAsString(new ChartDataProvider().createAuxuliaryChartDefinition(uploadedRuns, "AFR"));
+            return "redirect:/onlinedyno";
+        } else {
+            //TODO handle
+            return "error";
+        }
 
-			model.addAttribute("chartDef", chartDef);
-			model.addAttribute("auxChartDef", auxChartDef);
-			model.addAttribute("runInfoList", uploadedRuns);
+    }
 
-			return "dyno-plot";
-		} catch (JsonProcessingException e) {
-			// TODO hanle
-			return "error";
-		}
-	}
+    @RequestMapping("/onlinedyno")
+    public String onlineDyno(Model model) {
+        if (uploadedRuns.isEmpty()) {
+            model.addAttribute("nav", "onlinedyno");
+            return "online-dyno-empty";
+        }
+        try {
+            String chartDef = objectMapper.writeValueAsString(new ChartDataProvider().createMainChartDefinition(uploadedRuns));
+            String auxChartDef = objectMapper.writeValueAsString(new ChartDataProvider().createAuxuliaryChartDefinition(uploadedRuns, "AFR"));
 
-	@RequestMapping("edit/{id}")
-	public String edit(@PathVariable String id, Model model) {
+            model.addAttribute("chartDef", chartDef);
+            model.addAttribute("auxChartDef", auxChartDef);
+            model.addAttribute("runInfoList", uploadedRuns);
+            model.addAttribute("nav", "onlinedyno");
 
-		UploadedRun runInfo = null;
-		for (UploadedRun uploadedRun : uploadedRuns) {
-			if (uploadedRun.getId().equals(id)) {
-				runInfo = uploadedRun;
-			}
-		}
+            return "online-dyno-plot";
+        } catch (JsonProcessingException e) {
+            // TODO hanle
+            return "error";
+        }
+    }
 
-		if (runInfo != null) {
-			model.addAttribute("runInfo", runInfo);
-			return "update-run-form";
-		}
-		// TODO hanle
-		return "error";
-	}
+    @RequestMapping("edit/{id}")
+    public String edit(@PathVariable String id, Model model) {
 
-	@RequestMapping("remove/{id}")
-	public String delete(@PathVariable String id) {
-		Iterator<UploadedRun> resultIterator = uploadedRuns.iterator();
-		while (resultIterator.hasNext()) {
-			if (resultIterator.next().getId().equals(id)) {
-				resultIterator.remove();
-			}
-		}
-		if (uploadedRuns.isEmpty()) {
-			return "redirect:/";
-		}
-		return "redirect:/dynoplot";
-	}
+        UploadedRun runInfo = null;
+        for (UploadedRun uploadedRun : uploadedRuns) {
+            if (uploadedRun.getId().equals(id)) {
+                runInfo = uploadedRun;
+            }
+        }
+
+        if (runInfo != null) {
+            model.addAttribute("runInfo", runInfo);
+            model.addAttribute("nav", "onlinedyno");
+            return "update-run-form";
+        }
+        // TODO hanle
+        return "error";
+    }
+
+    @RequestMapping("remove/{id}")
+    public String delete(@PathVariable String id) {
+        Iterator<UploadedRun> resultIterator = uploadedRuns.iterator();
+        while (resultIterator.hasNext()) {
+            if (resultIterator.next().getId().equals(id)) {
+                resultIterator.remove();
+            }
+        }
+        return "redirect:/onlinedyno";
+    }
 
 }

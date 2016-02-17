@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 
 <head lang="en">
-    <title>Welcome to Road Dyno!</title>
+    <title>Road Dyno | Add run</title>
     <th:block th:include="fragments/includes :: head"></th:block>
 </head>
 
@@ -10,7 +10,10 @@
 
 <h1 th:replace="fragments/fragments :: header"></h1>
 
+
+
 <div class="container">
+
     <form class="form-horizontal" th:object="${runInfo}" th:action="@{/addrun}" method="post" enctype="multipart/form-data">
 
         <div class="form-group">
@@ -27,8 +30,8 @@
             <button type="submit" class="btn btn-default">Load run</button>
         </div>
     </form>
+    <div th:include="fragments/fragments :: copy"></div>
 </div>
 
-<div th:include="fragments/fragments :: copy"></div>
 </body>
 </html>

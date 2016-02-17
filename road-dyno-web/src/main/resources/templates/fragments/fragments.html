@@ -12,8 +12,12 @@
         </div>
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
             <ul class="nav navbar-nav">
-                <li class="active"><a href="#">Online dyno <span class="sr-only">(current)</span></a></li>
-                <li><a href="#">Help <span class="sr-only">(current)</span></a></li>
+                <li th:class="${nav=='onlinedyno'}? 'active' : ''">
+                    <a th:href="@{/onlinedyno}">Online dyno <span class="sr-only">(current)</span></a>
+                </li>
+                <li th:class="${nav=='help'}? 'active' : ''">
+                    <a th:href="@{/help}">Help <span class="sr-only">(current)</span></a>
+                </li>
             </ul>
         </div>
     </div>

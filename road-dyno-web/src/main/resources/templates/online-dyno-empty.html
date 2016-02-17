@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 
 <head lang="en">
-    <title>Road Dyno | Welcome!</title>
+    <title>Road Dyno | Online dyno</title>
     <th:block th:include="fragments/includes :: head"></th:block>
 </head>
 
@@ -12,9 +12,8 @@
 
 <div class="container">
     <div class="jumbotron">
-        <h1>Welcome to road dyno!</h1>
-        <p>The online dyno is here! Wondering how much power and torque your car makes? </p>
-        <p><a class="btn btn-primary btn-lg" th:href="@{/addrun}" role="button">... load your WOT run now!</a></p>
+        <p>No runs are loaded</p>
+        <p><a class="btn btn-primary btn-lg" th:href="@{/addrun}" role="button">Load your WOT run now!</a></p>
     </div>
     <div th:include="fragments/fragments :: copy"></div>
 </div>
