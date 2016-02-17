@@ -10,9 +10,14 @@
 
 <h1 th:replace="fragments/fragments :: header"></h1>
 
-<h3><a th:href="@{/addrun}">Load run</a></h3>
-
-<div th:include="fragments/fragments :: copy"></div>
+<div class="container">
+    <div class="jumbotron">
+        <h1>Welcome to road dyno!</h1>
+        <p>The online dyno is here! Wondering how much power and torque your car makes? </p>
+        <p><a class="btn btn-primary btn-lg" th:href="@{/addrun}" role="button">... load your WOT run!</a></p>
+    </div>
+    <div th:include="fragments/fragments :: copy"></div>
+</div>
 
 </body>
 </html>
