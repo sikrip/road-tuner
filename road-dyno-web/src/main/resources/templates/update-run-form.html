@@ -23,10 +23,13 @@
             </div>
         </div>
 
-       <div th:include="fragments/run-info-form :: fields"></div>
+        <div th:include="fragments/run-info-form :: fields"></div>
 
-        <div class="row">
-            <button type="submit" class="btn btn-default">Update run</button>
+        <div class="form-group">
+            <div class="col-sm-offset-2 col-sm-10">
+                <button type="submit" class="btn btn-primary active">Update run</button>
+                <a th:href="@{/onlinedyno}" class="btn btn-default active">Cancel</a>
+            </div>
         </div>
     </form>
     <div th:include="fragments/fragments :: copy"></div>
