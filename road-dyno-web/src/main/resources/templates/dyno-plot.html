@@ -18,47 +18,57 @@
 <div class="container-fluid">
     <div class="row-fluid">
         <div class="col-md-3">
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <div th:if="${not #lists.isEmpty(runInfoList)}">
 
-            <div th:if="${not #lists.isEmpty(runInfoList)}">
+                        <div class="panel panel-info" th:each="runInfo : ${runInfoList}">
+                            <div class="panel-heading" th:attr="style='color:' + ${runInfo.color}">
+                                <th:block th:text="${runInfo.name}"/>
+                                <a th:href="${'/remove/' + runInfo.id}" type="button" style="float: right"
+                                   title="remove run" class="btn btn-default btn-xs">
+                                    <span class="glyphicon glyphicon-remove"/>
+                                </a>
+                                <a th:href="${'/edit/' + runInfo.id}" type="button" style="float: right"
+                                   title="edit run" class="btn btn-default btn-xs">
+                                    <span class="glyphicon glyphicon-edit"/>
+                                </a>
+                            </div>
 
-                <div class="panel panel-info" th:attr="style='border-color:' + ${runInfo.color}"
-                     th:each="runInfo : ${runInfoList}">
-                    <div class="panel-heading">
-                        <th:block th:text="${runInfo.name}"/>
-                        <a th:href="${'/remove/' + runInfo.id}" type="button" style="float: right" title="remove run" class="btn btn-default btn-xs">
-                            <span class="glyphicon glyphicon-remove"/>
-                        </a>
-                        <a th:href="${'/edit/' + runInfo.id}" type="button" style="float: right" title="edit run" class="btn btn-default btn-xs">
-                            <span class="glyphicon glyphicon-edit"/>
-                        </a>
-                    </div>
-
-                    <div class="panel-body">
-                        <dl class="dl-horizontal">
-                            <dt>Final gear ratio</dt>
-                            <dd th:text="${runInfo.finalGearRatio}"></dd>
-                            <dt>Gear Ratio</dt>
-                            <dd th:text="${runInfo.gearRatio}"></dd>
-                            <dt>Tyre diameter</dt>
-                            <dd th:text="${runInfo.tyreDiameter}"></dd>
-                            <dt>Curb Weight</dt>
-                            <dd th:text="${runInfo.carWeight}"></dd>
-                            <dt>Occ. Weight</dt>
-                            <dd th:text="${runInfo.occupantsWeight}"></dd>
-                            <dt>Frontal Area</dt>
-                            <dd th:text="${runInfo.frontalArea}"></dd>
-                            <dt>Coeff. of Drag</dt>
-                            <dd th:text="${runInfo.coefficientOfDrag}"></dd>
-                        </dl>
+                            <div class="panel-body">
+                                <dl class="dl-horizontal">
+                                    <dt>Final gear ratio:</dt>
+                                    <dd th:text="${runInfo.finalGearRatio}"></dd>
+                                    <dt>Gear Ratio:</dt>
+                                    <dd th:text="${runInfo.gearRatio}"></dd>
+                                    <dt>Tyre diameter:</dt>
+                                    <dd th:text="${runInfo.tyreDiameter}"></dd>
+                                    <dt>Curb Weight:</dt>
+                                    <dd th:text="${runInfo.carWeight}"></dd>
+                                    <dt>Occ. Weight:</dt>
+                                    <dd th:text="${runInfo.occupantsWeight}"></dd>
+                                    <dt>Frontal Area:</dt>
+                                    <dd th:text="${runInfo.frontalArea}"></dd>
+                                    <dt>Coeff. of Drag:</dt>
+                                    <dd th:text="${runInfo.coefficientOfDrag}"></dd>
+                                </dl>
+                            </div>
+                        </div>
                     </div>
                 </div>
+                <div class="panel-footer">
+                    <a th:href="@{/addrun}" class="btn btn-info">Add run</a>
+                </div>
             </div>
-            <a th:href="@{/addrun}">Add run</a>
         </div>
     </div>
     <div class="col-md-9">
-        <div id="chartdiv" style="min-height: 600px;"></div>
-        <div id="auxChart" style="min-height: 300px;"></div>
+        <div class="panel panel-default">
+            <div class="panel-body">
+                <div id="chartdiv" style="min-height: 600px;"></div>
+                <div id="auxChart" style="min-height: 300px;"></div>
+            </div>
+        </div>
     </div>
 </div>
 
