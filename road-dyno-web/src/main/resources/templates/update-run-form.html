@@ -11,6 +11,9 @@
 <h1 th:replace="fragments/fragments :: header"></h1>
 
 <div class="container">
+    <div class="page-header">
+        <h1>Online dyno <small>Edit run</small></h1>
+    </div>
     <form class="form-horizontal" th:object="${runInfo}" th:action="@{/updaterun}" method="post">
 
         <input type="hidden" th:field="*{id}"/>

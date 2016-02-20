@@ -11,7 +11,7 @@
             </a>
         </div>
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-            <ul class="nav navbar-nav">
+            <ul class="nav navbar-nav navbar-right">
                 <li th:class="${nav=='onlinedyno'}? 'active' : ''">
                     <a th:href="@{/onlinedyno}">Online dyno <span class="sr-only">(current)</span></a>
                 </li>
@@ -24,6 +24,7 @@
 </nav>
 
 <div th:fragment="footer">
+    <hr/>
     <footer>&copy; 2016 Road dyno</footer>
 </div>
 

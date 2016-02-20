@@ -12,7 +12,9 @@
 
 
 <div class="container">
-
+    <div class="page-header">
+        <h1>Online dyno <small>Add run</small></h1>
+    </div>
     <form class="form-horizontal" th:object="${runInfo}" th:action="@{/addrun}" method="post"
           enctype="multipart/form-data">
 

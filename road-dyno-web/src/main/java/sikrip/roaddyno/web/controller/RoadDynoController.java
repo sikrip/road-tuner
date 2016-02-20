@@ -179,14 +179,14 @@ public class RoadDynoController {
     }
 
     @RequestMapping("remove/{id}")
-    public String delete(@PathVariable String id) {
+    public String remove(@PathVariable String id) {
         Iterator<UploadedRun> resultIterator = uploadedRuns.iterator();
         while (resultIterator.hasNext()) {
             if (resultIterator.next().getId().equals(id)) {
                 resultIterator.remove();
             }
         }
-        return "redirect:/onlinedyno";
+        return "redirect:/clearall";
     }
 
 }
