@@ -65,6 +65,18 @@ public class RoadDynoController {
         return "help";
     }
 
+    @RequestMapping("/tsdyno")
+    public String tsDyno(Model model) {
+        model.addAttribute("nav", "tsdyno");
+        return "tsdyno";
+    }
+
+    @RequestMapping("/contact")
+    public String contact(Model model) {
+        model.addAttribute("nav", "contact");
+        return "contact";
+    }
+
     @RequestMapping(value = "/addrun", method = RequestMethod.POST)
     public String addRun(UploadedRun runInfo, @RequestParam("file") MultipartFile file) {
         if (!file.isEmpty()) {
