@@ -140,8 +140,7 @@ public class RoadDynoController {
     @RequestMapping("/onlinedyno")
     public String onlineDyno(Model model) {
         if (uploadedRuns.isEmpty()) {
-            model.addAttribute("nav", "onlinedyno");
-            return "online-dyno-empty";
+            return "redirect:/clearall";
         }
         try {
             String chartDef = objectMapper.writeValueAsString(new ChartDataProvider().createMainChartDefinition(uploadedRuns));
@@ -186,7 +185,7 @@ public class RoadDynoController {
                 resultIterator.remove();
             }
         }
-        return "redirect:/clearall";
+        return "redirect:/onlinedyno";
     }
 
 }
