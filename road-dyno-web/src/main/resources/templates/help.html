@@ -12,9 +12,34 @@
 
 <div class="container">
     <div class="page-header">
-        <h1>Road dyno <small>Help</small></h1>
+        <h1>Road dyno
+            <small>Help</small>
+        </h1>
     </div>
-    <span>Will be with you shortly!</span>
+
+    <p>
+
+    <h2>What is road dyno?</h2>
+    With Road Dyno, you can create accurate dyno graphs based on data taken by ECU logs.
+    In order to achieve that, you need to log a few key parameters while making wide open throttle runs in one gear.
+    </p>
+
+    <p>
+
+    <h2>What should be logged</h2>
+    In order for log file to be used in road dyno, they need contain data from the follwing parameters:
+
+    <ul>
+        <li><strong>RPM:</strong> If your data logger has more than one entry for RPM such as "Engine RPM" or "Shaft Speed",
+            pick the entry labeled simply "RPM" when possible.
+        </li>
+        <li><strong>Engine Runtime:</strong> Always make sure that engine runtime is included in your logs.</li>
+    </ul>
+
+
+    </p>
+
+
     <div th:include="fragments/fragments :: footer"></div>
 </div>
 
