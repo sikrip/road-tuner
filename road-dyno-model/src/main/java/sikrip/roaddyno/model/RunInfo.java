@@ -17,47 +17,47 @@ public interface RunInfo {
 	 *
 	 * @return final gear ratio of the cars gearbox
 	 */
-	double getFinalGearRatio();
+	Double getFinalGearRatio();
 
 	/**
 	 * The ratio of the gear used in the run.
 	 *
 	 * @return ratio of the gear used in the run
 	 */
-	double getGearRatio();
+	Double getGearRatio();
 
 	/**
 	 * The diameter of the driving tyres of the car.
 	 *
 	 * @return diameter of the driving tyres of the car
 	 */
-	double getTyreDiameter();
+	Double getTyreDiameter();
 
 	/**
 	 * The curb weight of the car.
 	 *
 	 * @return curb weight of the car
 	 */
-	double getCarWeight();
+	Double getCarWeight();
 
 	/**
 	 * The weight of the occupants during the run.
 	 *
 	 * @return weight of the occupants during the run
 	 */
-	double getOccupantsWeight();
+	Double getOccupantsWeight();
 
 	/**
 	 * The frontal area of the car.
 	 *
 	 * @return frontal area of the car
 	 */
-	double getFrontalArea();
+	Double getFrontalArea();
 
 	/**
 	 * The coefficient of drag of the car.
 	 *
 	 * @return coefficient of drag of the car
 	 */
-	double getCoefficientOfDrag();
+	Double getCoefficientOfDrag();
 }

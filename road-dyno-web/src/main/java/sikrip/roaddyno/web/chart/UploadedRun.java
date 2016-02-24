@@ -4,9 +4,10 @@ import java.util.UUID;
 
 import sikrip.roaddyno.model.RunInfo;
 import sikrip.roaddyno.model.DynoSimulationResult;
+import sikrip.roaddyno.web.controller.SessionVehicleData;
 
 /**
- * Wraps info of a run, including the simulation result, name and identifier and color.
+ * Wraps the info of a logged run, including the simulation result, name identifier and color.
  */
 public class UploadedRun implements RunInfo {
 
@@ -30,13 +31,13 @@ public class UploadedRun implements RunInfo {
 	 */
 	private DynoSimulationResult result;
 
-	private double finalGearRatio = 4.312;
-	private double gearRatio = 1.310;
-	private double tyreDiameter = 528;
-	private double carWeight = 905;
-	private double occupantsWeight = 85;
-	private double frontalArea = 1.7;
-	private double coefficientOfDrag = 0.34;
+	private Double finalGearRatio;
+	private Double gearRatio;
+	private Double tyreDiameter;
+	private Double carWeight;
+	private Double occupantsWeight;
+	private Double frontalArea;
+	private Double coefficientOfDrag;
 
 	public UploadedRun() {
 		id = UUID.randomUUID().toString();
@@ -46,31 +47,31 @@ public class UploadedRun implements RunInfo {
 		this.name = name;
 	}
 
-	public void setFinalGearRatio(double finalGearRatio) {
+	public void setFinalGearRatio(Double finalGearRatio) {
 		this.finalGearRatio = finalGearRatio;
 	}
 
-	public void setGearRatio(double gearRatio) {
+	public void setGearRatio(Double gearRatio) {
 		this.gearRatio = gearRatio;
 	}
 
-	public void setTyreDiameter(double tyreDiameter) {
+	public void setTyreDiameter(Double tyreDiameter) {
 		this.tyreDiameter = tyreDiameter;
 	}
 
-	public void setCarWeight(double carWeight) {
+	public void setCarWeight(Double carWeight) {
 		this.carWeight = carWeight;
 	}
 
-	public void setOccupantsWeight(double occupantsWeight) {
+	public void setOccupantsWeight(Double occupantsWeight) {
 		this.occupantsWeight = occupantsWeight;
 	}
 
-	public void setFrontalArea(double frontalArea) {
+	public void setFrontalArea(Double frontalArea) {
 		this.frontalArea = frontalArea;
 	}
 
-	public void setCoefficientOfDrag(double coefficientOfDrag) {
+	public void setCoefficientOfDrag(Double coefficientOfDrag) {
 		this.coefficientOfDrag = coefficientOfDrag;
 	}
 
@@ -104,37 +105,49 @@ public class UploadedRun implements RunInfo {
 	}
 
 	@Override
-	public double getFinalGearRatio() {
+	public Double getFinalGearRatio() {
 		return finalGearRatio;
 	}
 
 	@Override
-	public double getGearRatio() {
+	public Double getGearRatio() {
 		return gearRatio;
 	}
 
 	@Override
-	public double getTyreDiameter() {
+	public Double getTyreDiameter() {
 		return tyreDiameter;
 	}
 
 	@Override
-	public double getCarWeight() {
+	public Double getCarWeight() {
 		return carWeight;
 	}
 
 	@Override
-	public double getOccupantsWeight() {
+	public Double getOccupantsWeight() {
 		return occupantsWeight;
 	}
 
 	@Override
-	public double getFrontalArea() {
+	public Double getFrontalArea() {
 		return frontalArea;
 	}
 
 	@Override
-	public double getCoefficientOfDrag() {
+	public Double getCoefficientOfDrag() {
 		return coefficientOfDrag;
+	}
+
+	public UploadedRun fromVehicleData(SessionVehicleData vehicleData){
+		setFinalGearRatio(vehicleData.getFinalGearRatio());
+		setGearRatio(vehicleData.getGearRatio());
+		setTyreDiameter(vehicleData.getTyreDiameter());
+		setCarWeight(vehicleData.getCarWeight());
+		setOccupantsWeight(vehicleData.getOccupantsWeight());
+		setFrontalArea(vehicleData.getFrontalArea());
+		setCoefficientOfDrag(vehicleData.getCoefficientOfDrag());
+
+		return this;
 	}
 }

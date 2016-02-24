@@ -123,7 +123,7 @@ final class RunInfoPanel extends JPanel implements RunInfo, KeyListener {
 		frontalAreaAlt.addKeyListener(this);
 	}
 
-	void setInfo(String name, double fgr, double gr, double tyreDiameter, double carWeight, double occupantsWeight, double fa, double cd) {
+	void setInfo(String name, Double fgr, Double gr, Double tyreDiameter, Double carWeight, Double occupantsWeight, Double fa, Double cd) {
 		this.runName = name;
 		setFgr(fgr);
 		setGr(gr);
@@ -139,59 +139,59 @@ final class RunInfoPanel extends JPanel implements RunInfo, KeyListener {
 		synchTyreDiameter();
 	}
 
-	void setFgr(double fgr) {
+	void setFgr(Double fgr) {
 		this.fgr.setText(String.valueOf(fgr));
 	}
 
-	void setGr(double gr) {
+	void setGr(Double gr) {
 		this.gr.setText(String.valueOf(gr));
 	}
 
-	void setTyreDiameter(double tyreDiameter) {
+	void setTyreDiameter(Double tyreDiameter) {
 		this.tyreDiameter.setText(String.valueOf(tyreDiameter));
 	}
 
-	void setCarWeight(double carWeight) {
+	void setCarWeight(Double carWeight) {
 		this.carWeight.setText(String.valueOf(carWeight));
 	}
 
-	void setOccupantsWeight(double occupantsWeight) {
+	void setOccupantsWeight(Double occupantsWeight) {
 		this.occupantsWeight.setText(String.valueOf(occupantsWeight));
 	}
 
-	void setFrontalArea(double frontalArea) {
+	void setFrontalArea(Double frontalArea) {
 		this.frontalArea.setText(String.valueOf(frontalArea));
 	}
 
-	void setCd(double cd) {
+	void setCd(Double cd) {
 		this.cd.setText(String.valueOf(cd));
 	}
 
-	public double getFinalGearRatio() {
+	public Double getFinalGearRatio() {
 		return Double.valueOf(fgr.getText());
 	}
 
-	public double getGearRatio() {
+	public Double getGearRatio() {
 		return Double.valueOf(gr.getText());
 	}
 
-	public double getTyreDiameter() {
+	public Double getTyreDiameter() {
 		return Double.valueOf(tyreDiameter.getText());
 	}
 
-	public double getCarWeight() {
+	public Double getCarWeight() {
 		return Double.valueOf(carWeight.getText());
 	}
 
-	public double getOccupantsWeight() {
+	public Double getOccupantsWeight() {
 		return Double.valueOf(occupantsWeight.getText());
 	}
 
-	public double getFrontalArea() {
+	public Double getFrontalArea() {
 		return Double.valueOf(frontalArea.getText());
 	}
 
-	public double getCoefficientOfDrag() {
+	public Double getCoefficientOfDrag() {
 		return Double.valueOf(cd.getText());
 	}
 
@@ -199,7 +199,7 @@ final class RunInfoPanel extends JPanel implements RunInfo, KeyListener {
 		return runName;
 	}
 
-	private String formatValue(double value) {
+	private String formatValue(Double value) {
 		return df.format(value);
 	}
 
@@ -219,7 +219,7 @@ final class RunInfoPanel extends JPanel implements RunInfo, KeyListener {
 			synchTyreDiameter();
 		} else if (source.equals(tyreDiameterAlt)) {
 			try {
-				double value = Double.valueOf(tyreDiameterAlt.getText());
+				Double value = Double.valueOf(tyreDiameterAlt.getText());
 				tyreDiameter.setText(formatValue(UnitConverter.inchToMM(value)));
 			} catch (NumberFormatException ex) {
 				System.err.println(ex.getMessage());
@@ -228,7 +228,7 @@ final class RunInfoPanel extends JPanel implements RunInfo, KeyListener {
 			synchCarWeight();
 		} else if (source.equals(carWeightAlt)) {
 			try {
-				double value = Double.valueOf(carWeightAlt.getText());
+				Double value = Double.valueOf(carWeightAlt.getText());
 				carWeight.setText(formatValue(UnitConverter.poundsToKg(value)));
 			} catch (NumberFormatException ex) {
 				System.err.println(ex.getMessage());
@@ -237,7 +237,7 @@ final class RunInfoPanel extends JPanel implements RunInfo, KeyListener {
 			synchOccupantsWeight();
 		} else if (source.equals(occupantsWeightAlt)) {
 			try {
-				double value = Double.valueOf(occupantsWeightAlt.getText());
+				Double value = Double.valueOf(occupantsWeightAlt.getText());
 				occupantsWeight.setText(formatValue(UnitConverter.poundsToKg(value)));
 			} catch (NumberFormatException ex) {
 				System.err.println(ex.getMessage());
@@ -246,7 +246,7 @@ final class RunInfoPanel extends JPanel implements RunInfo, KeyListener {
 			synchFrontalArea();
 		} else if (source.equals(frontalAreaAlt)) {
 			try {
-				double value = Double.valueOf(frontalAreaAlt.getText());
+				Double value = Double.valueOf(frontalAreaAlt.getText());
 				frontalArea.setText(formatValue(UnitConverter.sgFtToSqM(value)));
 			} catch (NumberFormatException ex) {
 				System.err.println(ex.getMessage());
@@ -256,7 +256,7 @@ final class RunInfoPanel extends JPanel implements RunInfo, KeyListener {
 
 	private void synchFrontalArea() {
 		try {
-			double value = Double.valueOf(frontalArea.getText());
+			Double value = Double.valueOf(frontalArea.getText());
 			frontalAreaAlt.setText(formatValue(UnitConverter.sgMToSqFt(value)));
 		} catch (NumberFormatException ex) {
 			System.err.println(ex.getMessage());
@@ -265,7 +265,7 @@ final class RunInfoPanel extends JPanel implements RunInfo, KeyListener {
 
 	private void synchOccupantsWeight() {
 		try {
-			double value = Double.valueOf(occupantsWeight.getText());
+			Double value = Double.valueOf(occupantsWeight.getText());
 			occupantsWeightAlt.setText(formatValue(UnitConverter.kgToPounds(value)));
 		} catch (NumberFormatException ex) {
 			System.err.println(ex.getMessage());
@@ -274,7 +274,7 @@ final class RunInfoPanel extends JPanel implements RunInfo, KeyListener {
 
 	private void synchCarWeight() {
 		try {
-			double value = Double.valueOf(carWeight.getText());
+			Double value = Double.valueOf(carWeight.getText());
 			carWeightAlt.setText(formatValue(UnitConverter.kgToPounds(value)));
 		} catch (NumberFormatException ex) {
 			System.err.println(ex.getMessage());
@@ -283,7 +283,7 @@ final class RunInfoPanel extends JPanel implements RunInfo, KeyListener {
 
 	private void synchTyreDiameter() {
 		try {
-			double value = Double.valueOf(tyreDiameter.getText());
+			Double value = Double.valueOf(tyreDiameter.getText());
 			tyreDiameterAlt.setText(formatValue(UnitConverter.mmToInch(value)));
 		} catch (NumberFormatException ex) {
 			System.err.println(ex.getMessage());

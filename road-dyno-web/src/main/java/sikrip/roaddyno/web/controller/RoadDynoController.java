@@ -36,6 +36,9 @@ public class RoadDynoController {
     @Autowired
     private ObjectMapper objectMapper;
 
+    @Autowired
+    private SessionVehicleData vehicleData;
+
     private final List<UploadedRun> uploadedRuns = new ArrayList<>();
     private final PlotColorProvider colorProvider = new PlotColorProvider();
 
@@ -47,7 +50,7 @@ public class RoadDynoController {
     @RequestMapping("/addrun")
     public String addRun(Model model) {
         model.addAttribute("nav", "onlinedyno");
-        model.addAttribute("runInfo", new UploadedRun());
+        model.addAttribute("runInfo", new UploadedRun().fromVehicleData(vehicleData));
         return "add-run-form";
     }
 
@@ -96,6 +99,7 @@ public class RoadDynoController {
                 runInfo.setColor(colorProvider.pop());
 
                 uploadedRuns.add(runInfo);
+                vehicleData.updateFromRunInfo(runInfo);
             } catch (Exception e) {
                 // TODO hanle
                 return "error";
@@ -136,6 +140,7 @@ public class RoadDynoController {
                         existingRunInfo.getFrontalArea(),
                         existingRunInfo.getCoefficientOfDrag());
                 existingRunInfo.setResult(result);
+                vehicleData.updateFromRunInfo(updatedRunInfo);
             } catch (InvalidSimulationParameterException e) {
                 //TODO handle
                 return "error";
@@ -185,7 +190,7 @@ public class RoadDynoController {
             model.addAttribute("nav", "onlinedyno");
             return "update-run-form";
         }
-        // TODO hanle
+        // TODO handle
         return "error";
     }
 
