@@ -4,61 +4,51 @@
 <body>
 
 <div th:fragment="fields">
-    <div class="form-group">
-        <label class="col-sm-2 control-label">Final gear ratio:</label>
-
-        <div class="col-sm-10">
-            <input type="text" required="required" class="form-control" th:field="*{finalGearRatio}"/>
-        </div>
+    <div class="input-group">
+        <span class="input-group-addon">Final gear ratio</span>
+        <input type="text" th:field="*{finalGearRatio}" class="form-control"/>
     </div>
+    <span class="help-block">The final gear ratio of your gearbox.</span>
 
-    <div class="form-group">
-        <label class="col-sm-2 control-label">Gear ratio:</label>
-
-        <div class="col-sm-10">
-            <input type="text" required="required" class="form-control" th:field="*{gearRatio}"/>
-        </div>
+    <div class="input-group">
+        <span class="input-group-addon">Gear ratio</span>
+        <input type="text" th:field="*{gearRatio}" class="form-control"/>
     </div>
+    <span class="help-block">The ratio of the gear used during the run.</span>
 
-    <div class="form-group">
-        <label class="col-sm-2 control-label">Tyre diameter(mm):</label>
-
-        <div class="col-sm-10">
-            <input type="text" required="required" class="form-control" th:field="*{tyreDiameter}"/>
-        </div>
+    <div class="input-group">
+        <span class="input-group-addon">Tyre diameter</span>
+        <input type="text" th:field="*{tyreDiameter}" class="form-control"/>
+        <span class="input-group-addon">mm (000 inch)</span>
     </div>
+    <span class="help-block">The diameter of the driving wheels in millimeters (equivalent in inches).</span>
 
-    <div class="form-group">
-        <label class="col-sm-2 control-label">Curb weight(kg):</label>
-
-        <div class="col-sm-10">
-            <input type="text" required="required" class="form-control" th:field="*{carWeight}"/>
-        </div>
+    <div class="input-group">
+        <span class="input-group-addon">Curb weight</span>
+        <input type="text" th:field="*{carWeight}" class="form-control"/>
+        <span class="input-group-addon">kg (000 pounds)</span>
     </div>
+    <span class="help-block">The curb wright of the car in kilograms (equivalent in pounds).</span>
 
-    <div class="form-group">
-        <label class="col-sm-2 control-label">Occupants weight(kg):</label>
-
-        <div class="col-sm-10">
-            <input type="text" required="required" class="form-control" th:field="*{occupantsWeight}"/>
-        </div>
+    <div class="input-group">
+        <span class="input-group-addon">Occupants weight</span>
+        <input type="text" th:field="*{occupantsWeight}" class="form-control"/>
+        <span class="input-group-addon">kg (000 pounds)</span>
     </div>
+    <span class="help-block">The weight in kilograms of the occupants during the run (equivalent in pounds).</span>
 
-    <div class="form-group">
-        <label class="col-sm-2 control-label">Frontal area(m^2):</label>
-
-        <div class="col-sm-10">
-            <input type="text" required="required" class="form-control" th:field="*{frontalArea}"/>
-        </div>
+    <div class="input-group">
+        <span class="input-group-addon">Frontal area</span>
+        <input type="text" th:field="*{frontalArea}" class="form-control"/>
+        <span class="input-group-addon">m^2 (000 sqft)</span>
     </div>
+    <span class="help-block">The frontal area of the car in square meters (equivalent in square feet).</span>
 
-    <div class="form-group">
-        <label class="col-sm-2 control-label">Coefficient of Drag:</label>
-
-        <div class="col-sm-10">
-            <input type="text" required="required" class="form-control" th:field="*{coefficientOfDrag}"/>
-        </div>
+    <div class="input-group">
+        <span class="input-group-addon">Coefficient of Drag</span>
+        <input type="text" th:field="*{coefficientOfDrag}" class="form-control"/>
     </div>
+    <span class="help-block">The drag coefficient of the car.</span>
 </div>
 
 </body>

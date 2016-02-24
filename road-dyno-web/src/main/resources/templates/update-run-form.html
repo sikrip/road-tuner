@@ -12,7 +12,9 @@
 
 <div class="container">
     <div class="page-header">
-        <h1>Online dyno <small>Edit run</small></h1>
+        <h1>Online dyno
+            <small>Edit run</small>
+        </h1>
     </div>
     <form class="form-horizontal" th:object="${runInfo}" th:action="@{/updaterun}" method="post">
 
@@ -28,12 +30,9 @@
 
         <div th:include="fragments/run-info-form :: fields"></div>
 
-        <div class="form-group">
-            <div class="col-sm-offset-2 col-sm-10">
-                <button type="submit" class="btn btn-primary active">Update run</button>
-                <a th:href="@{/onlinedyno}" class="btn btn-default active">Cancel</a>
-            </div>
-        </div>
+        <hr/>
+        <button type="submit" class="btn btn-primary active">Update run</button>
+        <a th:href="@{/onlinedyno}" class="btn btn-default active">Cancel</a>
     </form>
     <div th:include="fragments/fragments :: footer"></div>
 </div>
