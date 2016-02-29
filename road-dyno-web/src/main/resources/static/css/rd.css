@@ -24,6 +24,7 @@ form span.input-group-addon {
 
 span.input-group-addon:first-child {
     text-align: right;
+    font-weight: bold;
 }
 
 input.form-control + span {

@@ -6,56 +6,57 @@
 <div th:fragment="fields">
     <div class="input-group">
         <span class="input-group-addon">Final gear ratio</span>
-        <input type="text" th:field="*{finalGearRatio}" class="form-control"/>
+        <input type="number" th:field="*{finalGearRatio}" class="form-control"/>
     </div>
     <span class="help-block">The final gear ratio of your gearbox.</span>
 
     <div class="input-group">
         <span class="input-group-addon">Gear ratio</span>
-        <input type="text" th:field="*{gearRatio}" class="form-control"/>
+        <input type="number" th:field="*{gearRatio}" class="form-control"/>
     </div>
     <span class="help-block">The ratio of the gear used during the run.</span>
 
     <div class="input-group">
         <span class="input-group-addon">Tyre diameter</span>
-        <input id="tyreDiameter" type="text" th:field="*{tyreDiameter}" class="form-control"/>
+        <input id="tyreDiameter" type="number" th:field="*{tyreDiameter}" class="form-control"/>
         <span class="input-group-addon" id="tyreDiameter-alt">mm (0 inch)</span>
     </div>
     <span class="help-block">The diameter of the driving wheels in <strong>millimeters</strong> (equivalent in inches).</span>
 
     <div class="input-group">
         <span class="input-group-addon">Curb weight</span>
-        <input id="curbWeight" type="text" th:field="*{carWeight}" class="form-control"/>
+        <input id="curbWeight" type="number" th:field="*{carWeight}" class="form-control"/>
         <span id="curbWeight-alt" class="input-group-addon">kg (0 pounds)</span>
     </div>
     <span class="help-block">The curb wright of the car in <strong>kilograms</strong> (equivalent in pounds).</span>
 
     <div class="input-group">
         <span class="input-group-addon">Occupants weight</span>
-        <input id="occWeight" type="text" th:field="*{occupantsWeight}" class="form-control"/>
+        <input id="occWeight" type="number" th:field="*{occupantsWeight}" class="form-control"/>
         <span id="occWeight-alt" class="input-group-addon">kg (0 pounds)</span>
     </div>
     <span class="help-block">The weight in <strong>kilograms</strong> of the occupants during the run (equivalent in pounds).</span>
 
     <div class="input-group">
         <span class="input-group-addon">Frontal area</span>
-        <input id="frontalArea" type="text" th:field="*{frontalArea}" class="form-control"/>
+        <input id="frontalArea" type="number" th:field="*{frontalArea}" class="form-control"/>
         <span id="frontalArea-alt" class="input-group-addon">sqm (0 sqft)</span>
     </div>
     <span class="help-block">The frontal area of the car in <strong>square meters</strong> (equivalent in square feet).</span>
 
     <div class="input-group">
         <span class="input-group-addon">Coefficient of Drag</span>
-        <input type="text" th:field="*{coefficientOfDrag}" class="form-control"/>
+        <input type="number" th:field="*{coefficientOfDrag}" class="form-control"/>
     </div>
     <span class="help-block">The drag coefficient of the car.</span>
 
     <script>
         $(document).ready(function () {
+
             // Tyre diameter mm to inch
             var $tyreDiameter = $('#tyreDiameter');
             var $tyreDiameterAlt = $('#tyreDiameter-alt');
-            $tyreDiameter.keyup(function () {
+            $tyreDiameter.keyup(function (event) {
                 var mm = parseFloat($tyreDiameter.val());
                 if (isNaN(mm)) {
                     $tyreDiameterAlt.text('mm (0 inch)');
