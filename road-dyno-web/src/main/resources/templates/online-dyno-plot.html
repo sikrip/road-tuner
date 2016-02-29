@@ -23,6 +23,7 @@
 
                         <div class="panel panel-info" th:each="runInfo : ${runInfoList}">
                             <div class="panel-heading" th:attr="style='color:' + ${runInfo.color}">
+                                <input type="checkbox" aria-label=""/>
                                 <th:block th:text="${runInfo.name}"/>
                                 <a th:href="${'/remove/' + runInfo.id}" type="button" style="float: right"
                                    title="remove run" class="btn btn-default btn-xs">
@@ -41,13 +42,13 @@
                                     <dt>Gear Ratio:</dt>
                                     <dd th:text="${runInfo.gearRatio}"></dd>
                                     <dt>Tyre diameter:</dt>
-                                    <dd th:text="${runInfo.tyreDiameter}"></dd>
+                                    <dd th:text="${runInfo.tyreDiameter} + 'mm ('+ ${#numbers.formatDecimal(runInfo.tyreDiameter * 0.03937007 , 2, 2)}+' inch)'"></dd>
                                     <dt>Curb Weight:</dt>
-                                    <dd th:text="${runInfo.carWeight}"></dd>
+                                    <dd th:text="${runInfo.carWeight} + 'kg ('+ ${#numbers.formatDecimal(runInfo.carWeight * 2.20462262 , 2, 2)}+' pounds)'"></dd>
                                     <dt>Occ. Weight:</dt>
-                                    <dd th:text="${runInfo.occupantsWeight}"></dd>
+                                    <dd th:text="${runInfo.occupantsWeight} + 'kg ('+ ${#numbers.formatDecimal(runInfo.occupantsWeight * 2.20462262 , 2, 2)}+' pounds)'"></dd>
                                     <dt>Frontal Area:</dt>
-                                    <dd th:text="${runInfo.frontalArea}"></dd>
+                                    <dd th:text="${runInfo.frontalArea} + 'sgm ('+ ${#numbers.formatDecimal(runInfo.frontalArea * 10.7639104 , 2, 2)}+' sqft)'"></dd>
                                     <dt>Coeff. of Drag:</dt>
                                     <dd th:text="${runInfo.coefficientOfDrag}"></dd>
                                 </dl>
