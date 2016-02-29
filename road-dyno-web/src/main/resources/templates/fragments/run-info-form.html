@@ -18,37 +18,93 @@
 
     <div class="input-group">
         <span class="input-group-addon">Tyre diameter</span>
-        <input type="text" th:field="*{tyreDiameter}" class="form-control"/>
-        <span class="input-group-addon">mm (000 inch)</span>
+        <input id="tyreDiameter" type="text" th:field="*{tyreDiameter}" class="form-control"/>
+        <span class="input-group-addon" id="tyreDiameter-alt">mm (0 inch)</span>
     </div>
-    <span class="help-block">The diameter of the driving wheels in millimeters (equivalent in inches).</span>
+    <span class="help-block">The diameter of the driving wheels in <strong>millimeters</strong> (equivalent in inches).</span>
 
     <div class="input-group">
         <span class="input-group-addon">Curb weight</span>
-        <input type="text" th:field="*{carWeight}" class="form-control"/>
-        <span class="input-group-addon">kg (000 pounds)</span>
+        <input id="curbWeight" type="text" th:field="*{carWeight}" class="form-control"/>
+        <span id="curbWeight-alt" class="input-group-addon">kg (0 pounds)</span>
     </div>
-    <span class="help-block">The curb wright of the car in kilograms (equivalent in pounds).</span>
+    <span class="help-block">The curb wright of the car in <strong>kilograms</strong> (equivalent in pounds).</span>
 
     <div class="input-group">
         <span class="input-group-addon">Occupants weight</span>
-        <input type="text" th:field="*{occupantsWeight}" class="form-control"/>
-        <span class="input-group-addon">kg (000 pounds)</span>
+        <input id="occWeight" type="text" th:field="*{occupantsWeight}" class="form-control"/>
+        <span id="occWeight-alt" class="input-group-addon">kg (0 pounds)</span>
     </div>
-    <span class="help-block">The weight in kilograms of the occupants during the run (equivalent in pounds).</span>
+    <span class="help-block">The weight in <strong>kilograms</strong> of the occupants during the run (equivalent in pounds).</span>
 
     <div class="input-group">
         <span class="input-group-addon">Frontal area</span>
-        <input type="text" th:field="*{frontalArea}" class="form-control"/>
-        <span class="input-group-addon">m^2 (000 sqft)</span>
+        <input id="frontalArea" type="text" th:field="*{frontalArea}" class="form-control"/>
+        <span id="frontalArea-alt" class="input-group-addon">sqm (0 sqft)</span>
     </div>
-    <span class="help-block">The frontal area of the car in square meters (equivalent in square feet).</span>
+    <span class="help-block">The frontal area of the car in <strong>square meters</strong> (equivalent in square feet).</span>
 
     <div class="input-group">
         <span class="input-group-addon">Coefficient of Drag</span>
         <input type="text" th:field="*{coefficientOfDrag}" class="form-control"/>
     </div>
     <span class="help-block">The drag coefficient of the car.</span>
+
+    <script>
+        $(document).ready(function () {
+            // Tyre diameter mm to inch
+            var $tyreDiameter = $('#tyreDiameter');
+            var $tyreDiameterAlt = $('#tyreDiameter-alt');
+            $tyreDiameter.keyup(function () {
+                var mm = parseFloat($tyreDiameter.val());
+                if (isNaN(mm)) {
+                    $tyreDiameterAlt.text('mm (0 inch)');
+                } else {
+                    var inch = (mm * 0.03937007).toPrecision(4);
+                    $tyreDiameterAlt.text('mm (' + inch + ' inch)');
+                }
+            });
+
+            // Curb weight, kg to pounds
+            var $curbWeight = $('#curbWeight');
+            var $curbWeightAlt = $('#curbWeight-alt');
+            $curbWeight.keyup(function () {
+                var kg = parseFloat($curbWeight.val());
+                if (isNaN(kg)) {
+                    $curbWeightAlt.text('mm (0 inch)');
+                } else {
+                    var pounds = (kg * 2.20462262).toPrecision(4);
+                    $curbWeightAlt.text('kg (' + pounds + ' pounds)');
+                }
+            });
+
+            // Occupants weight, kg to pounds
+            var $occWeight = $('#occWeight');
+            var $occWeightAlt = $('#occWeight-alt');
+            $occWeight.keyup(function () {
+                var kg = parseFloat($occWeight.val());
+                if (isNaN(kg)) {
+                    $occWeightAlt.text('mm (0 inch)');
+                } else {
+                    var pounds = (kg * 2.20462262).toPrecision(4);
+                    $occWeightAlt.text('kg (' + pounds + ' pounds)');
+                }
+            });
+
+            // Frontal area, sqm to sqf
+            var $frontalArea = $('#frontalArea');
+            var $frontalAreaAlt = $('#frontalArea-alt');
+            $frontalArea.keyup(function () {
+                var sqm = parseFloat($frontalArea.val());
+                if (isNaN(sqm)) {
+                    $frontalAreaAlt.text('mm (0 inch)');
+                } else {
+                    var sqft = (sqm * 10.7639104).toPrecision(4);
+                    $frontalAreaAlt.text('sqm (' + sqft + ' sqft)');
+                }
+            });
+        });
+    </script>
 </div>
 
 </body>
