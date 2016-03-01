@@ -5,7 +5,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
@@ -34,7 +33,7 @@ import sikrip.roaddyno.web.chart.UploadedRun;
 @Scope("session")
 public class RoadDynoController {
 
-	public static final int TPS_START_THRESHOLD = 98;
+	public static final int TPS_START_THRESHOLD = 95;
 
 	@Autowired
 	private ObjectMapper objectMapper;
@@ -150,6 +149,17 @@ public class RoadDynoController {
 			return "error";
 		}
 
+	}
+
+	@RequestMapping(value = "/changeStatus", method = RequestMethod.POST)
+	public String changeStatus(String rid, Boolean active) {
+		Optional<UploadedRun> existingRunInfo = uploadedRuns.stream().filter(r -> r.getId().equals(rid)).findFirst();
+		if (existingRunInfo.isPresent()) {
+			existingRunInfo.get().setActive(active == null ? false : active);
+			return "redirect:/onlinedyno";
+		}
+		//TODO handle
+		return "error";
 	}
 
 	@RequestMapping("/onlinedyno")
