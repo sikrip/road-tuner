@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
@@ -20,7 +22,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import sikrip.roaddyno.engine.DynoSimulator;
-import sikrip.roaddyno.engine.InvalidSimulationParameterException;
 import sikrip.roaddyno.logreader.EcuLogReader;
 import sikrip.roaddyno.logreader.MegasquirtLogReader;
 import sikrip.roaddyno.model.DynoSimulationResult;
@@ -32,6 +33,8 @@ import sikrip.roaddyno.web.chart.UploadedRun;
 @Controller
 @Scope("session")
 public class RoadDynoController {
+
+	protected final Logger LOGGER = LoggerFactory.getLogger(RoadDynoController.class);
 
 	public static final int TPS_START_THRESHOLD = 95;
 
@@ -103,10 +106,12 @@ public class RoadDynoController {
 				uploadedRuns.add(runInfo);
 				vehicleData.updateFromRunInfo(runInfo);
 			} catch (Exception e) {
+				LOGGER.error("Could not add run.", e);
 				// TODO hanle
 				return "error";
 			}
 		} else {
+			LOGGER.error("Could not add run, uploaded file is empty");
 			// TODO hanle
 			return "error";
 		}
@@ -138,13 +143,15 @@ public class RoadDynoController {
 						existingRunInfo.get().getCoefficientOfDrag());
 				existingRunInfo.get().setResult(result);
 				vehicleData.updateFromRunInfo(updatedRunInfo);
-			} catch (InvalidSimulationParameterException e) {
+
+				return "redirect:/onlinedyno";
+			} catch (Exception e) {
+				LOGGER.error("Could not update run.", e);
 				//TODO handle
 				return "error";
 			}
-
-			return "redirect:/onlinedyno";
 		} else {
+			LOGGER.error("Could not update run. Run with id " + updatedRunInfo.getId() + " was not found");
 			//TODO handle
 			return "error";
 		}
@@ -158,6 +165,7 @@ public class RoadDynoController {
 			existingRunInfo.get().setActive(active == null ? false : active);
 			return "redirect:/onlinedyno";
 		}
+		LOGGER.error("Could not change statue of run with id " + rid + ". Run not found.");
 		//TODO handle
 		return "error";
 	}
@@ -179,6 +187,7 @@ public class RoadDynoController {
 
 			return "online-dyno-plot";
 		} catch (JsonProcessingException e) {
+			LOGGER.error("Could not plot runs.", e);
 			// TODO hanle
 			return "error";
 		}
@@ -192,6 +201,7 @@ public class RoadDynoController {
 			model.addAttribute("nav", "onlinedyno");
 			return "update-run-form";
 		}
+		LOGGER.error("Could not edit run with id " + id + ". Run not found.");
 		// TODO handle
 		return "error";
 	}
