@@ -2,7 +2,7 @@
 <configuration>
     <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
-            <pattern>[MESSAGE COMPOSER] - %d %5p %40.40c:%4L - %m%n</pattern>
+            <pattern>[ROAD DYNO] - %d %5p %40.40c:%4L - %m%n</pattern>
         </encoder>
     </appender>
     <!-- enable these for debugging
