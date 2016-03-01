@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
@@ -42,7 +43,6 @@ public class RoadDynoController {
 	private SessionVehicleData vehicleData;
 
 	private final List<UploadedRun> uploadedRuns = new ArrayList<>();
-	private final Set<String> disabledRuns = new HashSet<>();
 	private final PlotColorProvider colorProvider = new PlotColorProvider();
 
 	@RequestMapping("/")
@@ -163,8 +163,9 @@ public class RoadDynoController {
 			return "redirect:/clearall";
 		}
 		try {
-			String chartDef = objectMapper.writeValueAsString(new ChartDataProvider().createMainChartDefinition(uploadedRuns));
-			String auxChartDef = objectMapper.writeValueAsString(new ChartDataProvider().createAuxuliaryChartDefinition(uploadedRuns, "AFR"));
+			List<UploadedRun> activeRuns = uploadedRuns.stream().filter(UploadedRun::isActive).collect(Collectors.toList());
+			String chartDef = objectMapper.writeValueAsString(new ChartDataProvider().createMainChartDefinition(activeRuns));
+			String auxChartDef = objectMapper.writeValueAsString(new ChartDataProvider().createAuxuliaryChartDefinition(activeRuns, "AFR"));
 
 			model.addAttribute("chartDef", chartDef);
 			model.addAttribute("auxChartDef", auxChartDef);

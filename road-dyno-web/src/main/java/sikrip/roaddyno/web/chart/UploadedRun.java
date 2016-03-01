@@ -27,6 +27,8 @@ public class UploadedRun implements RunInfo {
 	 */
 	private String color;
 
+	private boolean active = true;
+
 	/**
 	 * The simulation result of the run.
 	 */
@@ -98,6 +100,14 @@ public class UploadedRun implements RunInfo {
 
 	public void setResult(DynoSimulationResult result) {
 		this.result = result;
+	}
+
+	public boolean isActive() {
+		return active;
+	}
+
+	public void setActive(boolean active) {
+		this.active = active;
 	}
 
 	@Override

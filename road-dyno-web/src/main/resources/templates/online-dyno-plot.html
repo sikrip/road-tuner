@@ -23,7 +23,7 @@
 
                         <div class="panel panel-info" th:each="runInfo : ${runInfoList}">
                             <div class="panel-heading" th:attr="style='color:' + ${runInfo.color}">
-                                <input type="checkbox" aria-label=""/>
+                                <input type="checkbox" th:value="${runInfo.id}" th:checked="${runInfo.active}"/>
                                 <th:block th:text="${runInfo.name}"/>
                                 <a th:href="${'/remove/' + runInfo.id}" type="button" style="float: right"
                                    title="remove run" class="btn btn-default btn-xs">
