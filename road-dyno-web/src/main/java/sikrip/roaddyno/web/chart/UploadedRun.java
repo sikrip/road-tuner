@@ -2,8 +2,9 @@ package sikrip.roaddyno.web.chart;
 
 import java.util.UUID;
 
-import sikrip.roaddyno.model.RunInfo;
+import sikrip.roaddyno.model.DynoSimulationEntry;
 import sikrip.roaddyno.model.DynoSimulationResult;
+import sikrip.roaddyno.model.RunInfo;
 import sikrip.roaddyno.web.controller.SessionVehicleData;
 
 /**
@@ -139,7 +140,15 @@ public class UploadedRun implements RunInfo {
 		return coefficientOfDrag;
 	}
 
-	public UploadedRun fromVehicleData(SessionVehicleData vehicleData){
+	public DynoSimulationEntry getMaxPower() {
+		return result != null ? result.maxPower() : null;
+	}
+
+	public DynoSimulationEntry getMaxTorque() {
+		return result != null ? result.maxTorque() : null;
+	}
+
+	public UploadedRun fromVehicleData(SessionVehicleData vehicleData) {
 		setFinalGearRatio(vehicleData.getFinalGearRatio());
 		setGearRatio(vehicleData.getGearRatio());
 		setTyreDiameter(vehicleData.getTyreDiameter());

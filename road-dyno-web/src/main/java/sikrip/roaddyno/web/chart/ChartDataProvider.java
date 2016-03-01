@@ -99,7 +99,7 @@ public class ChartDataProvider {
 			graph.put("id", "Graph-" + POWER_FIELD + iRun);
 			graph.put("lineColor", runColor);
 			graph.put("lineThickness", 3);
-			graph.put("title", run.getName() + " power " + df.format(maxPower.getPower()) + " hp @" + (int) maxPower.getRpm());
+			graph.put("title", run.getName() + " power");
 			graph.put("type", "smoothedLine");
 			graph.put("xField", RPM_AXIS);
 			graph.put("yField", POWER_FIELD + iRun);
@@ -114,7 +114,7 @@ public class ChartDataProvider {
 			graph.put("dashLength", 4);
 			graph.put("lineColor", runColor);
 			graph.put("lineThickness", 2);
-			graph.put("title", run.getName() + " torque " + df.format(maxTorque.getTorque()) + " lb/ft @" + (int) maxTorque.getRpm());
+			graph.put("title", run.getName() + " torque");
 			graph.put("type", "smoothedLine");
 			graph.put("xField", RPM_AXIS);
 			graph.put("yField", TORQUE_FIELD + iRun);

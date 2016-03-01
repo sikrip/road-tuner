@@ -36,6 +36,9 @@
                             </div>
 
                             <div class="panel-body">
+                                <strong th:text="'Power '+ ${#numbers.formatDecimal(runInfo.maxPower.power, 2, 1)} +'HP @ ' + ${#numbers.formatDecimal(runInfo.maxPower.rpm, 2, 0)}"></strong>
+                                <strong th:text="'Torgue '+ ${#numbers.formatDecimal(runInfo.maxTorque.torque, 2, 1)} +'lb/ft @ ' + ${#numbers.formatDecimal(runInfo.maxTorque.rpm, 2, 0)}"></strong>
+                                <hr/>
                                 <dl class="dl-horizontal">
                                     <dt>Final gear ratio:</dt>
                                     <dd th:text="${runInfo.finalGearRatio}"></dd>
