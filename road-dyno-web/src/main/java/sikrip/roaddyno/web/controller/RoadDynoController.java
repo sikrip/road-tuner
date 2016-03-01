@@ -1,11 +1,11 @@
 package sikrip.roaddyno.web.controller;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
+import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
@@ -117,32 +117,27 @@ public class RoadDynoController {
 	@RequestMapping(value = "/updaterun", method = RequestMethod.POST)
 	public String updateRun(UploadedRun updatedRunInfo) {
 
-		UploadedRun existingRunInfo = null;
-		for (UploadedRun uploadedRun : uploadedRuns) {
-			if (uploadedRun.getId().equals(updatedRunInfo.getId())) {
-				existingRunInfo = uploadedRun;
-			}
-		}
+		Optional<UploadedRun> existingRunInfo = uploadedRuns.stream().filter(r -> r.equals(updatedRunInfo)).findFirst();
 
-		if (existingRunInfo != null) {
-			existingRunInfo.setFinalGearRatio(updatedRunInfo.getFinalGearRatio());
-			existingRunInfo.setGearRatio(updatedRunInfo.getGearRatio());
-			existingRunInfo.setTyreDiameter(updatedRunInfo.getTyreDiameter());
-			existingRunInfo.setCarWeight(updatedRunInfo.getCarWeight());
-			existingRunInfo.setOccupantsWeight(updatedRunInfo.getOccupantsWeight());
-			existingRunInfo.setFrontalArea(updatedRunInfo.getFrontalArea());
-			existingRunInfo.setCoefficientOfDrag(updatedRunInfo.getCoefficientOfDrag());
+		if (existingRunInfo.isPresent()) {
+			existingRunInfo.get().setFinalGearRatio(updatedRunInfo.getFinalGearRatio());
+			existingRunInfo.get().setGearRatio(updatedRunInfo.getGearRatio());
+			existingRunInfo.get().setTyreDiameter(updatedRunInfo.getTyreDiameter());
+			existingRunInfo.get().setCarWeight(updatedRunInfo.getCarWeight());
+			existingRunInfo.get().setOccupantsWeight(updatedRunInfo.getOccupantsWeight());
+			existingRunInfo.get().setFrontalArea(updatedRunInfo.getFrontalArea());
+			existingRunInfo.get().setCoefficientOfDrag(updatedRunInfo.getCoefficientOfDrag());
 
 			try {
-				DynoSimulationResult result = DynoSimulator.run(existingRunInfo.getResult().getLogEntries(),
-						existingRunInfo.getFinalGearRatio(),
-						existingRunInfo.getGearRatio(),
-						existingRunInfo.getTyreDiameter(),
-						existingRunInfo.getCarWeight(),
-						existingRunInfo.getOccupantsWeight(),
-						existingRunInfo.getFrontalArea(),
-						existingRunInfo.getCoefficientOfDrag());
-				existingRunInfo.setResult(result);
+				DynoSimulationResult result = DynoSimulator.run(existingRunInfo.get().getResult().getLogEntries(),
+						existingRunInfo.get().getFinalGearRatio(),
+						existingRunInfo.get().getGearRatio(),
+						existingRunInfo.get().getTyreDiameter(),
+						existingRunInfo.get().getCarWeight(),
+						existingRunInfo.get().getOccupantsWeight(),
+						existingRunInfo.get().getFrontalArea(),
+						existingRunInfo.get().getCoefficientOfDrag());
+				existingRunInfo.get().setResult(result);
 				vehicleData.updateFromRunInfo(updatedRunInfo);
 			} catch (InvalidSimulationParameterException e) {
 				//TODO handle
@@ -181,16 +176,9 @@ public class RoadDynoController {
 
 	@RequestMapping("edit/{id}")
 	public String edit(@PathVariable String id, Model model) {
-
-		UploadedRun runInfo = null;
-		for (UploadedRun uploadedRun : uploadedRuns) {
-			if (uploadedRun.getId().equals(id)) {
-				runInfo = uploadedRun;
-			}
-		}
-
-		if (runInfo != null) {
-			model.addAttribute("runInfo", runInfo);
+		Optional<UploadedRun> runInfo = uploadedRuns.stream().filter(r -> id.equals(r.getId())).findFirst();
+		if (runInfo.isPresent()) {
+			model.addAttribute("runInfo", runInfo.get());
 			model.addAttribute("nav", "onlinedyno");
 			return "update-run-form";
 		}
@@ -204,6 +192,7 @@ public class RoadDynoController {
 		while (resultIterator.hasNext()) {
 			if (resultIterator.next().getId().equals(id)) {
 				resultIterator.remove();
+				break;
 			}
 		}
 		return "redirect:/onlinedyno";

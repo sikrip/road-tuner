@@ -169,4 +169,24 @@ public class UploadedRun implements RunInfo {
 
 		return this;
 	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) {
+			return true;
+		}
+		if (o == null || getClass() != o.getClass()) {
+			return false;
+		}
+
+		UploadedRun run = (UploadedRun) o;
+
+		return id.equals(run.id);
+
+	}
+
+	@Override
+	public int hashCode() {
+		return id.hashCode();
+	}
 }
