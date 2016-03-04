@@ -10,7 +10,7 @@ h1 small{
     color: white;
 }
 
-form {
+form.form-horizontal {
     background-color: white;
     padding: 15px;
     border-radius: 6px;
