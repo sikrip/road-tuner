@@ -17,28 +17,62 @@
         </h1>
     </div>
 
-    <p>
+    <div class="panel panel-info">
+        <div class="panel-heading">
+            <h3>What is road dyno?</h3>
+        </div>
 
-    <h2>What is road dyno?</h2>
-    With Road Dyno, you can create accurate dyno graphs based on data taken by ECU logs.
-    In order to achieve that, you need to log a few key parameters while making wide open throttle runs in one gear.
-    </p>
+        <div class="panel-body">
+            With Road Dyno, you can create accurate dyno graphs based on data taken by ECU logs.
+            In order to achieve that, you need to log a few key parameters while making wide open throttle runs in one gear.
+        </div>
+    </div>
 
-    <p>
+    <div class="panel panel-info">
+        <div class="panel-heading">
+            <h3>What should be logged?</h3>
+        </div>
 
-    <h2>What should be logged</h2>
-    In order for log file to be used in road dyno, they need contain data from the follwing parameters:
+        <div class="panel-body">
+            <p>In order for log files to be used in road dyno, they need contain the following data:</p>
+            <ul>
+                <li><strong>Engine Runtime</strong></li>
+                <li>
+                    <strong>RPM</strong>
+                </li>
+                <li><strong>TPS</strong></li>
+            </ul>
+        </div>
+    </div>
 
-    <ul>
-        <li><strong>RPM:</strong> If your data logger has more than one entry for RPM such as "Engine RPM" or "Shaft Speed",
-            pick the entry labeled simply "RPM" when possible.
-        </li>
-        <li><strong>Engine Runtime:</strong> Always make sure that engine runtime is included in your logs.</li>
-    </ul>
+    <div class="panel panel-info">
+        <div class="panel-heading">
+            <h3>Where and how to perform the runs?</h3>
+        </div>
 
+        <div class="panel-body">
+            <h4>Select a suitable/flat road or track</h4>
+            <p>
+                <strong>First and foremost, make sure you drive safely!</strong>
+                Try to do all runs on a flat road and preferably always start the runs in the same spot so that
+                subsequent runs can be comparable. If you get unexpectedly low or high numbers, try running in both directions on the same stretch because some
+                roadways can be deceiving and may not actually be level.
+            </p>
 
-    </p>
+            <h4>Making the dyno run</h4>
 
+            <p>Before going to wide open throttle (WOT), select a gear like second or third where you are able to hold full throttle all the way to redline
+                (or wherever you feel comfortable running your vehicle) safely/legally.  Simply get the vehicle rolling at about 2000 RPM in the gear of your
+                choice with your foot off the clutch (manual transmission) or the automatic locked in that gear (autostick). Then smoothly go to full throttle
+                quickly but without "slamming" the throttle. Continue the WOT run until you reach redline or whatever engine speed you choose and then left the
+                throttle. For manual transmissions, lift the throttle first and then press the clutch. Pressing the clutch at the same time as lifting the
+                throttle can cause the engine to "wind up", causing a spike at the end of the dyno graph. For automatics that do not have manual control,
+                you may be forced to do the dyno run in first gear unless you can start the run in second above where the car would normally downshift to first.
+                Just be aware that first gear runs are often less accurate due to wheelspin and the fact that the engine may rev so fast that your data logger
+                may not get enough data points to make a smooth dyno graph.
+            </p>
+        </div>
+    </div>
 
     <div th:include="fragments/fragments :: footer"></div>
 </div>
