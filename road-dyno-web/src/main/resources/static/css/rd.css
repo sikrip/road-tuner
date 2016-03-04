@@ -35,6 +35,6 @@ form span.help-block {
     font-size: 12px;
 }
 
-footer {
+footer, footer a {
     color: white;
 }
