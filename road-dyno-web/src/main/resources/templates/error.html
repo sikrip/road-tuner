@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+
+<head lang="en">
+    <title>Road Dyno | Welcome!</title>
+    <th:block th:include="fragments/includes :: head"></th:block>
+</head>
+
+<body>
+
+<h1 th:replace="fragments/fragments :: header"></h1>
+
+<div class="container">
+    <div class="page-header">
+        <h1>Road dyno <small>For car enthusiasts like you!</small></h1>
+    </div>
+
+    <div class="alert alert-danger" role="alert">
+        <h3>Oh snap!</h3>
+        <p>The following error occurred:</p>
+        <strong th:text="${errorTxt}"></strong>
+        <br/>
+        <br/>
+        <p>Please try again or if you think this should not happen <a href="mailto:road.dyno.app@gmail.com">send me a bug report</a>.</p>
+    </div>
+
+    <div th:include="fragments/fragments :: footer"></div>
+</div>
+
+</body>
+</html>
