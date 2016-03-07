@@ -34,6 +34,7 @@ import sikrip.roaddyno.web.chart.UploadedRun;
 @Scope("session")
 public class RoadDynoController {
 
+	public static final String ERROR_TEXT_KEY = "errorTxt";
 	protected final Logger LOGGER = LoggerFactory.getLogger(RoadDynoController.class);
 
 	public static final int TPS_START_THRESHOLD = 95;
@@ -86,7 +87,7 @@ public class RoadDynoController {
 	}
 
 	@RequestMapping(value = "/addrun", method = RequestMethod.POST)
-	public String addRun(UploadedRun runInfo, @RequestParam("file") MultipartFile file) {
+	public String addRun(UploadedRun runInfo, @RequestParam("file") MultipartFile file, Model model) {
 		if (!file.isEmpty()) {
 			try {
 				EcuLogReader logReader = new MegasquirtLogReader();
@@ -107,19 +108,19 @@ public class RoadDynoController {
 				vehicleData.updateFromRunInfo(runInfo);
 			} catch (Exception e) {
 				LOGGER.error("Could not add run.", e);
-				// TODO hanle
+				model.addAttribute(ERROR_TEXT_KEY, e.getMessage());
 				return "error";
 			}
 		} else {
 			LOGGER.error("Could not add run, uploaded file is empty");
-			// TODO hanle
+			model.addAttribute(ERROR_TEXT_KEY, "Could not add run, uploaded file is empty.");
 			return "error";
 		}
 		return "redirect:/onlinedyno";
 	}
 
 	@RequestMapping(value = "/updaterun", method = RequestMethod.POST)
-	public String updateRun(UploadedRun updatedRunInfo) {
+	public String updateRun(UploadedRun updatedRunInfo, Model model) {
 
 		Optional<UploadedRun> existingRunInfo = uploadedRuns.stream().filter(r -> r.equals(updatedRunInfo)).findFirst();
 
@@ -147,26 +148,27 @@ public class RoadDynoController {
 				return "redirect:/onlinedyno";
 			} catch (Exception e) {
 				LOGGER.error("Could not update run.", e);
-				//TODO handle
+				model.addAttribute(ERROR_TEXT_KEY, e.getMessage());
 				return "error";
 			}
 		} else {
-			LOGGER.error("Could not update run. Run with id " + updatedRunInfo.getId() + " was not found");
-			//TODO handle
+			String error = "Could not update run. Run with id " + updatedRunInfo.getId() + " was not found";
+			LOGGER.error(error);
+			model.addAttribute(ERROR_TEXT_KEY, error);
 			return "error";
 		}
-
 	}
 
 	@RequestMapping(value = "/changeStatus", method = RequestMethod.POST)
-	public String changeStatus(String rid, Boolean active) {
+	public String changeStatus(String rid, Boolean active, Model model) {
 		Optional<UploadedRun> existingRunInfo = uploadedRuns.stream().filter(r -> r.getId().equals(rid)).findFirst();
 		if (existingRunInfo.isPresent()) {
 			existingRunInfo.get().setActive(active == null ? false : active);
 			return "redirect:/onlinedyno";
 		}
-		LOGGER.error("Could not change statue of run with id " + rid + ". Run not found.");
-		//TODO handle
+		String error = "Could not change statue of run with id " + rid + ". Run not found.";
+		LOGGER.error(error);
+		model.addAttribute(ERROR_TEXT_KEY, error);
 		return "error";
 	}
 
@@ -188,7 +190,7 @@ public class RoadDynoController {
 			return "online-dyno-plot";
 		} catch (JsonProcessingException e) {
 			LOGGER.error("Could not plot runs.", e);
-			// TODO hanle
+			model.addAttribute(ERROR_TEXT_KEY, e.getMessage());
 			return "error";
 		}
 	}
@@ -201,8 +203,9 @@ public class RoadDynoController {
 			model.addAttribute("nav", "onlinedyno");
 			return "update-run-form";
 		}
-		LOGGER.error("Could not edit run with id " + id + ". Run not found.");
-		// TODO handle
+		String error = "Could not edit run with id " + id + ". Run not found.";
+		LOGGER.error(error);
+		model.addAttribute(ERROR_TEXT_KEY, error);
 		return "error";
 	}
 
