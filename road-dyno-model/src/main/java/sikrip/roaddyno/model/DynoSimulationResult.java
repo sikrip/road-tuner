@@ -70,7 +70,7 @@ public class DynoSimulationResult {
 		return maxTorque;
 	}
 
-	public DynoSimulationEntry getAt(double rpm) {
+	public DynoSimulationEntry getResultAt(double rpm) {
 		for (DynoSimulationEntry entry : entries) {
 			if (entry.getRpm() == rpm) {
 				return entry;
@@ -79,7 +79,7 @@ public class DynoSimulationResult {
 		return null;
 	}
 
-	public LogValue<?> getAt(double rpm, String field) {
+	public LogValue<?> getLogEntryAt(double rpm, String field) {
 		for (int i = 0; i < entries.size(); i++) {
 			DynoSimulationEntry entry = entries.get(i);
 			if (entry.getRpm() == rpm) {

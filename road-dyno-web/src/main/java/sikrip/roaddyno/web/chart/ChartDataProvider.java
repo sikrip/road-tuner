@@ -138,7 +138,7 @@ public class ChartDataProvider {
 
 				DynoSimulationResult simulationResult = runs.get(iRun).getResult();
 
-				DynoSimulationEntry simulationEntry = simulationResult.getAt(rpm);
+				DynoSimulationEntry simulationEntry = simulationResult.getResultAt(rpm);
 
 				if (simulationEntry != null) {
 					String power = df.format(simulationEntry.getPower());
@@ -193,7 +193,7 @@ public class ChartDataProvider {
 			dataEntry.put(RPM_AXIS, rpm);
 
 			for (int iRun = 0; iRun < runs.size(); iRun++) {
-				LogValue<?> logValue = runs.get(iRun).getResult().getAt(rpm, field);
+				LogValue<?> logValue = runs.get(iRun).getResult().getLogEntryAt(rpm, field);
 				if (logValue != null) {
 					dataEntry.put(field  + iRun, df.format(logValue.getValue()));
 				}
