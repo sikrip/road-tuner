@@ -15,6 +15,8 @@ import sikrip.roaddyno.model.LogEntry;
  */
 public final class DynoSimulator {
 
+	public static final int MIN_LOG_ENTRIES_COUNT = 10;
+
 	private DynoSimulator() {
 	}
 
@@ -40,11 +42,16 @@ public final class DynoSimulator {
 	 * @return a dyno run that holds the result of the dyno simulation
 	 */
 	public static DynoSimulationResult run(List<LogEntry> logEntries, double fgr, double gr, double tyreDiameter,
-			double carWeight, double occupantsWeight, double fa, double cd) throws InvalidSimulationParameterException {
+			double carWeight, double occupantsWeight, double fa, double cd) throws SimulationException {
 
 		validateParameters(logEntries, fgr, gr, tyreDiameter, carWeight, occupantsWeight, fa, cd);
 
-		Iterator<LogEntry> logEntryIterator = smoothRPM(logEntries).iterator();
+		Iterator<LogEntry> logEntryIterator = null;
+		try {
+			logEntryIterator = smoothRPM(logEntries).iterator();
+		} catch (Exception e) {
+			throw new SimulationException(e.getMessage());
+		}
 		LogEntry from = null;
 		LogEntry to = null;
 		List<DynoSimulationEntry> dynoRunEntries = new ArrayList<>();
@@ -80,30 +87,30 @@ public final class DynoSimulator {
 	}
 
 	private static void validateParameters(List<LogEntry> logEntries, double fgr, double gr, double tyreDiameter,
-			double carWeight, double occupantsWeight, double fa, double cd) throws InvalidSimulationParameterException {
-		if (logEntries.size() < 5) {
-			throw new InvalidSimulationParameterException("Not enough log entries provided. Try a longer WOT run.");
+			double carWeight, double occupantsWeight, double fa, double cd) throws SimulationException {
+		if (logEntries.size() < MIN_LOG_ENTRIES_COUNT) {
+			throw new SimulationException("Not enough log entries provided. Try a longer WOT run.");
 		}
 		if (fgr <= 0) {
-			throw new InvalidSimulationParameterException("Final gear ratio must be a positive number.");
+			throw new SimulationException("Final gear ratio must be a positive number.");
 		}
 		if (gr <= 0) {
-			throw new InvalidSimulationParameterException("Gear ratio must be a positive number.");
+			throw new SimulationException("Gear ratio must be a positive number.");
 		}
 		if (tyreDiameter <= 0) {
-			throw new InvalidSimulationParameterException("Tyre diameter must be a positive number.");
+			throw new SimulationException("Tyre diameter must be a positive number.");
 		}
 		if (carWeight <= 0) {
-			throw new InvalidSimulationParameterException("Curb weight must be a positive number.");
+			throw new SimulationException("Curb weight must be a positive number.");
 		}
 		if (occupantsWeight <= 0) {
-			throw new InvalidSimulationParameterException("Occupants weight must be a positive number.");
+			throw new SimulationException("Occupants weight must be a positive number.");
 		}
 		if (fa <= 0) {
-			throw new InvalidSimulationParameterException("Frontal area must be a positive number.");
+			throw new SimulationException("Frontal area must be a positive number.");
 		}
 		if (cd <= 0) {
-			throw new InvalidSimulationParameterException("Coefficient of drag must be a positive number.");
+			throw new SimulationException("Coefficient of drag must be a positive number.");
 		}
 	}
 

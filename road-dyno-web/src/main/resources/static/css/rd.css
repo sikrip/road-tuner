@@ -31,10 +31,6 @@ input.form-control + span {
     text-align: left;
 }
 
-form span.help-block {
-    font-size: 12px;
-}
-
 footer, footer a {
     color: white;
 }
