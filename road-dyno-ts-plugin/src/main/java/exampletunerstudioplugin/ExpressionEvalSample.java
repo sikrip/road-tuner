@@ -37,6 +37,7 @@ import com.efiAnalytics.plugin.ecu.MathException;
 /**
  * @author Philip Tobin
  */
+@Deprecated
 public class ExpressionEvalSample extends JPanel {
 
 	ControllerAccess controllerAccess = null;

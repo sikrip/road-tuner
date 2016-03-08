@@ -4,18 +4,44 @@ import java.util.logging.Logger;
 
 import javax.swing.*;
 
-
-
 import com.efiAnalytics.plugin.ApplicationPlugin;
 import com.efiAnalytics.plugin.ecu.ControllerAccess;
+import com.efiAnalytics.plugin.ecu.OutputChannelClient;
 
-public class RoadDynoTSPlugin implements ApplicationPlugin {
+public class RoadDynoTSPlugin implements ApplicationPlugin, OutputChannelClient {
 
 	private static final Logger LOGGER = Logger.getLogger("RoadDynoTSPlugin");
+
+	public static final int TPS_THRESHOLD = 96;
+	public static final String TIME_CHANNEL = "Time";
+	public static final String RPM_CHANNEL = "RPM";
+	public static final String TPS_CHANNEL = "TPS";
 
 	private ControllerAccess controllerAccess;
 
 	private PluginPanel pluginPanel;
+
+	private EcuLogger ecuLogger;
+
+	public boolean logging = false;
+
+	private String getMainConfigName() {
+		return controllerAccess.getEcuConfigurationNames()[0];
+	}
+
+	private void startLogging() {
+		ecuLogger.clear();
+		ecuLogger.registerChannel(getMainConfigName(), TIME_CHANNEL);
+		ecuLogger.registerChannel(getMainConfigName(), RPM_CHANNEL);
+		ecuLogger.registerChannel(getMainConfigName(), TPS_CHANNEL);
+		logging = true;
+	}
+
+	private void stopLogging() {
+		controllerAccess.getOutputChannelServer().unsubscribe(ecuLogger);
+		logging = false;
+		pluginPanel.generatePlot(ecuLogger.getLogEntries());
+	}
 
 	@Override
 	public String getIdName() {
@@ -24,8 +50,8 @@ public class RoadDynoTSPlugin implements ApplicationPlugin {
 
 	@Override
 	public int getPluginType() {
-		//return TAB_PANEL; TODO does this works?
-		return PERSISTENT_DIALOG_PANEL;
+		return TAB_PANEL; // TODO does this works?
+		//return PERSISTENT_DIALOG_PANEL;
 	}
 
 	@Override
@@ -45,8 +71,8 @@ public class RoadDynoTSPlugin implements ApplicationPlugin {
 			LOGGER.info(config);
 		}
 		this.controllerAccess = controllerAccess;
-
 		pluginPanel = PluginPanel.create();
+		ecuLogger = EcuLogger.create(controllerAccess);
 	}
 
 	@Override
@@ -91,8 +117,16 @@ public class RoadDynoTSPlugin implements ApplicationPlugin {
 		return 1.0;
 	}
 
-
-	public static void main(String[] args){
+	public static void main(String[] args) {
 		//TODO check if this is needed
+	}
+
+	@Override
+	public void setCurrentOutputChannelValue(String ignored, double v) {
+		if (v >= TPS_THRESHOLD) {
+			startLogging();
+		} else if (logging) {
+			stopLogging();
+		}
 	}
 }

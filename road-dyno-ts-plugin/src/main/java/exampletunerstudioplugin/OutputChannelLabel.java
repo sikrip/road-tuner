@@ -22,6 +22,7 @@ import javax.swing.JPanel;
  *
  * @author Philip Tobin
  */
+@Deprecated
 public class OutputChannelLabel extends JPanel implements OutputChannelClient{
     OutputChannel outputChannel = null;
     JLabel lblValue = null;

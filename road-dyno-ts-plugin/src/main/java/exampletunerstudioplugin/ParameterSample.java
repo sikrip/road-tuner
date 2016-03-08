@@ -46,6 +46,7 @@ import javax.swing.JTextField;
  *
  * @author Philip Tobin
  */
+@Deprecated
 public class ParameterSample extends JPanel implements ControllerParameterChangeListener{
 
     public final static String NO_PARAMETER = "";

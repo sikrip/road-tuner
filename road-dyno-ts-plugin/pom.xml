@@ -43,6 +43,19 @@
             <artifactId>tsplugin</artifactId>
             <version>2.0</version>
         </dependency>
+
+        <dependency>
+            <groupId>sikrip-road-dyno</groupId>
+            <artifactId>road-dyno-model</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>sikrip-road-dyno</groupId>
+            <artifactId>road-dyno-engine</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+
     </dependencies>
 
 

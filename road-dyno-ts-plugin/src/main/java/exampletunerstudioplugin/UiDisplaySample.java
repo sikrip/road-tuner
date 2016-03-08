@@ -45,6 +45,7 @@ import javax.swing.JPanel;
  *
  * @author Philip Tobin
  */
+@Deprecated
 public class UiDisplaySample extends JPanel{
     ControllerAccess controllerAccess = null;
     JPanel pWidget = new JPanel();

@@ -21,10 +21,12 @@ import com.efiAnalytics.plugin.ecu.ControllerAccess;
 import com.efiAnalytics.plugin.ecu.ControllerException;
 import com.efiAnalytics.plugin.ecu.MathException;
 import com.efiAnalytics.plugin.ecu.OutputChannel;
+import com.efiAnalytics.plugin.ecu.servers.OutputChannelServer;
 
 /**
  * @author Philip Tobin
  */
+@Deprecated
 public class ExampleTunerStudioPlugin extends JPanel implements ApplicationPlugin {
 
 	JLabel rpmReadout = new JLabel();
