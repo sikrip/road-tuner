@@ -14,6 +14,29 @@
     <name>Road dyno Tuner Studio Plugin</name>
     <description>A plugin that simulates a dynamometer by analyzing your wot runs on the fly!</description>
 
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>2.6</version>
+                <configuration>
+                    <archive>
+                        <index>true</index>
+                        <manifest>
+                            <addClasspath>false</addClasspath>
+                        </manifest>
+                        <manifestEntries>
+                            <ApplicationPlugin>sikrip.roaddyno.tsplugin.RoadDynoTSPlugin</ApplicationPlugin>
+                            <Main-Class>sikrip.roaddyno.tsplugin.RoadDynoTSPlugin</Main-Class>
+                            <Class-Path>lib/TunerStudioPluginAPI-javadoc.jar lib/TunerStudioPluginAPI.jar</Class-Path>
+                        </manifestEntries>
+                    </archive>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
     <dependencies>
         <dependency>
             <groupId>efianalitycs</groupId>

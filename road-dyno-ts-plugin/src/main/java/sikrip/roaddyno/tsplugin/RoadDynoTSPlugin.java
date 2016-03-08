@@ -1,16 +1,17 @@
 package sikrip.roaddyno.tsplugin;
 
+import java.util.logging.Logger;
+
 import javax.swing.*;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
 
 import com.efiAnalytics.plugin.ApplicationPlugin;
 import com.efiAnalytics.plugin.ecu.ControllerAccess;
 
 public class RoadDynoTSPlugin implements ApplicationPlugin {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(RoadDynoTSPlugin.class);
+	private static final Logger LOGGER = Logger.getLogger("RoadDynoTSPlugin");
 
 	private ControllerAccess controllerAccess;
 
@@ -57,7 +58,7 @@ public class RoadDynoTSPlugin implements ApplicationPlugin {
 
 	@Override
 	public boolean isMenuEnabled() {
-		return false;
+		return true;
 	}
 
 	@Override
@@ -88,5 +89,10 @@ public class RoadDynoTSPlugin implements ApplicationPlugin {
 	@Override
 	public double getRequiredPluginSpec() {
 		return 1.0;
+	}
+
+
+	public static void main(String[] args){
+		//TODO check if this is needed
 	}
 }
