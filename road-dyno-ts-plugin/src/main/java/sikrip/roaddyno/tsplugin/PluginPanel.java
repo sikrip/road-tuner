@@ -15,7 +15,7 @@ public class PluginPanel extends JPanel {
 		pluginPanel.setPreferredSize(new Dimension(800, 600));
 		pluginPanel.setLayout(new BorderLayout());
 
-		pluginPanel.add(new JLabel("Road dyno TS plugin!"), BorderLayout.NORTH);
+		pluginPanel.add(new JLabel("Road dyno TS plugin"), BorderLayout.NORTH);
 		return pluginPanel;
 	}
 

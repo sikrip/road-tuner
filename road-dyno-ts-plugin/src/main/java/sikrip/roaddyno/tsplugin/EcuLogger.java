@@ -7,19 +7,12 @@ import java.util.Map;
 
 import com.efiAnalytics.plugin.ecu.ControllerAccess;
 import com.efiAnalytics.plugin.ecu.ControllerException;
-import com.efiAnalytics.plugin.ecu.OutputChannel;
 import com.efiAnalytics.plugin.ecu.OutputChannelClient;
 
 import sikrip.roaddyno.model.LogEntry;
 import sikrip.roaddyno.model.LogValue;
 
-import static sikrip.roaddyno.tsplugin.RoadDynoTSPlugin.*;
-
 public final class EcuLogger implements OutputChannelClient {
-
-	private static final String TIME_CHANNEL = "Time";
-	private static final String RPM_CHANNEL = "RPM";
-	private static final String TPS_CHANNEL = "TPS";
 
 	private final ControllerAccess controllerAccess;
 	private final Map<String, List<Double>> loggedValues = new HashMap<>();
@@ -36,15 +29,19 @@ public final class EcuLogger implements OutputChannelClient {
 		loggedValues.clear();
 	}
 
-	public void registerChannel(String configurationName, String channelName) {
-		try {
-			loggedValues.put(channelName, new ArrayList<Double>());
-			OutputChannel outputChannel = controllerAccess.getOutputChannelServer().getOutputChannel(configurationName, channelName);
-			controllerAccess.getOutputChannelServer().subscribe(configurationName, outputChannel.getName(), this);
-		} catch (ControllerException e) {
-			//TODO handle
-			e.printStackTrace();
-		}
+	public void startLogging(String configurationName, String timeChannelName, String rpmChannelName, String tpsChannelName) throws ControllerException {
+		loggedValues.put(timeChannelName, new ArrayList<Double>());
+		controllerAccess.getOutputChannelServer().subscribe(configurationName, timeChannelName, this);
+
+		loggedValues.put(rpmChannelName, new ArrayList<Double>());
+		controllerAccess.getOutputChannelServer().subscribe(configurationName, rpmChannelName, this);
+
+		loggedValues.put(tpsChannelName, new ArrayList<Double>());
+		controllerAccess.getOutputChannelServer().subscribe(configurationName, tpsChannelName, this);
+	}
+
+	public void stopLogging() {
+		controllerAccess.getOutputChannelServer().unsubscribe(this);
 	}
 
 	@Override
@@ -56,13 +53,13 @@ public final class EcuLogger implements OutputChannelClient {
 
 		List<LogEntry> logEntries = new ArrayList<>();
 
-		for (int i = 0; i < loggedValues.get(TIME_CHANNEL).size(); i++) {
+		/*for (int i = 0; i < loggedValues.get(TIME_CHANNEL).size(); i++) {
 			Map<String, LogValue<Double>> values = new HashMap<>();
 			values.put(TIME_CHANNEL, new LogValue<>(loggedValues.get(TIME_CHANNEL).get(i), TIME_CHANNEL));
 			values.put(RPM_CHANNEL, new LogValue<>(loggedValues.get(RPM_CHANNEL).get(i), RPM_CHANNEL));
 			values.put(TPS_CHANNEL, new LogValue<>(loggedValues.get(TPS_CHANNEL).get(i), TPS_CHANNEL));
 			logEntries.add(new LogEntry(values, TIME_CHANNEL, RPM_CHANNEL, TPS_CHANNEL));
-		}
+		}*/
 
 		return logEntries;
 	}
