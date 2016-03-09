@@ -17,6 +17,10 @@ import static sikrip.roaddyno.tsplugin.RoadDynoTSPlugin.*;
 
 public final class EcuLogger implements OutputChannelClient {
 
+	private static final String TIME_CHANNEL = "Time";
+	private static final String RPM_CHANNEL = "RPM";
+	private static final String TPS_CHANNEL = "TPS";
+
 	private final ControllerAccess controllerAccess;
 	private final Map<String, List<Double>> loggedValues = new HashMap<>();
 
