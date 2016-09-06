@@ -31,7 +31,7 @@
 
         <dependency>
             <groupId>sikrip-road-dyno</groupId>
-            <artifactId>road-dyno-log-reader</artifactId>
+            <artifactId>road-dyno-ecu-log-reader</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
 
