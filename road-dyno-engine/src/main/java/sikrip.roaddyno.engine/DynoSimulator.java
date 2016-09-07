@@ -48,7 +48,7 @@ public final class DynoSimulator {
 
 		Iterator<LogEntry> logEntryIterator = null;
 		try {
-			logEntryIterator = smoothRPM(logEntries).iterator();
+			logEntryIterator = RPMSmoother.smoothRPM(logEntries).iterator();
 		} catch (Exception e) {
 			throw new SimulationException(e.getMessage());
 		}
@@ -112,36 +112,5 @@ public final class DynoSimulator {
 		if (cd <= 0) {
 			throw new SimulationException("Coefficient of drag must be a positive number.");
 		}
-	}
-
-	/**
-	 * Smooths the RPM values of the given log entries using the Local Regression Algorithm (Loess, Lowess).
-	 *
-	 * @param rawEntries
-	 * 		the raw log entries
-	 * @return the log entries with the RPM values smoothed
-	 */
-	private static List<LogEntry> smoothRPM(List<LogEntry> rawEntries) {
-
-		List<LogEntry> smoothedEntries = new ArrayList<>();
-
-		double[] timeValues = new double[rawEntries.size()];
-		double[] rawRPMValues = new double[rawEntries.size()];
-
-		for (int i = 0; i < rawEntries.size(); i++) {
-			LogEntry logEntry = rawEntries.get(i);
-			timeValues[i] = logEntry.getTime().getValue();
-			rawRPMValues[i] = logEntry.getRpm().getValue();
-		}
-
-		double[] smoothedRPMValues = new LoessInterpolator().smooth(timeValues, rawRPMValues);
-
-		for (int i = 0; i < rawEntries.size(); i++) {
-			LogEntry logEntryCopy = rawEntries.get(i).getCopy();
-			logEntryCopy.getRpm().setValue(smoothedRPMValues[i]);
-			smoothedEntries.add(logEntryCopy);
-		}
-
-		return smoothedEntries;
 	}
 }

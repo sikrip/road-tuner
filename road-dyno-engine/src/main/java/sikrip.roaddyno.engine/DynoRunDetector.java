@@ -3,13 +3,14 @@ package sikrip.roaddyno.engine;
 import java.util.List;
 
 import sikrip.roaddyno.model.LogEntry;
+import sikrip.roaddyno.model.LogValue;
 
 /**
  * Responsible to detect the start and the finish of a dyno run.
  */
 final class DynoRunDetector {
 
-	private final static int NUMBER_OF_ACCELERATION_ENTRIES = 30;
+	private final static int NUMBER_OF_ACCELERATION_ENTRIES = 100;
 	private final static int NUMBER_OF_DECELERATION_ENTRIES = 10;
 
 	private DynoRunDetector() {
@@ -21,7 +22,7 @@ final class DynoRunDetector {
 			throw new IllegalArgumentException("Not enough log entries.");
 		}
 
-		Double velocity = logEntries.get(startIdx).getRpm().getValue();
+		double velocity = logEntries.get(startIdx).getRpm().getValue();
 		int iLogEntry = startIdx + 1;
 
 		int accelerationCount = 0;
@@ -59,4 +60,11 @@ final class DynoRunDetector {
 
 		return new int[] { start, finish };
 	}
+
+/*	private static double getMaxAcceleration(List<LogEntry> logEntries){
+		for (int iLog = 0; iLog < logEntries.size()-1; iLog++) {
+			Double timeFrom = logEntries.get(iLog).getTime().getValue();
+			Double speedFrom = logEntries.get(iLog).getRpm().getValue();
+		}
+	}*/
 }
