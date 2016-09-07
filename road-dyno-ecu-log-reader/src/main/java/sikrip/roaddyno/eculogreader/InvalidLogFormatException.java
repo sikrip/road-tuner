@@ -1,4 +1,4 @@
-package sikrip.roaddyno.logreader;
+package sikrip.roaddyno.eculogreader;
 
 
 public class InvalidLogFormatException extends Exception {

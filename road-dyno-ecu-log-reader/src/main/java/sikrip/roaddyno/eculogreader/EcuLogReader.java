@@ -1,4 +1,4 @@
-package sikrip.roaddyno.logreader;
+package sikrip.roaddyno.eculogreader;
 
 import java.io.IOException;
 import java.io.InputStream;

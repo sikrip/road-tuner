@@ -22,8 +22,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import sikrip.roaddyno.engine.DynoSimulator;
-import sikrip.roaddyno.logreader.EcuLogReader;
-import sikrip.roaddyno.logreader.MegasquirtLogReader;
+import sikrip.roaddyno.eculogreader.EcuLogReader;
+import sikrip.roaddyno.eculogreader.MegasquirtLogReader;
 import sikrip.roaddyno.model.DynoSimulationResult;
 import sikrip.roaddyno.model.LogEntry;
 import sikrip.roaddyno.web.chart.ChartDataProvider;

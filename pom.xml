@@ -13,6 +13,7 @@
         <module>road-dyno-model</module>
         <module>road-dyno-engine</module>
         <module>road-dyno-ecu-log-reader</module>
+        <module>road-dyno-gps-log-reader</module>
         <module>road-dyno-standalone</module>
         <module>road-dyno-web</module>
         <module>road-dyno-ts-plugin</module>

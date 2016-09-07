@@ -1,3 +1,5 @@
+package sikrip.roaddyno.eculogreader;
+
 import static org.junit.Assert.*;
 
 import java.io.IOException;
@@ -6,9 +8,6 @@ import java.util.List;
 
 import org.junit.Test;
 
-import sikrip.roaddyno.logreader.EcuLogReader;
-import sikrip.roaddyno.logreader.InvalidLogFormatException;
-import sikrip.roaddyno.logreader.MegasquirtLogReader;
 import sikrip.roaddyno.model.LogEntry;
 
 /**
