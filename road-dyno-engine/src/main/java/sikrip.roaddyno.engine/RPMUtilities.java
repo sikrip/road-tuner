@@ -161,6 +161,25 @@ final class RPMUtilities {
 		return minIdx;
 	}
 
+	private static double[] smooth(double[] values) {
+		final int SAMPLES = 5;
+		final double[] smoothed = new double[values.length];
+
+		double sum = 0;
+		for (int i = 0; i < values.length; i++) {
+			if (i>0 && i % SAMPLES == 0) {
+				double value = sum / SAMPLES;
+				for (int j = i - SAMPLES; j < i; j++) {
+					smoothed[j] = value;
+				}
+				sum = 0;
+			} else {
+				sum += values[i];
+			}
+		}
+		return smoothed;
+	}
+
 	private static class RawRPMValuesExtractor {
 
 		private List<LogEntry> rawEntries;
