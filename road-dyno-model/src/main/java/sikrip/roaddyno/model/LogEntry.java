@@ -43,4 +43,8 @@ public class LogEntry {
 
 		return new LogEntry(valuesCopy, timeKey, rpmKey, tpsKey);
 	}
+
+	@Override public String toString() {
+		return String.format("LogEntry Time %s, RPM %s, TPS %s", getTime(), getRpm(), getTps());
+	}
 }

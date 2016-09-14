@@ -47,20 +47,21 @@ public class DynoRunDetectorTest {
 			logEntries.add(new LogEntry(values, "Time", "RPM", "TPS"));
 		}
 
-		int[] dynoRunBoundaries = DynoRunDetector.getDynoRunBoundaries(logEntries, 0);
-		assertEquals(50 + 30, dynoRunBoundaries[0]);
-		assertEquals(2049, dynoRunBoundaries[1]);
+		DynoRunDetector.getAccelerationRuns(logEntries);
 	}
 
 	@Test
 	public void verifySampleMSLFile() throws Exception {
+
 		EcuLogReader logReader = new MegasquirtLogReader();
-		List<LogEntry> logEntries = logReader.readLog(getTestResourceUrl("/sample-dyno-run.msl").getPath(), 0);
+		//List<LogEntry> logEntries = logReader.readLog(getTestResourceUrl("/sample-dyno-run.msl").getPath(), 0);
+		List<LogEntry> logEntries = logReader.readLog(getTestResourceUrl("/sample-dyno-run-1.msl").getPath(), 0);
 
-		int[] dynoRunBoundaries = DynoRunDetector.getDynoRunBoundaries(RPMSmoother.smoothRPM(logEntries), 0);
+		AccelerationBounds  accelerationBounds = DynoRunDetector.getAccelerationRuns(logEntries);
 
-		System.out.println("" + dynoRunBoundaries[0] + " " + logEntries.get(dynoRunBoundaries[0]).getRpm() + " " + logEntries.get(dynoRunBoundaries[0]).getTps());
-		System.out.println("" + dynoRunBoundaries[1] + " " + logEntries.get(dynoRunBoundaries[1]).getRpm() + " " + logEntries.get(dynoRunBoundaries[1]).getTps());
+		System.out.println(accelerationBounds);
+		System.out.println("Start: "+logEntries.get(accelerationBounds.getStart()));
+		System.out.println("End: "+logEntries.get(accelerationBounds.getEnd()));
 	}
 
 	public static URL getTestResourceUrl(String filename) {

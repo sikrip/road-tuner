@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.commons.math3.analysis.interpolation.LoessInterpolator;
-
 import sikrip.roaddyno.model.DynoSimulationEntry;
 import sikrip.roaddyno.model.DynoSimulationResult;
 import sikrip.roaddyno.model.LogEntry;
@@ -48,7 +46,7 @@ public final class DynoSimulator {
 
 		Iterator<LogEntry> logEntryIterator = null;
 		try {
-			logEntryIterator = RPMSmoother.smoothRPM(logEntries).iterator();
+			logEntryIterator = RPMUtilities.smoothRPM(logEntries).iterator();
 		} catch (Exception e) {
 			throw new SimulationException(e.getMessage());
 		}

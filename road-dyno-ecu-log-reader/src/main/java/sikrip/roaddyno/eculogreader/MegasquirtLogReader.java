@@ -23,6 +23,7 @@ public final class MegasquirtLogReader implements EcuLogReader {
 	/**
 	 * RPM value that one log entry RPM cannot be lower than the previous.
 	 */
+	@Deprecated
 	public static final int RPM_NOISE_THRESHOLD = 800;
 
 	@Override
@@ -77,12 +78,10 @@ public final class MegasquirtLogReader implements EcuLogReader {
 			}
 		}
 
-		List<LogEntry> trimmedLogValues = trimByRPM(logEntries);
-
-		if (trimmedLogValues.size() == 0) {
+		if (logEntries.size() == 0) {
 			throw new InvalidLogFormatException("Invalid log file format. No log entries found.");
 		}
-		return trimmedLogValues;
+		return logEntries;
 
 	}
 
@@ -93,6 +92,7 @@ public final class MegasquirtLogReader implements EcuLogReader {
 	 * 		the initial log entries
 	 * @return the trimmed log entries
 	 */
+	@Deprecated
 	private List<LogEntry> trimByRPM(List<LogEntry> logEntries) {
 
 		int maxIdx = logEntries.size();
