@@ -1,7 +1,5 @@
 package sikrip.roaddyno.engine;
 
-import static junit.framework.TestCase.assertEquals;
-
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -47,7 +45,7 @@ public class DynoRunDetectorTest {
 			logEntries.add(new LogEntry(values, "Time", "RPM", "TPS"));
 		}
 
-		DynoRunDetector.getAccelerationRuns(logEntries);
+		DynoRunDetector.getAccelerationBounds(logEntries);
 	}
 
 	@Test
@@ -57,11 +55,11 @@ public class DynoRunDetectorTest {
 		//List<LogEntry> logEntries = logReader.readLog(getTestResourceUrl("/sample-dyno-run.msl").getPath(), 0);
 		List<LogEntry> logEntries = logReader.readLog(getTestResourceUrl("/sample-dyno-run-1.msl").getPath(), 0);
 
-		AccelerationBounds  accelerationBounds = DynoRunDetector.getAccelerationRuns(logEntries);
+		AccelerationBounds accelerationBounds = DynoRunDetector.getAccelerationBounds(logEntries).get(0	);
 
 		System.out.println(accelerationBounds);
-		System.out.println("Start: "+logEntries.get(accelerationBounds.getStart()));
-		System.out.println("End: "+logEntries.get(accelerationBounds.getEnd()));
+		System.out.println("Start: " + logEntries.get(accelerationBounds.getStart()));
+		System.out.println("End: " + logEntries.get(accelerationBounds.getEnd()));
 	}
 
 	public static URL getTestResourceUrl(String filename) {

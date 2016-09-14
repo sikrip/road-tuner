@@ -1,6 +1,8 @@
 package sikrip.roaddyno.engine;
 
-
+/**
+ * Holds the start and end index of an acceleration run.
+ */
 final class AccelerationBounds {
 
 	private final int start;
@@ -19,7 +21,8 @@ final class AccelerationBounds {
 		return end;
 	}
 
-	@Override public String toString() {
+	@Override
+	public String toString() {
 		return "AccelerationBounds{" +
 				"start=" + start +
 				", end=" + end +
