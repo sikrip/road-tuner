@@ -24,14 +24,14 @@ public class DynoRunDetectorTest {
 		List<LogEntry> logEntries = logReader.readLog(getTestResourceUrl("/sample-dyno-run.msl").getPath(), 0);
 		AccelerationBounds accelerationBounds = DynoRunDetector.getAccelerationBounds(logEntries).get(0);
 
-		//System.out.println("sample-dyno-run.msl " + accelerationBounds);
+		System.out.println("sample-dyno-run.msl " + accelerationBounds);
 		assertTrue(accelerationBounds.getStart() > 470);
 		assertTrue(accelerationBounds.getStart() < 615);
 
 		logEntries = logReader.readLog(getTestResourceUrl("/sample-dyno-run-1.msl").getPath(), 0);
 		accelerationBounds = DynoRunDetector.getAccelerationBounds(logEntries).get(0);
 
-		//System.out.println("sample-dyno-run-1.msl " + accelerationBounds);
+		System.out.println("sample-dyno-run-1.msl " + accelerationBounds);
 		assertTrue(accelerationBounds.getStart() > 680);
 		assertTrue(accelerationBounds.getStart() < 800);
 	}

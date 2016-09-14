@@ -1,7 +1,6 @@
 package sikrip.roaddyno.engine;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.math3.analysis.UnivariateFunction;
@@ -30,17 +29,11 @@ final class RPMUtilities {
 
 		List<LogEntry> smoothedEntries = new ArrayList<>();
 
-		double[] timeValues = new double[rawEntries.size()];
-		double[] rawRPMValues = new double[rawEntries.size()];
+		RawRPMValuesExtractor rawRPMValuesExtractor = new RawRPMValuesExtractor(rawEntries).invoke();
+		double[] timeValues = rawRPMValuesExtractor.getTimeValues();
+		double[] rawRPMValues = rawRPMValuesExtractor.getRawRPMValues();
 
-		for (int i = 0; i < rawEntries.size(); i++) {
-			LogEntry logEntry = rawEntries.get(i);
-			timeValues[i] = logEntry.getTime().getValue();
-			rawRPMValues[i] = logEntry.getRpm().getValue();
-		}
-		final double[] unitWeights = new double[timeValues.length];
-		Arrays.fill(unitWeights, 0.1);
-		double[] smoothedRPMValues = new LoessInterpolator().smooth(timeValues, rawRPMValues, unitWeights);
+		double[] smoothedRPMValues = new LoessInterpolator().smooth(timeValues, rawRPMValues);
 
 		for (int i = 0; i < rawEntries.size(); i++) {
 			LogEntry logEntryCopy = rawEntries.get(i).getCopy();
@@ -53,35 +46,13 @@ final class RPMUtilities {
 
 	static AccelerationBounds getMaxAccelerationBounds(List<LogEntry> rawEntries) {
 
-		RawValuesExtractor rawValuesExtractor = new RawValuesExtractor(rawEntries).invoke();
-		double[] timeValues = rawValuesExtractor.getTimeValues();
-		double[] rawRPMValues = rawValuesExtractor.getRawRPMValues();
+		final int logSize = rawEntries.size();
 
-		// function to be differentiated
-		UnivariateInterpolator interpolator = new SplineInterpolator();
-		UnivariateFunction basicF = interpolator.interpolate(timeValues, rawRPMValues);
+		RawRPMValuesExtractor rawRPMValuesExtractor = new RawRPMValuesExtractor(rawEntries).invoke();
+		double[] timeValues = rawRPMValuesExtractor.getTimeValues();
+		double[] rawRPMValues = rawRPMValuesExtractor.getRawRPMValues();
 
-		// create a differentiator using 5 points and 0.01 step
-		FiniteDifferencesDifferentiator differentiator = new FiniteDifferencesDifferentiator(5, 0.01);
-
-		// create a new function that computes both the value and the derivatives
-		// using DerivativeStructure
-		UnivariateDifferentiableFunction completeF = differentiator.differentiate(basicF);
-
-		double[] rpmDS = new double[rawRPMValues.length];
-
-		for (int i = 0; i < timeValues.length; i++) {
-			try {
-				double timeValue = timeValues[i];
-				DerivativeStructure xDS = new DerivativeStructure(1, 3, 0, timeValue);
-				DerivativeStructure yDS = completeF.value(xDS);
-				rpmDS[i] = yDS.getPartialDerivative(1);
-			} catch (Exception e) {
-				rpmDS[i] = Double.MIN_VALUE;
-			}
-		}
-
-		clearInvalidValues(rpmDS);
+		double[] rpmDS = getDSYValues(timeValues, rawRPMValues, 1);
 
 		double target = findMax(rpmDS) * 0.7;
 		int start = -1;
@@ -92,39 +63,19 @@ final class RPMUtilities {
 			}
 		}
 
-		int end = findIndexOfMin(rpmDS, start+1);
+		if (start >= logSize - 1) {
+			throw new IllegalStateException("No valid acceleration exists in the provided log entries.");
+		}
+
+		int end = findIndexOfMin(rpmDS, start);
 
 		List<LogEntry> smoothedEntries = smoothRPM(rawEntries.subList(0, end));
 
-		rawValuesExtractor = new RawValuesExtractor(smoothedEntries).invoke();
-		timeValues = rawValuesExtractor.getTimeValues();
-		rawRPMValues = rawValuesExtractor.getRawRPMValues();
+		rawRPMValuesExtractor = new RawRPMValuesExtractor(smoothedEntries).invoke();
+		timeValues = rawRPMValuesExtractor.getTimeValues();
+		rawRPMValues = rawRPMValuesExtractor.getRawRPMValues();
 
-		// function to be differentiated
-		interpolator = new SplineInterpolator();
-		basicF = interpolator.interpolate(timeValues, rawRPMValues);
-
-		// create a differentiator using 5 points and 0.01 step
-		differentiator = new FiniteDifferencesDifferentiator(5, 0.01);
-
-		// create a new function that computes both the value and the derivatives
-		// using DerivativeStructure
-		completeF = differentiator.differentiate(basicF);
-
-		rpmDS = new double[rawRPMValues.length];
-
-		for (int i = 0; i < timeValues.length; i++) {
-			try {
-				double timeValue = timeValues[i];
-				DerivativeStructure xDS = new DerivativeStructure(1, 3, 0, timeValue);
-				DerivativeStructure yDS = completeF.value(xDS);
-				rpmDS[i] = yDS.getPartialDerivative(1);
-			} catch (Exception e) {
-				rpmDS[i] = Double.MIN_VALUE;
-			}
-		}
-
-		clearInvalidValues(rpmDS);
+		rpmDS = getDSYValues(timeValues, rawRPMValues, 1);
 
 		double max = findMax(rpmDS) * 0.7;
 		start = -1;
@@ -134,21 +85,58 @@ final class RPMUtilities {
 				break;
 			}
 		}
-
-
-		return new AccelerationBounds(start, end);
+		return new AccelerationBounds(Math.min(start, logSize), Math.min(end, logSize));
 	}
 
-	private static void clearInvalidValues(double[] rpmDS) {
-		for (int i = 0; i < rpmDS.length; i++) {
-			if (rpmDS[i] == Double.MIN_VALUE) {
+	/**
+	 * Gets the y values of the derivative of the provided order for the given x-y values.
+	 *
+	 * @param xValues
+	 * 		x values
+	 * @param yValues
+	 * 		y values
+	 * @param order
+	 * 		the order of the derivative
+	 * @return the y values of the derivative
+	 */
+	private static double[] getDSYValues(double[] xValues, double[] yValues, int order) {
+
+		// function to be differentiated
+		UnivariateInterpolator interpolator = new SplineInterpolator();
+		UnivariateFunction basicF = interpolator.interpolate(xValues, yValues);
+
+		// create a differentiator using 5 points and 0.01 step
+		FiniteDifferencesDifferentiator differentiator = new FiniteDifferencesDifferentiator(5, 0.01);
+
+		// create a new function that computes both the value and the derivatives
+		// using DerivativeStructure
+		UnivariateDifferentiableFunction completeF = differentiator.differentiate(basicF);
+
+		double[] yDSValues = new double[yValues.length];
+		for (int i = 0; i < xValues.length; i++) {
+			try {
+				double xValue = xValues[i];
+				DerivativeStructure xDS = new DerivativeStructure(1, 3, 0, xValue);
+				DerivativeStructure yDS = completeF.value(xDS);
+				yDSValues[i] = yDS.getPartialDerivative(order);
+			} catch (Exception e) {
+				// x value cannot be interpolated via the function
+				yDSValues[i] = Double.MIN_VALUE;
+			}
+		}
+
+		// fix invalid y values produced by x values that could not be interpolated via the function
+		for (int i = 0; i < yDSValues.length; i++) {
+			if (yDSValues[i] == Double.MIN_VALUE) {
 				if (i == 0) {
-					rpmDS[i] = rpmDS[1];
+					yDSValues[i] = yDSValues[1];
 				} else {
-					rpmDS[i] = rpmDS[i - 1];
+					yDSValues[i] = yDSValues[i - 1];
 				}
 			}
 		}
+
+		return yDSValues;
 	}
 
 	private static double findMax(double[] values) {
@@ -173,13 +161,13 @@ final class RPMUtilities {
 		return minIdx;
 	}
 
-	private static class RawValuesExtractor {
+	private static class RawRPMValuesExtractor {
 
 		private List<LogEntry> rawEntries;
 		private double[] timeValues;
 		private double[] rawRPMValues;
 
-		public RawValuesExtractor(List<LogEntry> rawEntries) {
+		public RawRPMValuesExtractor(List<LogEntry> rawEntries) {
 			this.rawEntries = rawEntries;
 		}
 
@@ -191,7 +179,7 @@ final class RPMUtilities {
 			return rawRPMValues;
 		}
 
-		public RawValuesExtractor invoke() {
+		public RawRPMValuesExtractor invoke() {
 			timeValues = new double[rawEntries.size()];
 			rawRPMValues = new double[rawEntries.size()];
 
