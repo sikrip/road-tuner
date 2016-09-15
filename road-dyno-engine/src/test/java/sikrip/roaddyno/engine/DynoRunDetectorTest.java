@@ -1,5 +1,6 @@
 package sikrip.roaddyno.engine;
 
+import static junit.framework.Assert.assertEquals;
 import static junit.framework.TestCase.assertTrue;
 
 import java.net.URL;
@@ -42,10 +43,12 @@ public class DynoRunDetectorTest {
 	public void verifySampleVBOFile() throws Exception {
 		GPSLogReader logReader = new VBOLogReader();
 
-		List<LogEntry> logEntries = logReader.readLog(getTestResourceUrl("/megara-k5-k6.vbo").getPath());
+		List<LogEntry> logEntries = logReader.readLog(getTestResourceUrl("/sample-vbo.vbo").getPath());
 		AccelerationBounds accelerationBounds = DynoRunDetector.getSpeedAccelerationBounds(logEntries).get(0);
 
-		System.out.println("megara-k5-k6.vbo " + accelerationBounds);
+		System.out.println("sample-vbo.vbo " + accelerationBounds);
+		assertEquals(1, accelerationBounds.getStart());
+		assertEquals(46, accelerationBounds.getEnd());
 	}
 
 	public static URL getTestResourceUrl(String filename) {
