@@ -17,7 +17,7 @@ import sikrip.roaddyno.model.LogValue;
 /**
  * Unit tests for {@link DynoSimulator}
  */
-public class DynoSimulatorTest {
+public class RPMDynoSimulatorTest {
 
 	@Test
 	public void validLogs_ValidSimulation() throws SimulationException {
@@ -33,7 +33,7 @@ public class DynoSimulatorTest {
 			logEntries.add(new LogEntry(values, "Time", "RPM", "TPS"));
 		}
 
-		DynoSimulationResult run = DynoSimulator.run(logEntries, 4.312, 1.310, 528, 905, 85, 1.7, 0.34);
+		DynoSimulationResult run = DynoSimulator.runByRPM(logEntries, 4.312, 1.310, 528, 905, 85, 1.7, 0.34);
 
 		assertEquals(1999, run.getEntriesSize());
 	}
@@ -53,7 +53,7 @@ public class DynoSimulatorTest {
 			logEntries.add(new LogEntry(values, "Time", "RPM", "TPS"));
 		}
 
-		DynoSimulationResult run = DynoSimulator.run(logEntries, 4.312, 1.310, 528, 905, 85, 1.7, 0.34);
+		DynoSimulationResult run = DynoSimulator.runByRPM(logEntries, 4.312, 1.310, 528, 905, 85, 1.7, 0.34);
 
 		assertEquals(1999, run.getEntriesSize());
 	}
@@ -61,56 +61,56 @@ public class DynoSimulatorTest {
 	@Test(expected = SimulationException.class)
 	public void ifTooFewEntriesProvided_ExceptionShouldBeThrown() throws SimulationException {
 		List<LogEntry> tooFewEntries = new ArrayList<>();
-		DynoSimulator.run(tooFewEntries, 4.312, 1.310, 528, 905, 85, 1.7, 0.34);
+		DynoSimulator.runByRPM(tooFewEntries, 4.312, 1.310, 528, 905, 85, 1.7, 0.34);
 	}
 
 	@Test(expected = SimulationException.class)
 	public void onNonPositiveFGR_ExceptionShouldBeThrown() throws SimulationException {
 		List<LogEntry> entries = Mockito.mock(List.class);
 		Mockito.when(entries.size()).thenReturn(100);
-		DynoSimulator.run(entries, 0, 1.310, 528, 905, 85, 1.7, 0.34);
+		DynoSimulator.runByRPM(entries, 0, 1.310, 528, 905, 85, 1.7, 0.34);
 	}
 
 	@Test(expected = SimulationException.class)
 	public void onNonPositiveGR_ExceptionShouldBeThrown() throws SimulationException {
 		List<LogEntry> entries = Mockito.mock(List.class);
 		Mockito.when(entries.size()).thenReturn(100);
-		DynoSimulator.run(entries, 4.312, -0.2, 528, 905, 85, 1.7, 0.34);
+		DynoSimulator.runByRPM(entries, 4.312, -0.2, 528, 905, 85, 1.7, 0.34);
 	}
 
 	@Test(expected = SimulationException.class)
 	public void onNonPositiveTyreDiameter_ExceptionShouldBeThrown() throws SimulationException {
 		List<LogEntry> entries = Mockito.mock(List.class);
 		Mockito.when(entries.size()).thenReturn(100);
-		DynoSimulator.run(entries, 4.312, 1.310, -200, 905, 85, 1.7, 0.34);
+		DynoSimulator.runByRPM(entries, 4.312, 1.310, -200, 905, 85, 1.7, 0.34);
 	}
 
 	@Test(expected = SimulationException.class)
 	public void onNonPositiveCarWeight_ExceptionShouldBeThrown() throws SimulationException {
 		List<LogEntry> entries = Mockito.mock(List.class);
 		Mockito.when(entries.size()).thenReturn(100);
-		DynoSimulator.run(entries, 4.312, 1.310, 528, -905, 85, 1.7, 0.34);
+		DynoSimulator.runByRPM(entries, 4.312, 1.310, 528, -905, 85, 1.7, 0.34);
 	}
 
 	@Test(expected = SimulationException.class)
 	public void onNonPositiveOccupantsWeight_ExceptionShouldBeThrown() throws SimulationException {
 		List<LogEntry> entries = Mockito.mock(List.class);
 		Mockito.when(entries.size()).thenReturn(100);
-		DynoSimulator.run(entries, 4.312, 1.310, 528, 905, 0, 1.7, 0.34);
+		DynoSimulator.runByRPM(entries, 4.312, 1.310, 528, 905, 0, 1.7, 0.34);
 	}
 
 	@Test(expected = SimulationException.class)
 	public void onNonPositiveFA_ExceptionShouldBeThrown() throws SimulationException {
 		List<LogEntry> entries = Mockito.mock(List.class);
 		Mockito.when(entries.size()).thenReturn(100);
-		DynoSimulator.run(entries, 4.312, 1.310, 528, 905, 85, -1.7, 0.34);
+		DynoSimulator.runByRPM(entries, 4.312, 1.310, 528, 905, 85, -1.7, 0.34);
 	}
 
 	@Test(expected = SimulationException.class)
 	public void onNonPositiveCD_ExceptionShouldBeThrown() throws SimulationException {
 		List<LogEntry> entries = Mockito.mock(List.class);
 		Mockito.when(entries.size()).thenReturn(100);
-		DynoSimulator.run(entries, 4.312, 1.310, 528, 905, 85, 1.7, -0.34);
+		DynoSimulator.runByRPM(entries, 4.312, 1.310, 528, 905, 85, 1.7, -0.34);
 	}
 
 }

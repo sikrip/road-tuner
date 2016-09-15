@@ -24,21 +24,21 @@ final class LogValuesUtilities {
 	private static final int DECELERATION_THRESHOLD = 3;
 
 	/**
-	 * Smooths the RPM values of the given log entries using the Local Regression Algorithm (Loess, Lowess).
+	 * Smooths the velocity values of the given log entries using the Local Regression Algorithm (Loess, Lowess).
 	 *
 	 * @param rawEntries
 	 * 		the raw log entries
-	 * @return the log entries with the RPM values smoothed
+	 * @return the log entries with the velocity values smoothed
 	 */
-	static List<LogEntry> smoothRPM(List<LogEntry> rawEntries) {
+	static List<LogEntry> smoothVelocity(List<LogEntry> rawEntries) {
 
 		List<LogEntry> smoothedEntries = new ArrayList<>();
 
 		RawValuesExtractor rawValuesExtractor = new RawValuesExtractor(rawEntries).invoke();
 		double[] timeValues = rawValuesExtractor.getTimeValues();
-		double[] rawRPMValues = rawValuesExtractor.getRawVelocityValues();
+		double[] rawVelocityValues = rawValuesExtractor.getRawVelocityValues();
 
-		double[] smoothedRPMValues = new LoessInterpolator().smooth(timeValues, rawRPMValues);
+		double[] smoothedRPMValues = new LoessInterpolator().smooth(timeValues, rawVelocityValues);
 
 		for (int i = 0; i < rawEntries.size(); i++) {
 			LogEntry logEntryCopy = rawEntries.get(i).getCopy();
@@ -91,7 +91,7 @@ final class LogValuesUtilities {
 
 		int end = findIndexOfMin(rpmDS, start);
 
-		List<LogEntry> smoothedEntries = smoothRPM(rawEntries.subList(0, end));
+		List<LogEntry> smoothedEntries = smoothVelocity(rawEntries.subList(0, end));
 
 		rawValuesExtractor = new RawValuesExtractor(smoothedEntries).invoke();
 		timeValues = rawValuesExtractor.getTimeValues();

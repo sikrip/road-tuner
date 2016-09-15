@@ -92,7 +92,7 @@ final class RoadDynoGui extends JFrame implements ActionListener {
 				EcuLogReader logReader = new MegasquirtLogReader();
 				List<LogEntry> logEntries = logReader.readLog(dynoRunAddDialog.getRunFilePath(), TPS_START_THRESHOLD);
 
-				DynoSimulationResult result = DynoSimulator.run(
+				DynoSimulationResult result = DynoSimulator.runByRPM(
 						logEntries,
 						dynoRunAddDialog.getFGR(),
 						dynoRunAddDialog.getGearRatio(),
@@ -152,7 +152,7 @@ final class RoadDynoGui extends JFrame implements ActionListener {
 
 	void updateRun(DynoRunGuiEntry dynoRunGuiEntry) {
 		try {
-			DynoSimulationResult run = DynoSimulator.run(
+			DynoSimulationResult run = DynoSimulator.runByRPM(
 					dynoRunGuiEntry.getLogEntries(),
 					dynoRunGuiEntry.getInfo().getFinalGearRatio(),
 					dynoRunGuiEntry.getInfo().getGearRatio(),
