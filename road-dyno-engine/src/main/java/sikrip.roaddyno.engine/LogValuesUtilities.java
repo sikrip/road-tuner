@@ -50,7 +50,7 @@ final class LogValuesUtilities {
 		return smoothedEntries;
 	}
 
-	static AccelerationBounds getSpeedMaxAccelerationBounds(List<LogEntry> rawEntries) {
+	static AccelerationBounds getAccelerationBoundsBySpeed(List<LogEntry> rawEntries) {
 
 		final int logSize = rawEntries.size();
 
@@ -61,22 +61,14 @@ final class LogValuesUtilities {
 		// Find the first derivative of the the time/speed function
 		double[] speedDS = getDSYValues(timeValues, rawSpeedValues, 1);
 
-		// Find the index where the acceleration is DYNO_ACCELERATION_PERCENTAGE % of the max acceleration found
-		// The max of the 1st derivative indicates the max acceleration
-		double target = findMax(speedDS) * DYNO_ACCELERATION_PERCENTAGE;
-		int start = -1;
-		for (int i = 0; i < speedDS.length; i++) {
-			if (speedDS[i] > target) {
-				start = i;
-				break;
-			}
+		int start = findStart(speedDS, 0, logSize);
+
+		if (start == -1) {
+			throw new IllegalArgumentException("Could not find the acceleration start");
 		}
 
-		if (start >= logSize - 1) {
-			throw new IllegalStateException("No valid acceleration exists in the provided log entries.");
-		}
 		// The first negative value(after the start) of the 1st derivative indicates deceleration, so this is the end of the run
-		int end = findNextNegative(speedDS, start);
+		int end = findEnd(speedDS, start);
 
 		if (end == -1) {
 			// no negative value found, log entries do not contain deceleration
@@ -85,7 +77,7 @@ final class LogValuesUtilities {
 		return new AccelerationBounds(Math.min(start, logSize), Math.min(end, logSize));
 	}
 
-	static AccelerationBounds getRPMMaxAccelerationBounds(List<LogEntry> rawEntries) {
+	static AccelerationBounds getAccelerationBoundsByRPM(List<LogEntry> rawEntries) {
 
 		final int logSize = rawEntries.size();
 
@@ -95,18 +87,7 @@ final class LogValuesUtilities {
 
 		double[] rpmDS = getDSYValues(timeValues, rawRPMValues, 1);
 
-		double target = findMax(rpmDS) * 0.7;
-		int start = -1;
-		for (int i = 0; i < rpmDS.length; i++) {
-			if (rpmDS[i] > target) {
-				start = i;
-				break;
-			}
-		}
-
-		if (start >= logSize - 1) {
-			throw new IllegalStateException("No valid acceleration exists in the provided log entries.");
-		}
+		int start = findStart(rpmDS, 0, rpmDS.length);
 
 		int end = findIndexOfMin(rpmDS, start);
 
@@ -118,14 +99,8 @@ final class LogValuesUtilities {
 
 		rpmDS = getDSYValues(timeValues, rawRPMValues, 1);
 
-		double max = findMax(rpmDS) * 0.7;
-		start = -1;
-		for (int i = 0; i < rpmDS.length; i++) {
-			if (rpmDS[i] > max) {
-				start = i;
-				break;
-			}
-		}
+		start = findStart(rpmDS, 0, rpmDS.length);
+
 		return new AccelerationBounds(Math.min(start, logSize), Math.min(end, logSize));
 	}
 
@@ -180,17 +155,30 @@ final class LogValuesUtilities {
 		return yDSValues;
 	}
 
-	private static double findMax(double[] values) {
-		double max = values[0];
-		for (int i = 1; i < values.length; i++) {
+	private static int findStart(double[] values, int fromIdx, int toIdx) {
+		double max = values[fromIdx];
+		for (int i = fromIdx + 1; i < toIdx; i++) {
 			if (values[i] > max) {
 				max = values[i];
 			}
 		}
-		return max;
+
+		if (max <= 0) {
+			// No acceleration
+			return -1;
+		}
+		// Find the index where the acceleration is DYNO_ACCELERATION_PERCENTAGE % of the max acceleration found
+		// The max of the 1st derivative indicates the max acceleration
+		double target = max * DYNO_ACCELERATION_PERCENTAGE;
+		for (int i = fromIdx + 1; i < toIdx; i++) {
+			if (values[i] > target) {
+				return i;
+			}
+		}
+		return -1;
 	}
 
-	private static int findNextNegative(double[] values, int idxFrom) {
+	private static int findEnd(double[] values, int idxFrom) {
 		for (int i = idxFrom; i < values.length; i++) {
 			if (values[i] < 0) {
 				return i;

@@ -15,7 +15,7 @@ final class DynoRunDetector {
 
 	static List<AccelerationBounds> getRPMAccelerationBounds(List<LogEntry> logEntries) {
 		//TODO find all acceleration runs (currently only the first is found)
-		AccelerationBounds firstAccelerationBounds = LogValuesUtilities.getRPMMaxAccelerationBounds(logEntries);
+		AccelerationBounds firstAccelerationBounds = LogValuesUtilities.getAccelerationBoundsByRPM(logEntries);
 		List<AccelerationBounds> accelerationBounds = new ArrayList<>();
 		accelerationBounds.add(firstAccelerationBounds);
 		return accelerationBounds;
@@ -23,7 +23,7 @@ final class DynoRunDetector {
 
 	static List<AccelerationBounds> getSpeedAccelerationBounds(List<LogEntry> logEntries) {
 		//TODO find all acceleration runs (currently only the first is found)
-		AccelerationBounds firstAccelerationBounds = LogValuesUtilities.getSpeedMaxAccelerationBounds(logEntries);
+		AccelerationBounds firstAccelerationBounds = LogValuesUtilities.getAccelerationBoundsBySpeed(logEntries);
 		List<AccelerationBounds> accelerationBounds = new ArrayList<>();
 		accelerationBounds.add(firstAccelerationBounds);
 		return accelerationBounds;
