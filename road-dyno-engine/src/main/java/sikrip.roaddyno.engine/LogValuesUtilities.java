@@ -19,10 +19,9 @@ import sikrip.roaddyno.model.LogEntry;
 final class LogValuesUtilities {
 
 	/**
-	 * A percentage value relative to the max acceleration.
-	 * The first value that meets this percentage is considered the start of the dyno run.
+	 * Maximum Number of consecutive deceleration log entries in order to decide that deceleration is occurring.
 	 */
-	private static final double DYNO_ACCELERATION_PERCENTAGE = 0.7;
+	private static final int DECELERATION_THRESHOLD = 3;
 
 	/**
 	 * Smooths the RPM values of the given log entries using the Local Regression Algorithm (Loess, Lowess).
@@ -61,19 +60,20 @@ final class LogValuesUtilities {
 		// Find the first derivative of the the time/speed function
 		double[] speedDS = getDSYValues(timeValues, rawSpeedValues, 1);
 
-		int start = findStart(speedDS, offset, logSize);
+		int start = findStart(speedDS, offset);
 
 		if (start == -1) {
 			return null;
 		}
 
 		// The first negative value(after the start) of the 1st derivative indicates deceleration, so this is the end of the run
-		int end = findEnd(speedDS, start);
+		int end = findFirstNegative(speedDS, start, DECELERATION_THRESHOLD);
 
 		if (end == -1) {
 			// no negative value found, log entries do not contain deceleration
 			end = rawSpeedValues.length;
 		}
+
 		return new AccelerationBounds(Math.min(start, logSize), Math.min(end, logSize));
 	}
 
@@ -87,7 +87,7 @@ final class LogValuesUtilities {
 
 		double[] rpmDS = getDSYValues(timeValues, rawRPMValues, 1);
 
-		int start = findStart(rpmDS, 0, rpmDS.length);
+		int start = findStart(rpmDS, 0);
 
 		int end = findIndexOfMin(rpmDS, start);
 
@@ -99,7 +99,7 @@ final class LogValuesUtilities {
 
 		rpmDS = getDSYValues(timeValues, rawRPMValues, 1);
 
-		start = findStart(rpmDS, 0, rpmDS.length);
+		start = findStart(rpmDS, 0);
 
 		return new AccelerationBounds(Math.min(start, logSize), Math.min(end, logSize));
 	}
@@ -155,34 +155,45 @@ final class LogValuesUtilities {
 		return yDSValues;
 	}
 
-	private static int findStart(double[] values, int fromIdx, int toIdx) {
-		double max = values[0];
-		for (int i = 1; i < values.length; i++) {
-			if (values[i] > max) {
-				max = values[i];
+	private static int findStart(double[] values, int offset) {
+		double mean = 0;
+		int sumCount = 0;
+		for (int i = offset; i < values.length; i++) {
+			if (values[i] > 0) {
+				mean += values[i];
+				sumCount++;
 			}
 		}
 
-		if (max <= 0) {
-			// No acceleration
+		if (sumCount == 0) {
+			// no acceleration
 			return -1;
 		}
-		// Find the index where the acceleration is DYNO_ACCELERATION_PERCENTAGE % of the max acceleration found
-		// The max of the 1st derivative indicates the max acceleration
-		double target = max * DYNO_ACCELERATION_PERCENTAGE;
-		for (int i = fromIdx + 1; i < toIdx; i++) {
-			if (values[i] > target) {
+
+		mean = mean / sumCount;
+
+		for (int i = offset; i < values.length; i++) {
+			if (values[i] > mean) {
 				return i;
 			}
 		}
 		return -1;
 	}
 
-	private static int findEnd(double[] values, int idxFrom) {
-		for (int i = idxFrom; i < values.length; i++) {
+	private static int findFirstNegative(double[] values, int offset, int nthNegative) {
+		int negativeCount = 0;
+		int lastNegative = 1;
+		for (int i = offset; i < values.length; i++) {
 			if (values[i] < 0) {
-				return i;
+				lastNegative = i;
+				negativeCount++;
 			}
+			if (negativeCount == nthNegative) {
+				return lastNegative;
+			}
+		}
+		if (negativeCount < nthNegative) {
+			return lastNegative;
 		}
 		return -1;
 	}

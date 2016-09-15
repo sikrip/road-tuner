@@ -30,10 +30,12 @@ final class DynoRunDetector {
 				// no more accelerations
 				break;
 			}
-			accelerationBoundsList.add(accelerationBounds);
-			offset += accelerationBounds.getEnd();
+			if (logEntries.get(accelerationBounds.getStart()).getVelocity().getValue() < logEntries.get(accelerationBounds.getEnd()).getVelocity().getValue
+					()) {
+				accelerationBoundsList.add(accelerationBounds);
+			}
+			offset = accelerationBounds.getEnd();
 		}
-
 		return accelerationBoundsList;
 	}
 
