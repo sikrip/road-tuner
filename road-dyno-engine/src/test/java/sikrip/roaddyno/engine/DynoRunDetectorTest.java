@@ -9,6 +9,8 @@ import org.junit.Test;
 
 import sikrip.roaddyno.eculogreader.EcuLogReader;
 import sikrip.roaddyno.eculogreader.MegasquirtLogReader;
+import sikrip.roaddyno.gpslogreader.GPSLogReader;
+import sikrip.roaddyno.gpslogreader.VBOLogReader;
 import sikrip.roaddyno.model.LogEntry;
 
 /**
@@ -22,18 +24,28 @@ public class DynoRunDetectorTest {
 		EcuLogReader logReader = new MegasquirtLogReader();
 
 		List<LogEntry> logEntries = logReader.readLog(getTestResourceUrl("/sample-dyno-run.msl").getPath(), 0);
-		AccelerationBounds accelerationBounds = DynoRunDetector.getAccelerationBounds(logEntries).get(0);
+		AccelerationBounds accelerationBounds = DynoRunDetector.getRPMAccelerationBounds(logEntries).get(0);
 
 		System.out.println("sample-dyno-run.msl " + accelerationBounds);
 		assertTrue(accelerationBounds.getStart() > 470);
 		assertTrue(accelerationBounds.getStart() < 615);
 
 		logEntries = logReader.readLog(getTestResourceUrl("/sample-dyno-run-1.msl").getPath(), 0);
-		accelerationBounds = DynoRunDetector.getAccelerationBounds(logEntries).get(0);
+		accelerationBounds = DynoRunDetector.getRPMAccelerationBounds(logEntries).get(0);
 
 		System.out.println("sample-dyno-run-1.msl " + accelerationBounds);
 		assertTrue(accelerationBounds.getStart() > 680);
 		assertTrue(accelerationBounds.getStart() < 800);
+	}
+
+	@Test
+	public void verifySampleVBOFile() throws Exception {
+		GPSLogReader logReader = new VBOLogReader();
+
+		List<LogEntry> logEntries = logReader.readLog(getTestResourceUrl("/megara-k5-k6.vbo").getPath());
+		AccelerationBounds accelerationBounds = DynoRunDetector.getSpeedAccelerationBounds(logEntries).get(0);
+
+		System.out.println("megara-k5-k6.vbo " + accelerationBounds);
 	}
 
 	public static URL getTestResourceUrl(String filename) {

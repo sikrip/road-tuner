@@ -35,6 +35,14 @@
             <version>1.0-SNAPSHOT</version>
             <scope>test</scope>
         </dependency>
+
+        <dependency>
+            <groupId>sikrip-road-dyno</groupId>
+            <artifactId>road-dyno-gps-log-reader</artifactId>
+            <version>1.0-SNAPSHOT</version>
+            <scope>test</scope>
+        </dependency>
+
     </dependencies>
 
 </project>

@@ -16,7 +16,13 @@ import sikrip.roaddyno.model.LogEntry;
 /**
  * Smooths the RPM values of the given log entries using the Local Regression Algorithm (Loess, Lowess).
  */
-final class RPMUtilities {
+final class LogValuesUtilities {
+
+	/**
+	 * A percentage value relative to the max acceleration.
+	 * The first value that meets this percentage is considered the start of the dyno run.
+	 */
+	private static final double DYNO_ACCELERATION_PERCENTAGE = 0.7;
 
 	/**
 	 * Smooths the RPM values of the given log entries using the Local Regression Algorithm (Loess, Lowess).
@@ -29,9 +35,9 @@ final class RPMUtilities {
 
 		List<LogEntry> smoothedEntries = new ArrayList<>();
 
-		RawRPMValuesExtractor rawRPMValuesExtractor = new RawRPMValuesExtractor(rawEntries).invoke();
-		double[] timeValues = rawRPMValuesExtractor.getTimeValues();
-		double[] rawRPMValues = rawRPMValuesExtractor.getRawRPMValues();
+		RawValuesExtractor rawValuesExtractor = new RawValuesExtractor(rawEntries).invoke();
+		double[] timeValues = rawValuesExtractor.getTimeValues();
+		double[] rawRPMValues = rawValuesExtractor.getRawVelocityValues();
 
 		double[] smoothedRPMValues = new LoessInterpolator().smooth(timeValues, rawRPMValues);
 
@@ -44,13 +50,48 @@ final class RPMUtilities {
 		return smoothedEntries;
 	}
 
-	static AccelerationBounds getMaxAccelerationBounds(List<LogEntry> rawEntries) {
+	static AccelerationBounds getSpeedMaxAccelerationBounds(List<LogEntry> rawEntries) {
 
 		final int logSize = rawEntries.size();
 
-		RawRPMValuesExtractor rawRPMValuesExtractor = new RawRPMValuesExtractor(rawEntries).invoke();
-		double[] timeValues = rawRPMValuesExtractor.getTimeValues();
-		double[] rawRPMValues = rawRPMValuesExtractor.getRawRPMValues();
+		RawValuesExtractor rawValuesExtractor = new RawValuesExtractor(rawEntries).invoke();
+		double[] timeValues = rawValuesExtractor.getTimeValues();
+		double[] rawSpeedValues = rawValuesExtractor.getRawVelocityValues();
+
+		// Find the first derivative of the the time/speed function
+		double[] speedDS = getDSYValues(timeValues, rawSpeedValues, 1);
+
+		// Find the index where the acceleration is DYNO_ACCELERATION_PERCENTAGE % of the max acceleration found
+		// The max of the 1st derivative indicates the max acceleration
+		double target = findMax(speedDS) * DYNO_ACCELERATION_PERCENTAGE;
+		int start = -1;
+		for (int i = 0; i < speedDS.length; i++) {
+			if (speedDS[i] > target) {
+				start = i;
+				break;
+			}
+		}
+
+		if (start >= logSize - 1) {
+			throw new IllegalStateException("No valid acceleration exists in the provided log entries.");
+		}
+		// The first negative value(after the start) of the 1st derivative indicates deceleration, so this is the end of the run
+		int end = findNextNegative(speedDS, start);
+
+		if (end == -1) {
+			// no negative value found, log entries do not contain deceleration
+			end = rawSpeedValues.length;
+		}
+		return new AccelerationBounds(Math.min(start, logSize), Math.min(end, logSize));
+	}
+
+	static AccelerationBounds getRPMMaxAccelerationBounds(List<LogEntry> rawEntries) {
+
+		final int logSize = rawEntries.size();
+
+		RawValuesExtractor rawValuesExtractor = new RawValuesExtractor(rawEntries).invoke();
+		double[] timeValues = rawValuesExtractor.getTimeValues();
+		double[] rawRPMValues = rawValuesExtractor.getRawVelocityValues();
 
 		double[] rpmDS = getDSYValues(timeValues, rawRPMValues, 1);
 
@@ -71,9 +112,9 @@ final class RPMUtilities {
 
 		List<LogEntry> smoothedEntries = smoothRPM(rawEntries.subList(0, end));
 
-		rawRPMValuesExtractor = new RawRPMValuesExtractor(smoothedEntries).invoke();
-		timeValues = rawRPMValuesExtractor.getTimeValues();
-		rawRPMValues = rawRPMValuesExtractor.getRawRPMValues();
+		rawValuesExtractor = new RawValuesExtractor(smoothedEntries).invoke();
+		timeValues = rawValuesExtractor.getTimeValues();
+		rawRPMValues = rawValuesExtractor.getRawVelocityValues();
 
 		rpmDS = getDSYValues(timeValues, rawRPMValues, 1);
 
@@ -149,6 +190,15 @@ final class RPMUtilities {
 		return max;
 	}
 
+	private static int findNextNegative(double[] values, int idxFrom) {
+		for (int i = idxFrom; i < values.length; i++) {
+			if (values[i] < 0) {
+				return i;
+			}
+		}
+		return -1;
+	}
+
 	private static int findIndexOfMin(double[] values, int idxFrom) {
 		double min = values[idxFrom];
 		int minIdx = idxFrom;
@@ -167,7 +217,7 @@ final class RPMUtilities {
 
 		double sum = 0;
 		for (int i = 0; i < values.length; i++) {
-			if (i>0 && i % SAMPLES == 0) {
+			if (i > 0 && i % SAMPLES == 0) {
 				double value = sum / SAMPLES;
 				for (int j = i - SAMPLES; j < i; j++) {
 					smoothed[j] = value;
@@ -180,13 +230,13 @@ final class RPMUtilities {
 		return smoothed;
 	}
 
-	private static class RawRPMValuesExtractor {
+	private static class RawValuesExtractor {
 
 		private List<LogEntry> rawEntries;
 		private double[] timeValues;
-		private double[] rawRPMValues;
+		private double[] rawVelocityValues;
 
-		public RawRPMValuesExtractor(List<LogEntry> rawEntries) {
+		public RawValuesExtractor(List<LogEntry> rawEntries) {
 			this.rawEntries = rawEntries;
 		}
 
@@ -194,18 +244,18 @@ final class RPMUtilities {
 			return timeValues;
 		}
 
-		public double[] getRawRPMValues() {
-			return rawRPMValues;
+		public double[] getRawVelocityValues() {
+			return rawVelocityValues;
 		}
 
-		public RawRPMValuesExtractor invoke() {
+		public RawValuesExtractor invoke() {
 			timeValues = new double[rawEntries.size()];
-			rawRPMValues = new double[rawEntries.size()];
+			rawVelocityValues = new double[rawEntries.size()];
 
 			for (int i = 0; i < rawEntries.size(); i++) {
 				LogEntry logEntry = rawEntries.get(i);
 				timeValues[i] = logEntry.getTime().getValue();
-				rawRPMValues[i] = logEntry.getVelocity().getValue();
+				rawVelocityValues[i] = logEntry.getVelocity().getValue();
 			}
 			return this;
 		}

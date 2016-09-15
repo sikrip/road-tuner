@@ -46,7 +46,7 @@ public final class DynoSimulator {
 
 		Iterator<LogEntry> logEntryIterator = null;
 		try {
-			logEntryIterator = RPMUtilities.smoothRPM(logEntries).iterator();
+			logEntryIterator = LogValuesUtilities.smoothRPM(logEntries).iterator();
 		} catch (Exception e) {
 			throw new SimulationException(e.getMessage());
 		}
