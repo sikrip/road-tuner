@@ -37,7 +37,7 @@ final class RPMUtilities {
 
 		for (int i = 0; i < rawEntries.size(); i++) {
 			LogEntry logEntryCopy = rawEntries.get(i).getCopy();
-			logEntryCopy.getRpm().setValue(smoothedRPMValues[i]);
+			logEntryCopy.getVelocity().setValue(smoothedRPMValues[i]);
 			smoothedEntries.add(logEntryCopy);
 		}
 
@@ -205,7 +205,7 @@ final class RPMUtilities {
 			for (int i = 0; i < rawEntries.size(); i++) {
 				LogEntry logEntry = rawEntries.get(i);
 				timeValues[i] = logEntry.getTime().getValue();
-				rawRPMValues[i] = logEntry.getRpm().getValue();
+				rawRPMValues[i] = logEntry.getVelocity().getValue();
 			}
 			return this;
 		}

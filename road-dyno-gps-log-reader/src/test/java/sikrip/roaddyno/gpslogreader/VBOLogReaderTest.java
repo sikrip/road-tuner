@@ -10,12 +10,12 @@ import org.junit.Test;
 
 import sikrip.roaddyno.model.LogEntry;
 
-public class LogReaderTest {
+public class VBOLogReaderTest {
 
 
 	@Test
 	public void verifyValidLogReading() throws IOException {
-		LogReader reader = new LogReader();
+		VBOLogReader reader = new VBOLogReader();
 
 		List<LogEntry> logEntries = reader.readLog(getTestResourceUrl("/sample.vbo").getPath());
 
@@ -24,7 +24,7 @@ public class LogReaderTest {
 
 
 	public static URL getTestResourceUrl(String filename) {
-		URL resource = LogReaderTest.class.getResource(filename);
+		URL resource = VBOLogReaderTest.class.getResource(filename);
 		if (resource == null) {
 			throw new RuntimeException("Cannot find resource:" + filename);
 		}

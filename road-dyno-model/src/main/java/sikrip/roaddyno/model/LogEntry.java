@@ -7,22 +7,26 @@ public class LogEntry {
 
 	private final Map<String, LogValue<Double>> values;
 	private final String timeKey;
-	private final String rpmKey;
+	private final String velocityKey;
 	private final String tpsKey;
 
-	public LogEntry(Map<String, LogValue<Double>> values, String timeKey, String rpmKey, String tpsKey) {
+	public LogEntry(Map<String, LogValue<Double>> values, String timeKey, String velocityKey, String tpsKey) {
+		this.values = new HashMap<>(values);
 		this.timeKey = timeKey;
-		this.rpmKey = rpmKey;
+		this.velocityKey = velocityKey;
 		this.tpsKey = tpsKey;
-		this.values = values;
+	}
+
+	public LogEntry(Map<String, LogValue<Double>> values, String timeKey, String velocityKey) {
+		this(values, timeKey, velocityKey, null);
 	}
 
 	public LogValue<Double> getTime() {
 		return values.get(timeKey);
 	}
 
-	public LogValue<Double> getRpm() {
-		return values.get(rpmKey);
+	public LogValue<Double> getVelocity() {
+		return values.get(velocityKey);
 	}
 
 	public LogValue<Double> getTps() {
@@ -41,10 +45,11 @@ public class LogEntry {
 			valuesCopy.put(valueKey, new LogValue<>(value.getValue(), value.getUnit()));
 		}
 
-		return new LogEntry(valuesCopy, timeKey, rpmKey, tpsKey);
+		return new LogEntry(valuesCopy, timeKey, velocityKey, tpsKey);
 	}
 
-	@Override public String toString() {
-		return String.format("LogEntry Time %s, RPM %s, TPS %s", getTime(), getRpm(), getTps());
+	@Override
+	public String toString() {
+		return String.format("LogEntry Time %s, Velocity %s, TPS %s", getTime(), getVelocity(), getTps());
 	}
 }

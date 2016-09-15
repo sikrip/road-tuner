@@ -65,10 +65,10 @@ public final class DynoSimulator {
 			if (logEntryIterator.hasNext()) {
 				to = logEntryIterator.next();
 
-				double refRPM = (from.getRpm().getValue() + to.getRpm().getValue()) / 2;
+				double refRPM = (from.getVelocity().getValue() + to.getVelocity().getValue()) / 2;
 
-				double fromSpeed = SpeedCalculator.getMeterPerSecond(from.getRpm().getValue(), fgr, gr, tyreDiameter);
-				double toSpeed = SpeedCalculator.getMeterPerSecond(to.getRpm().getValue(), fgr, gr, tyreDiameter);
+				double fromSpeed = SpeedCalculator.getMeterPerSecond(from.getVelocity().getValue(), fgr, gr, tyreDiameter);
+				double toSpeed = SpeedCalculator.getMeterPerSecond(to.getVelocity().getValue(), fgr, gr, tyreDiameter);
 
 				double fromTime = from.getTime().getValue();
 				double toTime = to.getTime().getValue();

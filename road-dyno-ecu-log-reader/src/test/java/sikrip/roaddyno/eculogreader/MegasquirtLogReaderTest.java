@@ -78,9 +78,9 @@ public class MegasquirtLogReaderTest {
 			assertEquals("s", logEntry.getTime().getUnit());
 			assertNotNull(logEntry.getTime().getValue());
 
-			assertNotNull(logEntry.getRpm());
-			assertEquals("RPM", logEntry.getRpm().getUnit());
-			assertNotNull(logEntry.getRpm().getValue());
+			assertNotNull(logEntry.getVelocity());
+			assertEquals("RPM", logEntry.getVelocity().getUnit());
+			assertNotNull(logEntry.getVelocity().getValue());
 
 			assertNotNull(logEntry.getTps());
 			assertEquals("%", logEntry.getTps().getUnit());
@@ -96,9 +96,9 @@ public class MegasquirtLogReaderTest {
 			assertEquals("s", logEntry.getTime().getUnit());
 			assertNotNull(logEntry.getTime().getValue());
 
-			assertNotNull(logEntry.getRpm());
-			assertEquals("RPM", logEntry.getRpm().getUnit());
-			assertNotNull(logEntry.getRpm().getValue());
+			assertNotNull(logEntry.getVelocity());
+			assertEquals("RPM", logEntry.getVelocity().getUnit());
+			assertNotNull(logEntry.getVelocity().getValue());
 
 			assertNotNull(logEntry.getTps());
 			assertEquals("%", logEntry.getTps().getUnit());

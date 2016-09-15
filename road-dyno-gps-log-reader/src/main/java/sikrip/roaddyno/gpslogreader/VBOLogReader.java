@@ -12,13 +12,17 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.sun.javaws.exceptions.InvalidArgumentException;
+
 import sikrip.roaddyno.model.LogEntry;
 import sikrip.roaddyno.model.LogValue;
 
-public class LogReader {
+public class VBOLogReader implements GPSLogReader {
 
 	private static final String TIME_KEY = "time";
-	private static final String VELOCITY_KEY = "velocity kmh"; // FIXME this may be different btw vbo files
+
+	// FIXME this may be different btw vbo files
+	private static final String VELOCITY_KEY = "velocity kmh";
 
 	public List<LogEntry> readLog(String filePath) throws IOException {
 		File logFile = new File(filePath);
@@ -30,10 +34,6 @@ public class LogReader {
 	public List<LogEntry> readLog(InputStream inputStream) throws IOException {
 		BufferedReader logReader = new BufferedReader(new InputStreamReader(inputStream));
 		List<String> headers = readHeaders(logReader);
-
-		if (headers.isEmpty() || !headers.contains(TIME_KEY) || !headers.contains(VELOCITY_KEY)) {
-			throw new RuntimeException("Cannot resolve headers");
-		}
 		return readData(logReader, headers);
 	}
 
@@ -60,6 +60,11 @@ public class LogReader {
 				}
 			}
 		}
+		if (!headers.contains(VELOCITY_KEY)){
+			throw new IllegalArgumentException("Invalid log file: speed header not found.");
+		}else if (!headers.contains(TIME_KEY)){
+			throw new IllegalArgumentException("Invalid log file: time header not found.");
+		}
 		return headers;
 	}
 
@@ -85,7 +90,7 @@ public class LogReader {
 						logEntryValues.put(VELOCITY_KEY, new LogValue<>(Double.valueOf(rawValues.get(i)), "kmph"));
 					}
 				}
-				LogEntry logEntry = new LogEntry(logEntryValues, TIME_KEY, VELOCITY_KEY, "");
+				LogEntry logEntry = new LogEntry(logEntryValues, TIME_KEY, VELOCITY_KEY);
 				data.add(logEntry);
 			}
 		}
@@ -105,7 +110,7 @@ public class LogReader {
 		if (rawValues.size() == expectedNumberOfValues) {
 			return rawValues;
 		}
-		throw new RuntimeException("Invalid data. Expecting " + expectedNumberOfValues + " values, and found " + rawValues.size());
+		throw new IllegalArgumentException("Invalid log file. Expecting " + expectedNumberOfValues + " values, and found " + rawValues.size());
 	}
 
 }

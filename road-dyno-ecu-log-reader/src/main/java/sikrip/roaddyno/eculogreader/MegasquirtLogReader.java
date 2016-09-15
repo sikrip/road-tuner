@@ -98,7 +98,7 @@ public final class MegasquirtLogReader implements EcuLogReader {
 		int maxIdx = logEntries.size();
 
 		for (int i = 1; i < logEntries.size(); i++) {
-			if (logEntries.get(i).getRpm().getValue() - logEntries.get(i - 1).getRpm().getValue() < -RPM_NOISE_THRESHOLD) {
+			if (logEntries.get(i).getVelocity().getValue() - logEntries.get(i - 1).getVelocity().getValue() < -RPM_NOISE_THRESHOLD) {
 				maxIdx = i - 1;
 				break;
 			}
