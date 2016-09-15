@@ -25,14 +25,14 @@ public class DynoRunDetectorTest {
 		EcuLogReader logReader = new MegasquirtLogReader();
 
 		List<LogEntry> logEntries = logReader.readLog(getTestResourceUrl("/sample-dyno-run.msl").getPath(), 0);
-		AccelerationBounds accelerationBounds = DynoRunDetector.getRPMAccelerationBounds(logEntries).get(0);
+		AccelerationBounds accelerationBounds = DynoRunDetector.getAccelerationBoundsByRPM(logEntries).get(0);
 
 		System.out.println("sample-dyno-run.msl " + accelerationBounds);
 		assertTrue(accelerationBounds.getStart() > 470);
 		assertTrue(accelerationBounds.getStart() < 615);
 
 		logEntries = logReader.readLog(getTestResourceUrl("/sample-dyno-run-1.msl").getPath(), 0);
-		accelerationBounds = DynoRunDetector.getRPMAccelerationBounds(logEntries).get(0);
+		accelerationBounds = DynoRunDetector.getAccelerationBoundsByRPM(logEntries).get(0);
 
 		System.out.println("sample-dyno-run-1.msl " + accelerationBounds);
 		assertTrue(accelerationBounds.getStart() > 680);
@@ -40,15 +40,30 @@ public class DynoRunDetectorTest {
 	}
 
 	@Test
-	public void verifySampleVBOFile() throws Exception {
+	public void verifySampleVBOFile_SingleAcceleration() throws Exception {
 		GPSLogReader logReader = new VBOLogReader();
 
 		List<LogEntry> logEntries = logReader.readLog(getTestResourceUrl("/sample-vbo.vbo").getPath());
-		AccelerationBounds accelerationBounds = DynoRunDetector.getSpeedAccelerationBounds(logEntries).get(0);
+		AccelerationBounds accelerationBounds = DynoRunDetector.getAccelerationBoundsBySpeed(logEntries).get(0);
 
 		System.out.println("sample-vbo.vbo " + accelerationBounds);
+		System.out.println(logEntries.get(accelerationBounds.getStart()) + " => " + logEntries.get(accelerationBounds.getEnd()));
+
 		assertEquals(1, accelerationBounds.getStart());
 		assertEquals(46, accelerationBounds.getEnd());
+	}
+
+	@Test
+	public void verifySampleVBOFile_MultipleAccelerations() throws Exception {
+		GPSLogReader logReader = new VBOLogReader();
+
+		List<LogEntry> logEntries = logReader.readLog(getTestResourceUrl("/sample-vbo-1.vbo").getPath());
+
+		for (AccelerationBounds accelerationBounds : DynoRunDetector.getAccelerationBoundsBySpeed(logEntries)) {
+			System.out.println("sample-vbo.vbo " + accelerationBounds);
+			System.out.println(logEntries.get(accelerationBounds.getStart()) + " => " + logEntries.get(accelerationBounds.getEnd()));
+
+		}
 	}
 
 	public static URL getTestResourceUrl(String filename) {

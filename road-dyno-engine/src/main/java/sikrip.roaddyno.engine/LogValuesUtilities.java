@@ -50,7 +50,7 @@ final class LogValuesUtilities {
 		return smoothedEntries;
 	}
 
-	static AccelerationBounds getAccelerationBoundsBySpeed(List<LogEntry> rawEntries) {
+	static AccelerationBounds getAccelerationBoundsBySpeed(List<LogEntry> rawEntries, int offset) {
 
 		final int logSize = rawEntries.size();
 
@@ -61,10 +61,10 @@ final class LogValuesUtilities {
 		// Find the first derivative of the the time/speed function
 		double[] speedDS = getDSYValues(timeValues, rawSpeedValues, 1);
 
-		int start = findStart(speedDS, 0, logSize);
+		int start = findStart(speedDS, offset, logSize);
 
 		if (start == -1) {
-			throw new IllegalArgumentException("Could not find the acceleration start");
+			return null;
 		}
 
 		// The first negative value(after the start) of the 1st derivative indicates deceleration, so this is the end of the run
@@ -156,8 +156,8 @@ final class LogValuesUtilities {
 	}
 
 	private static int findStart(double[] values, int fromIdx, int toIdx) {
-		double max = values[fromIdx];
-		for (int i = fromIdx + 1; i < toIdx; i++) {
+		double max = values[0];
+		for (int i = 1; i < values.length; i++) {
 			if (values[i] > max) {
 				max = values[i];
 			}
