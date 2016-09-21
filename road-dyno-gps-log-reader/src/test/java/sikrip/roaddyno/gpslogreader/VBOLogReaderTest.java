@@ -14,7 +14,7 @@ public class VBOLogReaderTest {
 
 
 	@Test
-	public void verifyValidLogReading() throws IOException {
+	public void verifyValidLogReading() throws Exception {
 		VBOLogReader reader = new VBOLogReader();
 
 		List<LogEntry> logEntries = reader.readLog(getTestResourceUrl("/sample.vbo").getPath());

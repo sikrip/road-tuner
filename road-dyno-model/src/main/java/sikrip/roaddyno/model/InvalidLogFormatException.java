@@ -1,4 +1,4 @@
-package sikrip.roaddyno.eculogreader;
+package sikrip.roaddyno.model;
 
 
 public class InvalidLogFormatException extends Exception {

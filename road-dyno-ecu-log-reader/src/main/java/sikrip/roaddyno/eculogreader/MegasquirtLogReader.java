@@ -12,6 +12,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import sikrip.roaddyno.model.InvalidLogFormatException;
 import sikrip.roaddyno.model.LogEntry;
 import sikrip.roaddyno.model.LogValue;
 
@@ -23,7 +24,6 @@ public final class MegasquirtLogReader implements EcuLogReader {
 	/**
 	 * RPM value that one log entry RPM cannot be lower than the previous.
 	 */
-	@Deprecated
 	public static final int RPM_NOISE_THRESHOLD = 800;
 
 	@Override
@@ -78,11 +78,12 @@ public final class MegasquirtLogReader implements EcuLogReader {
 			}
 		}
 
-		if (logEntries.size() == 0) {
+		List<LogEntry> trimmedLogValues = trimByRPM(logEntries);
+
+		if (trimmedLogValues.size() == 0) {
 			throw new InvalidLogFormatException("Invalid log file format. No log entries found.");
 		}
-		return logEntries;
-
+		return trimmedLogValues;
 	}
 
 	/**
@@ -92,7 +93,6 @@ public final class MegasquirtLogReader implements EcuLogReader {
 	 * 		the initial log entries
 	 * @return the trimmed log entries
 	 */
-	@Deprecated
 	private List<LogEntry> trimByRPM(List<LogEntry> logEntries) {
 
 		int maxIdx = logEntries.size();

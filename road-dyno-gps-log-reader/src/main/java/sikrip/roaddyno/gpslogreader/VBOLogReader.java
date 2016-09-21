@@ -12,6 +12,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import sikrip.roaddyno.model.InvalidLogFormatException;
 import sikrip.roaddyno.model.LogEntry;
 import sikrip.roaddyno.model.LogValue;
 
@@ -21,20 +22,20 @@ public class VBOLogReader implements GPSLogReader {
 	private static final String VELOCITY_KEY = "velocity kmh";	// FIXME this may be different btw vbo files
 	private static final String HEIGHT_KEY = "height";
 
-	public List<LogEntry> readLog(String filePath) throws IOException {
+	public List<LogEntry> readLog(String filePath) throws IOException, InvalidLogFormatException {
 		File logFile = new File(filePath);
 		try (InputStream fileStream = new FileInputStream(logFile);) {
 			return readLog(fileStream);
 		}
 	}
 
-	public List<LogEntry> readLog(InputStream inputStream) throws IOException {
+	public List<LogEntry> readLog(InputStream inputStream) throws IOException, InvalidLogFormatException {
 		BufferedReader logReader = new BufferedReader(new InputStreamReader(inputStream));
 		List<String> headers = readHeaders(logReader);
 		return readData(logReader, headers);
 	}
 
-	private List<String> readHeaders(BufferedReader logReader) throws IOException {
+	private List<String> readHeaders(BufferedReader logReader) throws IOException, InvalidLogFormatException {
 		String logLine;
 		boolean headersSectionFound = false;
 		while ((logLine = logReader.readLine()) != null) {
@@ -58,14 +59,14 @@ public class VBOLogReader implements GPSLogReader {
 			}
 		}
 		if (!headers.contains(VELOCITY_KEY)){
-			throw new IllegalArgumentException("Invalid log file: speed header not found.");
+			throw new InvalidLogFormatException("Invalid log file: speed header not found.");
 		}else if (!headers.contains(TIME_KEY)){
-			throw new IllegalArgumentException("Invalid log file: time header not found.");
+			throw new InvalidLogFormatException("Invalid log file: time header not found.");
 		}
 		return headers;
 	}
 
-	private List<LogEntry> readData(BufferedReader logReader, List<String> headers) throws IOException {
+	private List<LogEntry> readData(BufferedReader logReader, List<String> headers) throws IOException, InvalidLogFormatException {
 		String logLine;
 		boolean dataSectionFound = false;
 		while ((logLine = logReader.readLine()) != null) {
@@ -102,7 +103,7 @@ public class VBOLogReader implements GPSLogReader {
 		return data;
 	}
 
-	private List<String> getRawValues(String logLine, int expectedNumberOfValues) {
+	private List<String> getRawValues(String logLine, int expectedNumberOfValues) throws InvalidLogFormatException {
 		List<String> rawValues = Arrays.asList((logLine.split(" ")));
 		if (rawValues.size() == expectedNumberOfValues) {
 			return rawValues;
@@ -115,7 +116,7 @@ public class VBOLogReader implements GPSLogReader {
 		if (rawValues.size() == expectedNumberOfValues) {
 			return rawValues;
 		}
-		throw new IllegalArgumentException("Invalid log file. Expecting " + expectedNumberOfValues + " values, and found " + rawValues.size());
+		throw new InvalidLogFormatException("Invalid log file. Expecting " + expectedNumberOfValues + " values, and found " + rawValues.size());
 	}
 
 }

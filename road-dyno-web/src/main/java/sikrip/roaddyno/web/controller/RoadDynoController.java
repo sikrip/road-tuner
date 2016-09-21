@@ -21,23 +21,21 @@ import org.springframework.web.multipart.MultipartFile;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import sikrip.roaddyno.engine.DynoSimulator;
-import sikrip.roaddyno.eculogreader.EcuLogReader;
-import sikrip.roaddyno.eculogreader.MegasquirtLogReader;
 import sikrip.roaddyno.engine.DynoSimulationResult;
-import sikrip.roaddyno.model.LogEntry;
+import sikrip.roaddyno.engine.DynoSimulator;
+import sikrip.roaddyno.model.LogFileData;
 import sikrip.roaddyno.web.chart.ChartDataProvider;
 import sikrip.roaddyno.web.chart.PlotColorProvider;
 import sikrip.roaddyno.web.chart.UploadedRun;
+import sikrip.roaddyno.web.logger.LogFileReader;
 
 @Controller
 @Scope("session")
 public class RoadDynoController {
 
-	public static final String ERROR_TEXT_KEY = "errorTxt";
-	protected final Logger LOGGER = LoggerFactory.getLogger(RoadDynoController.class);
+	private static final String ERROR_TEXT_KEY = "errorTxt";
 
-	public static final int TPS_START_THRESHOLD = 95;
+	private final Logger LOGGER = LoggerFactory.getLogger(RoadDynoController.class);
 
 	@Autowired
 	private ObjectMapper objectMapper;
@@ -46,6 +44,7 @@ public class RoadDynoController {
 	private SessionVehicleData vehicleData;
 
 	private final List<UploadedRun> uploadedRuns = new ArrayList<>();
+
 	private final PlotColorProvider colorProvider = new PlotColorProvider();
 
 	@RequestMapping("/")
@@ -65,6 +64,7 @@ public class RoadDynoController {
 		uploadedRuns.clear();
 		colorProvider.reset();
 		model.addAttribute("nav", "onlinedyno");
+		//TODO clear vehicleData?
 		return "online-dyno-empty";
 	}
 
@@ -90,16 +90,29 @@ public class RoadDynoController {
 	public String addRun(UploadedRun runInfo, @RequestParam("file") MultipartFile file, Model model) {
 		if (!file.isEmpty()) {
 			try {
-				EcuLogReader logReader = new MegasquirtLogReader();
-				List<LogEntry> logEntries = logReader.readLog(file.getInputStream(), TPS_START_THRESHOLD);
-				DynoSimulationResult result = DynoSimulator.runByRPM(logEntries,
-						runInfo.getFinalGearRatio(),
-						runInfo.getGearRatio(),
-						runInfo.getTyreDiameter(),
-						runInfo.getCarWeight(),
-						runInfo.getOccupantsWeight(),
-						runInfo.getFrontalArea(),
-						runInfo.getCoefficientOfDrag());
+				LogFileData logFileData = LogFileReader.readLogEntries(file);
+
+				DynoSimulationResult result;
+				if (logFileData.isRpmBased()) {
+					result = DynoSimulator.runByRPM(logFileData.getLogEntries(),
+							runInfo.getFinalGearRatio(),
+							runInfo.getGearRatio(),
+							runInfo.getTyreDiameter(),
+							runInfo.getCarWeight(),
+							runInfo.getOccupantsWeight(),
+							runInfo.getFrontalArea(),
+							runInfo.getCoefficientOfDrag());
+				}else {
+					result = DynoSimulator.runBySpeed(logFileData.getLogEntries(),
+							runInfo.getFinalGearRatio(),
+							runInfo.getGearRatio(),
+							runInfo.getTyreDiameter(),
+							runInfo.getCarWeight(),
+							runInfo.getOccupantsWeight(),
+							runInfo.getFrontalArea(),
+							runInfo.getCoefficientOfDrag());
+				}
+
 				runInfo.setName(file.getOriginalFilename());
 				runInfo.setResult(result);
 				runInfo.setColor(colorProvider.pop());

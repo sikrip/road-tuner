@@ -8,6 +8,7 @@ import java.util.List;
 
 import org.junit.Test;
 
+import sikrip.roaddyno.model.InvalidLogFormatException;
 import sikrip.roaddyno.model.LogEntry;
 
 /**
@@ -70,7 +71,7 @@ public class MegasquirtLogReaderTest {
 		try {
 			List<LogEntry> logEntries = reader.readLog(getTestResourceUrl("/valid-log.msl").getPath(), 98);
 
-			assertEquals(117, logEntries.size());
+			assertEquals(105, logEntries.size());
 
 			LogEntry logEntry = logEntries.get(0);
 
@@ -88,7 +89,7 @@ public class MegasquirtLogReaderTest {
 
 			logEntries = reader.readLog(getTestResourceUrl("/valid-log-without-comment-lines.msl").getPath(), 98);
 
-			assertEquals(117, logEntries.size());
+			assertEquals(105, logEntries.size());
 
 			logEntry = logEntries.get(0);
 
