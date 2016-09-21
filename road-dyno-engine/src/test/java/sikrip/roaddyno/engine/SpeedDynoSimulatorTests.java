@@ -6,7 +6,6 @@ import org.junit.Test;
 
 import sikrip.roaddyno.gpslogreader.GPSLogReader;
 import sikrip.roaddyno.gpslogreader.VBOLogReader;
-import sikrip.roaddyno.model.DynoSimulationResult;
 import sikrip.roaddyno.model.LogEntry;
 
 public class SpeedDynoSimulatorTests {
@@ -37,6 +36,5 @@ public class SpeedDynoSimulatorTests {
 		for(int i=0; i< result.getEntriesSize(); i++){
 			System.out.println(dataset[0][i]+": "+dataset[1][i]);
 		}
-
 	}
 }

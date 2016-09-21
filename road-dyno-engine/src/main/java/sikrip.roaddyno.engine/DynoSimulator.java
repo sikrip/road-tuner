@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import sikrip.roaddyno.model.DynoSimulationEntry;
-import sikrip.roaddyno.model.DynoSimulationResult;
 import sikrip.roaddyno.model.LogEntry;
 
 /**
@@ -82,7 +80,7 @@ public final class DynoSimulator {
 			}
 		}
 
-		return new DynoSimulationResult(rpmLogEntries, dynoRunEntries);
+		return new DynoSimulationResult(true, rpmLogEntries, dynoRunEntries);
 	}
 
 	/**
@@ -116,7 +114,6 @@ public final class DynoSimulator {
 		LogEntry to = null;
 		List<DynoSimulationEntry> dynoRunEntries = new ArrayList<>();
 
-		double totalWeight = carWeight + occupantsWeight;
 
 		Iterator<LogEntry> logEntryIterator = null;
 		try {
@@ -124,6 +121,8 @@ public final class DynoSimulator {
 		} catch (Exception e) {
 			throw new SimulationException(e.getMessage());
 		}
+
+		final double totalWeight = carWeight + occupantsWeight;
 
 		while (logEntryIterator.hasNext()) {
 			if (from == null) {
@@ -134,25 +133,25 @@ public final class DynoSimulator {
 			if (logEntryIterator.hasNext()) {
 				to = logEntryIterator.next();
 
-				double refSpeed = (from.getVelocity().getValue() + to.getVelocity().getValue()) / 2;
+				final double refSpeed = (from.getVelocity().getValue() + to.getVelocity().getValue()) / 2;
 
-				double refRPM = RPMCaclulator.getRPM(refSpeed, fgr, gr, tyreDiameter);
+				final double refRPM = RPMCaclulator.getRPM(refSpeed, fgr, gr, tyreDiameter);
 
-				double fromSpeed = SpeedCalculator.getMeterPerSecond(from.getVelocity().getValue());
-				double toSpeed = SpeedCalculator.getMeterPerSecond(to.getVelocity().getValue());
+				final double fromSpeed = SpeedCalculator.getMeterPerSecond(from.getVelocity().getValue());
+				final double toSpeed = SpeedCalculator.getMeterPerSecond(to.getVelocity().getValue());
 
-				double fromTime = from.getTime().getValue();
-				double toTime = to.getTime().getValue();
+				final double fromTime = from.getTime().getValue();
+				final double toTime = to.getTime().getValue();
 
-				double accelerationPower = PowerCalculator.calculateAccelerationPower(totalWeight, fromSpeed, toSpeed, fromTime, toTime);
-				double airDragPower = PowerCalculator.calculateDragPower(toSpeed, fa, cd);
-				double rollingDragPower = PowerCalculator.calculateRollingDragPower(totalWeight, toSpeed);
+				final double accelerationPower = PowerCalculator.calculateAccelerationPower(totalWeight, fromSpeed, toSpeed, fromTime, toTime);
+				final double airDragPower = PowerCalculator.calculateDragPower(toSpeed, fa, cd);
+				final double rollingDragPower = PowerCalculator.calculateRollingDragPower(totalWeight, toSpeed);
 
 				dynoRunEntries.add(new DynoSimulationEntry(refRPM, accelerationPower + airDragPower + rollingDragPower));
 			}
 		}
-
-		return new DynoSimulationResult(speedLogEntries, dynoRunEntries);
+		// TODO raw log entries are speed based, should be replaced with rpm?
+		return new DynoSimulationResult(false, speedLogEntries, dynoRunEntries);
 	}
 
 	private static void validateParameters(List<LogEntry> logEntries, double fgr, double gr, double tyreDiameter,

@@ -1,4 +1,4 @@
-package sikrip.roaddyno.model;
+package sikrip.roaddyno.engine;
 
 
 
@@ -24,7 +24,7 @@ public class DynoSimulationResultTest {
 			}
 			results.add(new DynoSimulationEntry(2000.0 + i * 700, power));
 		}
-		DynoSimulationResult result = new DynoSimulationResult(null, results);
+		DynoSimulationResult result = new DynoSimulationResult(true, null, results);
 		assertEquals(80.0, result.maxPower().getPower());
 		assertEquals(7600.0, result.maxPower().getRpm());
 	}
@@ -39,7 +39,7 @@ public class DynoSimulationResultTest {
 			}
 			results.add(new DynoSimulationEntry(2000.0 + i * 700, power));
 		}
-		DynoSimulationResult result = new DynoSimulationResult(null, results);
+		DynoSimulationResult result = new DynoSimulationResult(true, null, results);
 		assertEquals(80.0 * 5252 / 7600, result.maxTorque().getTorque());
 	}
 }

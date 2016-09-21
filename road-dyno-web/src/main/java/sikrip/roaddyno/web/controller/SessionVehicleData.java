@@ -2,7 +2,7 @@ package sikrip.roaddyno.web.controller;
 
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
-import sikrip.roaddyno.model.RunInfo;
+import sikrip.roaddyno.engine.RunInfo;
 
 @Component
 @Scope("session")

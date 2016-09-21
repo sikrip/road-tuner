@@ -2,9 +2,9 @@ package sikrip.roaddyno.web.chart;
 
 import java.util.UUID;
 
-import sikrip.roaddyno.model.DynoSimulationEntry;
-import sikrip.roaddyno.model.DynoSimulationResult;
-import sikrip.roaddyno.model.RunInfo;
+import sikrip.roaddyno.engine.DynoSimulationEntry;
+import sikrip.roaddyno.engine.DynoSimulationResult;
+import sikrip.roaddyno.engine.RunInfo;
 import sikrip.roaddyno.web.controller.SessionVehicleData;
 
 /**

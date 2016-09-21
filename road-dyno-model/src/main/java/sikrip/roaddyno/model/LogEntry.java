@@ -50,6 +50,12 @@ public class LogEntry {
 
 	@Override
 	public String toString() {
-		return String.format("LogEntry Time %s, Velocity %s, TPS %s", getTime(), getVelocity(), getTps());
+		final StringBuilder stringBuilder = new StringBuilder("LogEntry ");
+
+		for (Map.Entry<String, LogValue<Double>> valueEntry : values.entrySet()) {
+			stringBuilder.append(valueEntry.getKey()).append(": ").append(valueEntry.getValue()).append(" ");
+		}
+
+		return stringBuilder.toString();
 	}
 }

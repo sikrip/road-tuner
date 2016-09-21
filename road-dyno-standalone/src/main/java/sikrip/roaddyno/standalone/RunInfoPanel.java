@@ -9,7 +9,7 @@ import java.text.DecimalFormat;
 
 import javax.swing.*;
 
-import sikrip.roaddyno.model.RunInfo;
+import sikrip.roaddyno.engine.RunInfo;
 import sikrip.roaddyno.standalone.util.LayoutUtil;
 import sikrip.roaddyno.standalone.util.UnitConverter;
 

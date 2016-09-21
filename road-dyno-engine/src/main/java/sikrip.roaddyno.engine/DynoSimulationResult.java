@@ -1,6 +1,9 @@
-package sikrip.roaddyno.model;
+package sikrip.roaddyno.engine;
 
 import java.util.List;
+
+import sikrip.roaddyno.model.LogEntry;
+import sikrip.roaddyno.model.LogValue;
 
 /**
  * A dyno simulation result.
@@ -17,9 +20,19 @@ public class DynoSimulationResult {
 	 */
 	private final List<DynoSimulationEntry> entries;
 
-	public DynoSimulationResult(List<LogEntry> logEntries, List<DynoSimulationEntry> entries) {
+	/**
+	 * True for rpm based runs, false for speed based runs.
+	 */
+	private final boolean rpmBased;
+
+	public DynoSimulationResult(final boolean rpmBased, final List<LogEntry> logEntries, final List<DynoSimulationEntry> entries) {
+		this.rpmBased = rpmBased;
 		this.logEntries = logEntries;
 		this.entries = entries;
+	}
+
+	public boolean isRpmBased() {
+		return rpmBased;
 	}
 
 	public DynoSimulationEntry minPower() {

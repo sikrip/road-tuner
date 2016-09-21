@@ -16,8 +16,8 @@ import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
 import org.jfree.chart.renderer.xy.XYSplineRenderer;
 import org.jfree.data.xy.DefaultXYDataset;
 
-import sikrip.roaddyno.model.DynoSimulationResult;
-import sikrip.roaddyno.model.DynoSimulationEntry;
+import sikrip.roaddyno.engine.DynoSimulationResult;
+import sikrip.roaddyno.engine.DynoSimulationEntry;
 
 final class DynoChart {
 
