@@ -82,9 +82,9 @@ public class MegasquirtLogReaderTest {
 			assertEquals("RPM", logEntry.getVelocity().getUnit());
 			assertNotNull(logEntry.getVelocity().getValue());
 
-			assertNotNull(logEntry.getTps());
-			assertEquals("%", logEntry.getTps().getUnit());
-			assertNotNull(logEntry.getTps().getValue());
+			assertNotNull(logEntry.get("TPS"));
+			assertEquals("%", logEntry.get("TPS").getUnit());
+			assertNotNull(logEntry.get("TPS").getValue());
 
 			logEntries = reader.readLog(getTestResourceUrl("/valid-log-without-comment-lines.msl").getPath(), 98);
 
@@ -100,9 +100,9 @@ public class MegasquirtLogReaderTest {
 			assertEquals("RPM", logEntry.getVelocity().getUnit());
 			assertNotNull(logEntry.getVelocity().getValue());
 
-			assertNotNull(logEntry.getTps());
-			assertEquals("%", logEntry.getTps().getUnit());
-			assertNotNull(logEntry.getTps().getValue());
+			assertNotNull(logEntry.get("TPS"));
+			assertEquals("%", logEntry.get("TPS").getUnit());
+			assertNotNull(logEntry.get("TPS").getValue());
 
 		} catch (IOException | InvalidLogFormatException e) {
 			fail("This should not fail");

@@ -2,23 +2,18 @@ package sikrip.roaddyno.model;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 public class LogEntry {
 
 	private final Map<String, LogValue<Double>> values;
 	private final String timeKey;
 	private final String velocityKey;
-	private final String tpsKey;
 
-	public LogEntry(Map<String, LogValue<Double>> values, String timeKey, String velocityKey, String tpsKey) {
+	public LogEntry(Map<String, LogValue<Double>> values, String timeKey, String velocityKey) {
 		this.values = new HashMap<>(values);
 		this.timeKey = timeKey;
 		this.velocityKey = velocityKey;
-		this.tpsKey = tpsKey;
-	}
-
-	public LogEntry(Map<String, LogValue<Double>> values, String timeKey, String velocityKey) {
-		this(values, timeKey, velocityKey, null);
 	}
 
 	public LogValue<Double> getTime() {
@@ -29,15 +24,11 @@ public class LogEntry {
 		return values.get(velocityKey);
 	}
 
-	public LogValue<Double> getTps() {
-		return values.get(tpsKey);
-	}
-
-	public LogValue<Double> get(String valueKey){
+	public LogValue<Double> get(String valueKey) {
 		return values.get(valueKey);
 	}
 
-	public LogEntry getCopy(){
+	public LogEntry getCopy() {
 		Map<String, LogValue<Double>> valuesCopy = new HashMap<>();
 
 		for (String valueKey : this.values.keySet()) {
@@ -45,7 +36,11 @@ public class LogEntry {
 			valuesCopy.put(valueKey, new LogValue<>(value.getValue(), value.getUnit()));
 		}
 
-		return new LogEntry(valuesCopy, timeKey, velocityKey, tpsKey);
+		return new LogEntry(valuesCopy, timeKey, velocityKey);
+	}
+
+	public Set<String> getDataKeys() {
+		return values.keySet();
 	}
 
 	@Override

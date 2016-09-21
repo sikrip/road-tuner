@@ -1,6 +1,8 @@
 package sikrip.roaddyno.engine;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import sikrip.roaddyno.model.LogEntry;
 import sikrip.roaddyno.model.LogValue;
@@ -21,18 +23,31 @@ public class DynoSimulationResult {
 	private final List<DynoSimulationEntry> entries;
 
 	/**
+	 * A collection of the headers contained in {@link #logEntries}.
+	 */
+	private final Set<String> dataHeaders;
+
+	/**
 	 * True for rpm based runs, false for speed based runs.
 	 */
 	private final boolean rpmBased;
 
 	public DynoSimulationResult(final boolean rpmBased, final List<LogEntry> logEntries, final List<DynoSimulationEntry> entries) {
+		if (logEntries == null || logEntries.isEmpty()) {
+			throw new IllegalArgumentException("Cannot create dyno simulation result, no log entries provided");
+		}
 		this.rpmBased = rpmBased;
 		this.logEntries = logEntries;
 		this.entries = entries;
+		dataHeaders = new HashSet<>(logEntries.get(0).getDataKeys());
 	}
 
 	public boolean isRpmBased() {
 		return rpmBased;
+	}
+
+	public Set<String> getDataHeaders() {
+		return dataHeaders;
 	}
 
 	public DynoSimulationEntry minPower() {

@@ -27,9 +27,9 @@ public class RPMDynoSimulatorTest {
 			values.put("Time", new LogValue<>(100.0 + (i / 10.0), "sec"));
 			values.put("RPM", new LogValue<>(3000.0 + (i * 2), "RPM"));
 			values.put("TPS", new LogValue<>(i < 4 ? 40.0 : 100.0, "%"));
-			new LogEntry(values, "Time", "RPM", "TPS");
+			new LogEntry(values, "Time", "RPM");
 
-			logEntries.add(new LogEntry(values, "Time", "RPM", "TPS"));
+			logEntries.add(new LogEntry(values, "Time", "RPM"));
 		}
 
 		DynoSimulationResult run = DynoSimulator.runByRPM(logEntries, 4.312, 1.310, 528, 905, 85, 1.7, 0.34);
@@ -47,9 +47,9 @@ public class RPMDynoSimulatorTest {
 			values.put("Time", new LogValue<>(100.0, "sec"));
 			values.put("RPM", new LogValue<>(3000.0, "RPM"));
 			values.put("TPS", new LogValue<>(100.0, "%"));
-			new LogEntry(values, "Time", "RPM", "TPS");
+			new LogEntry(values, "Time", "RPM");
 
-			logEntries.add(new LogEntry(values, "Time", "RPM", "TPS"));
+			logEntries.add(new LogEntry(values, "Time", "RPM"));
 		}
 
 		DynoSimulationResult run = DynoSimulator.runByRPM(logEntries, 4.312, 1.310, 528, 905, 85, 1.7, 0.34);

@@ -71,7 +71,7 @@ public final class MegasquirtLogReader implements EcuLogReader {
 				} else {
 					// data line
 					LogEntry entry = createLogEntry(headers, units, rawValues, timeColumnKey, rpmColumnKey, tpsColumnKey);
-					if (entry.getTps().getValue() > tpsStartThreshold) {
+					if (entry.get(tpsColumnKey).getValue() > tpsStartThreshold) {
 						logEntries.add(entry);
 					}
 				}
@@ -123,7 +123,7 @@ public final class MegasquirtLogReader implements EcuLogReader {
 			valuesMap.put(i < headers.size() ? headers.get(i) : "Unknown",
 					new LogValue<>(value, i < units.size() ? units.get(i) : "Unknown unit"));
 		}
-		return new LogEntry(valuesMap, timeColumnKey, rpmColumnKey, tpsColumnKey);
+		return new LogEntry(valuesMap, timeColumnKey, rpmColumnKey);
 	}
 
 }
