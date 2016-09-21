@@ -18,9 +18,8 @@ import sikrip.roaddyno.model.LogValue;
 public class VBOLogReader implements GPSLogReader {
 
 	private static final String TIME_KEY = "time";
-
-	// FIXME this may be different btw vbo files
-	private static final String VELOCITY_KEY = "velocity kmh";
+	private static final String VELOCITY_KEY = "velocity kmh";	// FIXME this may be different btw vbo files
+	private static final String HEIGHT_KEY = "height";
 
 	public List<LogEntry> readLog(String filePath) throws IOException {
 		File logFile = new File(filePath);
@@ -82,10 +81,18 @@ public class VBOLogReader implements GPSLogReader {
 				List<String> rawValues = getRawValues(logLine, headers.size());
 				Map<String, LogValue<Double>> logEntryValues = new HashMap<>();
 				for (int i = 0; i < rawValues.size(); i++) {
-					if (TIME_KEY.equals(headers.get(i))){
+					final String header = headers.get(i);
+					switch (header){
+					case TIME_KEY:
 						logEntryValues.put(TIME_KEY, new LogValue<>(Double.valueOf(rawValues.get(i)), "sec"));
-					}else if(VELOCITY_KEY.equals(headers.get(i))){
-						logEntryValues.put(VELOCITY_KEY, new LogValue<>(Double.valueOf(rawValues.get(i)), "kmph"));
+						break;
+					case VELOCITY_KEY:
+						logEntryValues.put(VELOCITY_KEY, new LogValue<>(Double.valueOf(rawValues.get(i)), "km/h"));
+						break;
+					case HEIGHT_KEY:
+						// TODO find the units of this (not sure it is meters)
+						logEntryValues.put(HEIGHT_KEY, new LogValue<>(Double.valueOf(rawValues.get(i)), "meters"));
+						break;
 					}
 				}
 				LogEntry logEntry = new LogEntry(logEntryValues, TIME_KEY, VELOCITY_KEY);

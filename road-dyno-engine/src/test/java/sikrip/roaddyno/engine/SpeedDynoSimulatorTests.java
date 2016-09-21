@@ -6,6 +6,7 @@ import org.junit.Test;
 
 import sikrip.roaddyno.gpslogreader.GPSLogReader;
 import sikrip.roaddyno.gpslogreader.VBOLogReader;
+import sikrip.roaddyno.model.DynoSimulationResult;
 import sikrip.roaddyno.model.LogEntry;
 
 public class SpeedDynoSimulatorTests {
@@ -24,6 +25,18 @@ public class SpeedDynoSimulatorTests {
 
 		List<LogEntry> logEntries = logReader.readLog(DynoRunDetectorTest.getTestResourceUrl("/sample-vbo-1.vbo").getPath());
 
-		DynoSimulator.runBySpeed(logEntries.subList(1634, 1680), fgr, gr, tyreDiameter, carWeight, occWeight, fa, cd);
+		List<LogEntry> runLogEntries = logEntries.subList(3479, 3536);
+
+		for (LogEntry runLogEntry : runLogEntries) {
+			System.out.println(runLogEntry.get("height"));
+		}
+		DynoSimulationResult result = DynoSimulator.runBySpeed(runLogEntries, fgr, gr, tyreDiameter, carWeight, occWeight, fa, cd);
+
+		double[][] dataset = result.powerDataset();
+
+		for(int i=0; i< result.getEntriesSize(); i++){
+			System.out.println(dataset[0][i]+": "+dataset[1][i]);
+		}
+
 	}
 }
