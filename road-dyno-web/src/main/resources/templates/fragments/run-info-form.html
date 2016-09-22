@@ -5,61 +5,69 @@
 
 <div th:fragment="fields">
 
-    <div class="panel panel-info">
-        <div class="panel-heading">
-            <h4>Gearing info</h4>
+    <fieldset>
+        <legend>Gearing</legend>
+        <div class="form-group">
+            <label class="col-sm-2 control-label" for="fgr">Tyre diameter</label>
+            <div class="col-sm-3">
+                <div class="input-group">
+                    <input id="tyreDiameter" type="number" step="any" required="required" th:field="*{tyreDiameter}" class="form-control"/>
+                    <div class="input-group-addon" id="tyreDiameter-alt">mm (0 inch)</div>
+                </div>
+                <span class="help-block">The diameter of the driving wheels in <strong>millimeters</strong> (equivalent in inches).</span>
+            </div>
+            <label class="col-sm-2 control-label" for="fgr">Gearbox</label>
+            <div class="col-sm-2">
+                <input placeholder="final gear ratio" type="number" id="fgr" step="any" required="required" th:field="*{finalGearRatio}" class="form-control"/>
+                <span class="help-block">The final gear ratio of your gearbox.</span>
+            </div>
+            <div class="col-sm-2">
+                <input placeholder="gear ratio" type="number" step="any" id="gr" required="required" th:field="*{gearRatio}" class="form-control"/>
+                <span class="help-block">The ratio of the gear used during the run.</span>
+            </div>
         </div>
+    </fieldset>
 
-        <div class="panel-body">
-            Final gear ratio:
-            <input type="number" step="any" required="required" th:field="*{finalGearRatio}" class="form-control"/>
-            <span class="help-block">The final gear ratio of your gearbox.</span>
-
-            Gear ratio:
-            <input type="number" step="any" required="required" th:field="*{gearRatio}" class="form-control"/>
-            <span class="help-block">The ratio of the gear used during the run.</span>
-
-            Tyre diameter
-            <input id="tyreDiameter" type="number" step="any" required="required" th:field="*{tyreDiameter}" class="form-control"/>
-            <span class="input-group-addon" id="tyreDiameter-alt">mm (0 inch)</span>
-            <span class="help-block">The diameter of the driving wheels in <strong>millimeters</strong> (equivalent in inches).</span>
+    <fieldset>
+        <legend>Weight</legend>
+        <div class="form-group">
+            <label class="col-sm-2 control-label" for="curbWeight">Curb weight (kg)</label>
+            <div class="col-sm-3">
+                <div class="input-group">
+                    <input id="curbWeight" type="number" step="any" required="required" th:field="*{carWeight}" class="form-control"/>
+                    <div id="curbWeight-alt" class="input-group-addon">kg (0 pounds)</div>
+                </div>
+                <span class="help-block">The curb wright of the car in <strong>kilograms</strong> (equivalent in pounds).</span>
+            </div>
+            <label class="col-sm-2 control-label" for="occWeight">Occupants weight (kg)</label>
+            <div class="col-sm-3">
+                <div class="input-group">
+                    <input id="occWeight" type="number" step="any" required="required" th:field="*{occupantsWeight}" class="form-control"/>
+                    <div id="curbWeight-alt" class="input-group-addon">kg (0 pounds)</div>
+                </div>
+                <span class="help-block">The weight in <strong>kilograms</strong> of the occupants during the run (equivalent in pounds).</span>
+            </div>
         </div>
-    </div>
+    </fieldset>
 
-    <div class="panel panel-info">
-        <div class="panel-heading">
-            <h4>Weight</h4>
+    <fieldset>
+        <legend>Aero</legend>
+        <div class="form-group">
+            <label class="col-sm-2 control-label" for="frontalArea">Frontal area (sqm)</label>
+            <div class="col-sm-3">
+                <div class="input-group">
+                    <input id="frontalArea" type="number" step="any" required="required" th:field="*{frontalArea}" class="form-control"/>
+                    <div id="frontalArea-alt" class="input-group-addon">sqm (0 sqft)</div>
+                </div>
+                <span class="help-block">The frontal area of the car in <strong>square meters</strong> (equivalent in square feet).</span>
+            </div>
+            <label class="col-sm-2 control-label" for="cd">Coefficient of Drag</label>
+            <div class="col-sm-3">
+                <input type="number" step="any" id="cd" required="required" th:field="*{coefficientOfDrag}" class="form-control"/>
+                <span class="help-block">The drag coefficient of the car.</span>
+            </div>
         </div>
-
-        <div class="panel-body">
-            Curb weight
-            <input id="curbWeight" type="number" step="any" required="required" th:field="*{carWeight}" class="form-control"/>
-            <span id="curbWeight-alt" class="input-group-addon">kg (0 pounds)</span>
-            <span class="help-block">The curb wright of the car in <strong>kilograms</strong> (equivalent in pounds).</span>
-
-            Occupants weight
-            <input id="occWeight" type="number" step="any" required="required" th:field="*{occupantsWeight}" class="form-control"/>
-            <span id="occWeight-alt" class="input-group-addon">kg (0 pounds)</span>
-            <span class="help-block">The weight in <strong>kilograms</strong> of the occupants during the run (equivalent in pounds).</span>
-        </div>
-    </div>
-
-    <div class="panel panel-info">
-        <div class="panel-heading">
-            <h4>Aerodynamic properties</h4>
-        </div>
-
-        <div class="panel-body">
-            Frontal area
-            <input id="frontalArea" type="number" step="any" required="required" th:field="*{frontalArea}" class="form-control"/>
-            <span id="frontalArea-alt" class="input-group-addon">sqm (0 sqft)</span>
-            <span class="help-block">The frontal area of the car in <strong>square meters</strong> (equivalent in square feet).</span>
-
-            Coefficient of Drag
-            <input type="number" step="any" required="required" th:field="*{coefficientOfDrag}" class="form-control"/>
-            <span class="help-block">The drag coefficient of the car.</span>
-        </div>
-    </div>
+    </fieldset>
 
     <script>
         $(document).ready(function () {

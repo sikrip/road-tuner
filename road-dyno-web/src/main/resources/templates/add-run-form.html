@@ -20,8 +20,6 @@
     <form class="form-horizontal" th:object="${runInfo}" th:action="@{/addrun}" method="post"
           enctype="multipart/form-data">
 
-        <h3>Vehicle and conditions info</h3>
-
         <div class="panel panel-info">
             <div class="panel-heading">
                 <h4>Log file</h4>
@@ -32,7 +30,12 @@
             </div>
         </div>
 
-        <div th:include="fragments/run-info-form :: fields"></div>
+        <div class="panel panel-info">
+            <div class="panel-heading">
+                <h4>Vehicle info</h4>
+            </div>
+            <div th:include="fragments/run-info-form :: fields"></div>
+        </div>
 
         <hr/>
         <button type="submit" class="btn btn-primary active">Load run</button>

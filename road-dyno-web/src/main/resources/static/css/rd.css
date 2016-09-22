@@ -6,7 +6,7 @@ body {
     background-size: cover;
 }
 
-h1 small{
+h1 small {
     color: white;
 }
 
@@ -14,7 +14,6 @@ form.form-horizontal {
     background-color: white;
     padding: 15px;
     border-radius: 6px;
-    width: 600px;
     margin: auto;
 }
 
@@ -22,13 +21,22 @@ form span.input-group-addon {
     width: 144px;
 }
 
-span.input-group-addon:first-child {
-    text-align: right;
-    font-weight: bold;
+.input-group-addon:last-child {
+    font-size: x-small;
+    width: 85px;
 }
 
 input.form-control + span {
     text-align: left;
+}
+
+legend {
+    padding-left: 15px;
+    color: gray;
+}
+
+label {
+    color: gray;
 }
 
 footer, footer a {
