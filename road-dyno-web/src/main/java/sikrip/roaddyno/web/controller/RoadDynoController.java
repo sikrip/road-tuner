@@ -21,6 +21,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import sikrip.roaddyno.engine.AccelerationBounds;
 import sikrip.roaddyno.engine.DynoSimulationResult;
 import sikrip.roaddyno.engine.DynoSimulator;
 import sikrip.roaddyno.model.LogFileData;
@@ -52,73 +53,39 @@ public class RoadDynoController {
 		return "index";
 	}
 
-	@RequestMapping("/addrun")
-	public String addRun(Model model) {
+	@RequestMapping("/selectlogfile")
+	public String selectLogFile(Model model) {
 		model.addAttribute("nav", "onlinedyno");
 		model.addAttribute("runInfo", new UploadedRun().fromVehicleData(vehicleData));
-		return "add-run-form";
+		return "select-log-file-form";
 	}
 
-	@RequestMapping("/clearall")
-	public String clearAll(Model model) {
-		uploadedRuns.clear();
-		colorProvider.reset();
-		model.addAttribute("nav", "onlinedyno");
-		//TODO clear vehicleData?
-		return "online-dyno-empty";
-	}
-
-	@RequestMapping("/help")
-	public String help(Model model) {
-		model.addAttribute("nav", "help");
-		return "help";
-	}
-
-	@RequestMapping("/tsdyno")
-	public String tsDyno(Model model) {
-		model.addAttribute("nav", "tsdyno");
-		return "tsdyno";
-	}
-
-	@RequestMapping("/contact")
-	public String contact(Model model) {
-		model.addAttribute("nav", "contact");
-		return "contact";
-	}
-
-	@RequestMapping(value = "/addrun", method = RequestMethod.POST)
-	public String addRun(UploadedRun runInfo, @RequestParam("file") MultipartFile file, Model model) {
+	@RequestMapping(value = "/selectlogfile", method = RequestMethod.POST)
+	public String selectLogFile(UploadedRun runInfo, @RequestParam("file") MultipartFile file, Model model) {
 		if (!file.isEmpty()) {
 			try {
+				final List<AccelerationBounds> accelerations = new ArrayList<>();
+
 				LogFileData logFileData = LogFileReader.readLogEntries(file);
-
-				DynoSimulationResult result;
-				if (logFileData.isRpmBased()) {
-					result = DynoSimulator.runByRPM(logFileData.getLogEntries(),
-							runInfo.getFinalGearRatio(),
-							runInfo.getGearRatio(),
-							runInfo.getTyreDiameter(),
-							runInfo.getCarWeight(),
-							runInfo.getOccupantsWeight(),
-							runInfo.getFrontalArea(),
-							runInfo.getCoefficientOfDrag());
+				if(logFileData.isRpmBased()){
+					// FIXME for rpm based we do no acceleration detection for now
+					accelerations.add(new AccelerationBounds(0, logFileData.getLogEntries().size()));
 				}else {
-					result = DynoSimulator.runBySpeed(logFileData.getLogEntries(),
-							runInfo.getFinalGearRatio(),
-							runInfo.getGearRatio(),
-							runInfo.getTyreDiameter(),
-							runInfo.getCarWeight(),
-							runInfo.getOccupantsWeight(),
-							runInfo.getFrontalArea(),
-							runInfo.getCoefficientOfDrag());
+					// TODO detect acceleration runs
 				}
-
+				runInfo.setSelectedAccelerationIdx(0);
+				runInfo.addAccelerations(accelerations);
+				runInfo.addLogEntries(logFileData);
 				runInfo.setName(file.getOriginalFilename());
-				runInfo.setResult(result);
 				runInfo.setColor(colorProvider.pop());
 
 				uploadedRuns.add(runInfo);
 				vehicleData.updateFromRunInfo(runInfo);
+
+				// go to add run page
+				model.addAttribute("runInfo", runInfo);
+				model.addAttribute("nav", "onlinedyno");
+				return "add-run-form";
 			} catch (Exception e) {
 				LOGGER.error("Could not add run.", e);
 				model.addAttribute(ERROR_TEXT_KEY, e.getMessage());
@@ -129,7 +96,62 @@ public class RoadDynoController {
 			model.addAttribute(ERROR_TEXT_KEY, "Could not add run, uploaded file is empty.");
 			return "error";
 		}
-		return "redirect:/onlinedyno";
+	}
+
+	@RequestMapping(value = "/addrun", method = RequestMethod.POST)
+	public String addRun(UploadedRun updatedRunInfo, Model model) {
+
+		Optional<UploadedRun> existingRunInfo = uploadedRuns.stream().filter(r -> r.equals(updatedRunInfo)).findFirst();
+
+		if (existingRunInfo.isPresent()) {
+			UploadedRun runInfo = existingRunInfo.get();
+
+			runInfo.setFinalGearRatio(updatedRunInfo.getFinalGearRatio());
+			runInfo.setGearRatio(updatedRunInfo.getGearRatio());
+			runInfo.setTyreDiameter(updatedRunInfo.getTyreDiameter());
+			runInfo.setCarWeight(updatedRunInfo.getCarWeight());
+			runInfo.setOccupantsWeight(updatedRunInfo.getOccupantsWeight());
+			runInfo.setFrontalArea(updatedRunInfo.getFrontalArea());
+			runInfo.setCoefficientOfDrag(updatedRunInfo.getCoefficientOfDrag());
+			runInfo.setSelectedAccelerationIdx(updatedRunInfo.getSelectedAccelerationIdx());
+
+			vehicleData.updateFromRunInfo(updatedRunInfo);
+
+			try {
+				DynoSimulationResult result;
+				if(runInfo.isRpmBased()) {
+					result = DynoSimulator.runByRPM(runInfo.getSelectedLogEntries(),
+							runInfo.getFinalGearRatio(),
+							runInfo.getGearRatio(),
+							runInfo.getTyreDiameter(),
+							runInfo.getCarWeight(),
+							runInfo.getOccupantsWeight(),
+							runInfo.getFrontalArea(),
+							runInfo.getCoefficientOfDrag());
+
+				}else {
+					result = DynoSimulator.runBySpeed(runInfo.getSelectedLogEntries(),
+							runInfo.getFinalGearRatio(),
+							runInfo.getGearRatio(),
+							runInfo.getTyreDiameter(),
+							runInfo.getCarWeight(),
+							runInfo.getOccupantsWeight(),
+							runInfo.getFrontalArea(),
+							runInfo.getCoefficientOfDrag());
+				}
+				runInfo.setResult(result);
+				return "redirect:/onlinedyno";
+			} catch (Exception e) {
+				LOGGER.error("Could not update run.", e);
+				model.addAttribute(ERROR_TEXT_KEY, e.getMessage());
+				return "error";
+			}
+		} else {
+			String error = "Could not update run. Run with id " + updatedRunInfo.getId() + " was not found";
+			LOGGER.error(error);
+			model.addAttribute(ERROR_TEXT_KEY, error);
+			return "error";
+		}
 	}
 
 	@RequestMapping(value = "/updaterun", method = RequestMethod.POST)
@@ -170,6 +192,33 @@ public class RoadDynoController {
 			model.addAttribute(ERROR_TEXT_KEY, error);
 			return "error";
 		}
+	}
+
+	@RequestMapping("/clearall")
+	public String clearAll(Model model) {
+		uploadedRuns.clear();
+		colorProvider.reset();
+		model.addAttribute("nav", "onlinedyno");
+		//TODO clear vehicleData?
+		return "online-dyno-empty";
+	}
+
+	@RequestMapping("/help")
+	public String help(Model model) {
+		model.addAttribute("nav", "help");
+		return "help";
+	}
+
+	@RequestMapping("/tsdyno")
+	public String tsDyno(Model model) {
+		model.addAttribute("nav", "tsdyno");
+		return "tsdyno";
+	}
+
+	@RequestMapping("/contact")
+	public String contact(Model model) {
+		model.addAttribute("nav", "contact");
+		return "contact";
 	}
 
 	@RequestMapping(value = "/changeStatus", method = RequestMethod.POST)

@@ -20,13 +20,19 @@
     <form class="form-horizontal" th:object="${runInfo}" th:action="@{/addrun}" method="post"
           enctype="multipart/form-data">
 
+        <input type="hidden" th:field="*{id}"/>
+
         <div class="panel panel-info">
             <div class="panel-heading">
                 <h4>Log file</h4>
             </div>
 
             <div class="panel-body">
-                <input type="file" required="required" name="file" accept=".msl"/>
+                <input type="text" disabled="disabled" name="ignored" th:value="${runInfo.name}"/>
+
+                <select th:field="*{selectedAccelerationIdx}" th:each="accelerationRun, i : ${runInfo.accelerations}">
+                    <option th:value="${i.index}" th:text="${accelerationRun.start} +' - ' + ${accelerationRun.end}"></option>
+                </select>
             </div>
         </div>
 

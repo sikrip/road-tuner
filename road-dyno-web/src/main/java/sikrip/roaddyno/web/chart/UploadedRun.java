@@ -1,10 +1,15 @@
 package sikrip.roaddyno.web.chart;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
+import sikrip.roaddyno.engine.AccelerationBounds;
 import sikrip.roaddyno.engine.DynoSimulationEntry;
 import sikrip.roaddyno.engine.DynoSimulationResult;
 import sikrip.roaddyno.engine.RunInfo;
+import sikrip.roaddyno.model.LogEntry;
+import sikrip.roaddyno.model.LogFileData;
 import sikrip.roaddyno.web.controller.SessionVehicleData;
 
 /**
@@ -34,6 +39,13 @@ public class UploadedRun implements RunInfo {
 	 */
 	private DynoSimulationResult result;
 
+	/**
+	 * The raw log entries that produced this result.
+	 */
+	private final List<LogEntry> logEntries = new ArrayList<>();
+
+	private boolean rpmBased;
+
 	private Double finalGearRatio;
 	private Double gearRatio;
 	private Double tyreDiameter;
@@ -41,6 +53,10 @@ public class UploadedRun implements RunInfo {
 	private Double occupantsWeight;
 	private Double frontalArea;
 	private Double coefficientOfDrag;
+
+	private final List<AccelerationBounds> accelerations = new ArrayList<>();
+
+	private int selectedAccelerationIdx;
 
 	public UploadedRun() {
 		id = UUID.randomUUID().toString();
@@ -158,6 +174,14 @@ public class UploadedRun implements RunInfo {
 		return result != null ? result.maxTorque() : null;
 	}
 
+	public List<AccelerationBounds> getAccelerations(){
+		return accelerations;
+	}
+
+	public void addAccelerations(List<AccelerationBounds> accelerations) {
+		this.accelerations.addAll(accelerations);
+	}
+
 	public UploadedRun fromVehicleData(SessionVehicleData vehicleData) {
 		setFinalGearRatio(vehicleData.getFinalGearRatio());
 		setGearRatio(vehicleData.getGearRatio());
@@ -166,8 +190,29 @@ public class UploadedRun implements RunInfo {
 		setOccupantsWeight(vehicleData.getOccupantsWeight());
 		setFrontalArea(vehicleData.getFrontalArea());
 		setCoefficientOfDrag(vehicleData.getCoefficientOfDrag());
-
 		return this;
+	}
+
+	public List<LogEntry> getSelectedLogEntries() {
+		AccelerationBounds selectedAcceleration = accelerations.get(selectedAccelerationIdx);
+		return logEntries.subList(selectedAcceleration.getStart(), selectedAcceleration.getEnd());
+	}
+
+	public void addLogEntries(LogFileData logFileData) {
+		this.logEntries.addAll(logFileData.getLogEntries());
+		this.rpmBased = logFileData.isRpmBased();
+	}
+
+	public boolean isRpmBased() {
+		return rpmBased;
+	}
+
+	public int getSelectedAccelerationIdx() {
+		return selectedAccelerationIdx;
+	}
+
+	public void setSelectedAccelerationIdx(int selectedAccelerationIdx) {
+		this.selectedAccelerationIdx = selectedAccelerationIdx;
 	}
 
 	@Override

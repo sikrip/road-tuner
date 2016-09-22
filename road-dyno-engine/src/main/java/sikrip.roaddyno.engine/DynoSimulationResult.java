@@ -14,6 +14,8 @@ public class DynoSimulationResult {
 
 	/**
 	 * The raw log entries that produced this result.
+	 *
+	 * FIXME remove this list
 	 */
 	private final List<LogEntry> logEntries;
 

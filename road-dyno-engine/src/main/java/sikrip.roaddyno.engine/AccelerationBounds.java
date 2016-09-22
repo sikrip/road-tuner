@@ -3,7 +3,7 @@ package sikrip.roaddyno.engine;
 /**
  * Holds the start and end index of an acceleration run.
  */
-final class AccelerationBounds {
+public final class AccelerationBounds {
 
 	private final int start;
 	private final int end;
