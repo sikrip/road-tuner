@@ -30,8 +30,9 @@
             <div class="panel-body">
                 <input type="text" disabled="disabled" name="ignored" th:value="${runInfo.name}"/>
 
-                <select th:field="*{selectedAccelerationIdx}" th:each="accelerationRun, i : ${runInfo.accelerations}">
-                    <option th:value="${i.index}" th:text="${accelerationRun.start} +' - ' + ${accelerationRun.end}"></option>
+                <select th:field="*{selectedAccelerationIdx}">
+                    <option th:each="accelerationRun, i : ${runInfo.accelerations}" th:value="${i.index}"
+                            th:text="${accelerationRun.startEntry.velocity} +' - ' + ${accelerationRun.endEntry.velocity}"></option>
                 </select>
             </div>
         </div>

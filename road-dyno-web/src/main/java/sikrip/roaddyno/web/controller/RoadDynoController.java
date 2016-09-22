@@ -22,6 +22,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import sikrip.roaddyno.engine.AccelerationBounds;
+import sikrip.roaddyno.engine.DynoRunDetector;
 import sikrip.roaddyno.engine.DynoSimulationResult;
 import sikrip.roaddyno.engine.DynoSimulator;
 import sikrip.roaddyno.model.LogFileData;
@@ -69,9 +70,10 @@ public class RoadDynoController {
 				LogFileData logFileData = LogFileReader.readLogEntries(file);
 				if(logFileData.isRpmBased()){
 					// FIXME for rpm based we do no acceleration detection for now
-					accelerations.add(new AccelerationBounds(0, logFileData.getLogEntries().size()));
+					accelerations.add(new AccelerationBounds(0, logFileData.getLogEntries().size(),
+							logFileData.getLogEntries().get(0), logFileData.getLogEntries().get(logFileData.getLogEntries().size())));
 				}else {
-					// TODO detect acceleration runs
+					accelerations.addAll(DynoRunDetector.getAccelerationBoundsBySpeed(logFileData.getLogEntries()));
 				}
 				runInfo.setSelectedAccelerationIdx(0);
 				runInfo.addAccelerations(accelerations);

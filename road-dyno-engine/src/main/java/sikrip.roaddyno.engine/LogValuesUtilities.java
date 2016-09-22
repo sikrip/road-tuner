@@ -74,7 +74,9 @@ final class LogValuesUtilities {
 			end = rawSpeedValues.length;
 		}
 
-		return new AccelerationBounds(Math.min(start, logSize), Math.min(end, logSize));
+		start = Math.min(start, logSize);
+		end = Math.min(end, logSize);
+		return new AccelerationBounds(start, end, rawEntries.get(start), rawEntries.get(end));
 	}
 
 	static AccelerationBounds getAccelerationBoundsByRPM(List<LogEntry> rawEntries) {
@@ -101,7 +103,9 @@ final class LogValuesUtilities {
 
 		start = findStart(rpmDS, 0);
 
-		return new AccelerationBounds(Math.min(start, logSize), Math.min(end, logSize));
+		start = Math.min(start, logSize);
+		end = Math.min(end, logSize);
+		return new AccelerationBounds(start, end, rawEntries.get(start), rawEntries.get(end));
 	}
 
 	/**
