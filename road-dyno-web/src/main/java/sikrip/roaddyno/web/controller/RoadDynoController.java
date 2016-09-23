@@ -72,7 +72,7 @@ public class RoadDynoController {
 
 				logRunEntries.add(runInfo);
 
-				// show update run page
+				// show update run form
 				model.addAttribute("runInfo", runInfo);
 				model.addAttribute("nav", "onlinedyno");
 

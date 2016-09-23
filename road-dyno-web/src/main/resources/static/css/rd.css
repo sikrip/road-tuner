@@ -42,3 +42,7 @@ label {
 footer, footer a {
     color: white;
 }
+
+div.vehicleInfo {
+    font-size: small;
+}
