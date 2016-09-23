@@ -24,9 +24,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import sikrip.roaddyno.engine.DynoSimulationResult;
 import sikrip.roaddyno.engine.DynoSimulator;
-import sikrip.roaddyno.web.logger.LogFileData;
 import sikrip.roaddyno.web.chart.ChartDataProvider;
 import sikrip.roaddyno.web.chart.PlotColorProvider;
+import sikrip.roaddyno.web.logger.LogFileData;
 import sikrip.roaddyno.web.logger.LogFileReader;
 
 @Controller
@@ -52,15 +52,15 @@ public class RoadDynoController {
 		return "index";
 	}
 
-	@RequestMapping("/select-log-file")
-	public String selectLogFile(Model model) {
+	@RequestMapping("/add")
+	public String add(Model model) {
 		model.addAttribute("nav", "onlinedyno");
 		model.addAttribute("runInfo", new LoggedRunsEntry(logRunEntries.size()).fromVehicleData(vehicleData));
 		return "select-log-file-form";
 	}
 
-	@RequestMapping(value = "/select-log-file", method = RequestMethod.POST)
-	public String selectLogFile(LoggedRunsEntry runInfo, @RequestParam("file") MultipartFile file, Model model) {
+	@RequestMapping(value = "/add", method = RequestMethod.POST)
+	public String add(LoggedRunsEntry runInfo, @RequestParam("file") MultipartFile file, Model model) {
 		if (!file.isEmpty()) {
 			try {
 				LogFileData logFileData = LogFileReader.readLog(file);
@@ -72,10 +72,11 @@ public class RoadDynoController {
 				logRunEntries.add(runInfo);
 				vehicleData.updateFromRunInfo(runInfo);
 
-				// go to add run page
+				// show update run page
 				model.addAttribute("runInfo", runInfo);
 				model.addAttribute("nav", "onlinedyno");
-				return "add-run-form";
+
+				return "update-run-form";
 			} catch (Exception e) {
 				LOGGER.error("Could not add run.", e);
 				model.addAttribute(ERROR_TEXT_KEY, e.getMessage());
@@ -88,52 +89,69 @@ public class RoadDynoController {
 		}
 	}
 
-	@RequestMapping(value = "/add-run", method = RequestMethod.POST)
-	public String addRun(LoggedRunsEntry updatedRunInfo, Model model) {
+	@RequestMapping("edit/{id}")
+	public String edit(@PathVariable String id, Model model) {
+		Optional<LoggedRunsEntry> runInfo = logRunEntries.stream().filter(r -> id.equals(r.getId())).findFirst();
+		if (runInfo.isPresent()) {
+			model.addAttribute("runInfo", runInfo.get());
+			model.addAttribute("nav", "onlinedyno");
+			return "update-run-form";
+		}
+		String error = "Could not edit run with id " + id + ". Run not found.";
+		LOGGER.error(error);
+		model.addAttribute(ERROR_TEXT_KEY, error);
+		return "error";
+	}
 
-		Optional<LoggedRunsEntry> existingRunInfo = logRunEntries.stream().filter(r -> r.equals(updatedRunInfo)).findFirst();
+	@RequestMapping(value = "/update-run", method = RequestMethod.POST)
+	public String edit(LoggedRunsEntry updatedRunInfo, Model model) {
 
-		if (existingRunInfo.isPresent()) {
-			LoggedRunsEntry runInfo = existingRunInfo.get();
+		Optional<LoggedRunsEntry> existingEntryContainer = logRunEntries.stream().filter(r -> r.equals(updatedRunInfo)).findFirst();
 
-			runInfo.setFinalGearRatio(updatedRunInfo.getFinalGearRatio());
-			runInfo.setGearRatio(updatedRunInfo.getGearRatio());
-			runInfo.setTyreDiameter(updatedRunInfo.getTyreDiameter());
-			runInfo.setCarWeight(updatedRunInfo.getCarWeight());
-			runInfo.setOccupantsWeight(updatedRunInfo.getOccupantsWeight());
-			runInfo.setFrontalArea(updatedRunInfo.getFrontalArea());
-			runInfo.setCoefficientOfDrag(updatedRunInfo.getCoefficientOfDrag());
-			runInfo.setSelectedAccelerationIdx(updatedRunInfo.getSelectedAccelerationIdx());
+		if (existingEntryContainer.isPresent()) {
+			LoggedRunsEntry existingEntry = existingEntryContainer.get();
 
-			if(runInfo.getColor()==null) {
-				runInfo.setColor(colorProvider.pop());
+			existingEntry.setFinalGearRatio(updatedRunInfo.getFinalGearRatio());
+			existingEntry.setGearRatio(updatedRunInfo.getGearRatio());
+			existingEntry.setTyreDiameter(updatedRunInfo.getTyreDiameter());
+			existingEntry.setCarWeight(updatedRunInfo.getCarWeight());
+			existingEntry.setOccupantsWeight(updatedRunInfo.getOccupantsWeight());
+			existingEntry.setFrontalArea(updatedRunInfo.getFrontalArea());
+			existingEntry.setCoefficientOfDrag(updatedRunInfo.getCoefficientOfDrag());
+			existingEntry.setSelectedAccelerationIdx(updatedRunInfo.getSelectedAccelerationIdx());
+
+			if (existingEntry.getColor() == null) {
+				// set color only the first time
+				existingEntry.setColor(colorProvider.pop());
 			}
 
 			vehicleData.updateFromRunInfo(updatedRunInfo);
 
 			try {
-				DynoSimulationResult result;
-				if(runInfo.isRpmBased()) {
-					result = DynoSimulator.runByRPM(runInfo.getSelectedLogEntries(),
-							runInfo.getFinalGearRatio(),
-							runInfo.getGearRatio(),
-							runInfo.getTyreDiameter(),
-							runInfo.getCarWeight(),
-							runInfo.getOccupantsWeight(),
-							runInfo.getFrontalArea(),
-							runInfo.getCoefficientOfDrag());
+				// (re)run the dyno
+				DynoSimulationResult dynoResult;
+				if (existingEntry.isRpmBased()) {
+					dynoResult = DynoSimulator.runByRPM(existingEntry.getSelectedLogEntries(),
+							existingEntry.getFinalGearRatio(),
+							existingEntry.getGearRatio(),
+							existingEntry.getTyreDiameter(),
+							existingEntry.getCarWeight(),
+							existingEntry.getOccupantsWeight(),
+							existingEntry.getFrontalArea(),
+							existingEntry.getCoefficientOfDrag());
 
-				}else {
-					result = DynoSimulator.runBySpeed(runInfo.getSelectedLogEntries(),
-							runInfo.getFinalGearRatio(),
-							runInfo.getGearRatio(),
-							runInfo.getTyreDiameter(),
-							runInfo.getCarWeight(),
-							runInfo.getOccupantsWeight(),
-							runInfo.getFrontalArea(),
-							runInfo.getCoefficientOfDrag());
+				} else {
+					dynoResult = DynoSimulator.runBySpeed(existingEntry.getSelectedLogEntries(),
+							existingEntry.getFinalGearRatio(),
+							existingEntry.getGearRatio(),
+							existingEntry.getTyreDiameter(),
+							existingEntry.getCarWeight(),
+							existingEntry.getOccupantsWeight(),
+							existingEntry.getFrontalArea(),
+							existingEntry.getCoefficientOfDrag());
 				}
-				runInfo.setResult(result);
+				existingEntry.setResult(dynoResult);
+
 				return "redirect:/onlinedyno";
 			} catch (Exception e) {
 				LOGGER.error("Could not update run.", e);
@@ -148,44 +166,51 @@ public class RoadDynoController {
 		}
 	}
 
-	@RequestMapping(value = "/updaterun", method = RequestMethod.POST)
-	public String updateRun(LoggedRunsEntry updatedRunInfo, Model model) {
-
-		Optional<LoggedRunsEntry> existingRunInfo = logRunEntries.stream().filter(r -> r.equals(updatedRunInfo)).findFirst();
-
+	@RequestMapping(value = "/changeStatus", method = RequestMethod.POST)
+	public String changeStatus(String rid, Boolean active, Model model) {
+		Optional<LoggedRunsEntry> existingRunInfo = logRunEntries.stream().filter(r -> r.getId().equals(rid)).findFirst();
 		if (existingRunInfo.isPresent()) {
-			existingRunInfo.get().setFinalGearRatio(updatedRunInfo.getFinalGearRatio());
-			existingRunInfo.get().setGearRatio(updatedRunInfo.getGearRatio());
-			existingRunInfo.get().setTyreDiameter(updatedRunInfo.getTyreDiameter());
-			existingRunInfo.get().setCarWeight(updatedRunInfo.getCarWeight());
-			existingRunInfo.get().setOccupantsWeight(updatedRunInfo.getOccupantsWeight());
-			existingRunInfo.get().setFrontalArea(updatedRunInfo.getFrontalArea());
-			existingRunInfo.get().setCoefficientOfDrag(updatedRunInfo.getCoefficientOfDrag());
+			existingRunInfo.get().setActive(active == null ? false : active);
+			return "redirect:/onlinedyno";
+		}
+		String error = "Could not change statue of run with id " + rid + ". Run not found.";
+		LOGGER.error(error);
+		model.addAttribute(ERROR_TEXT_KEY, error);
+		return "error";
+	}
 
-			try {
-				DynoSimulationResult result = DynoSimulator.runByRPM(existingRunInfo.get().getResult().getLogEntries(),
-						existingRunInfo.get().getFinalGearRatio(),
-						existingRunInfo.get().getGearRatio(),
-						existingRunInfo.get().getTyreDiameter(),
-						existingRunInfo.get().getCarWeight(),
-						existingRunInfo.get().getOccupantsWeight(),
-						existingRunInfo.get().getFrontalArea(),
-						existingRunInfo.get().getCoefficientOfDrag());
-				existingRunInfo.get().setResult(result);
-				vehicleData.updateFromRunInfo(updatedRunInfo);
-
-				return "redirect:/onlinedyno";
-			} catch (Exception e) {
-				LOGGER.error("Could not update run.", e);
-				model.addAttribute(ERROR_TEXT_KEY, e.getMessage());
-				return "error";
+	@RequestMapping("remove/{id}")
+	public String remove(@PathVariable String id) {
+		Iterator<LoggedRunsEntry> resultIterator = logRunEntries.iterator();
+		while (resultIterator.hasNext()) {
+			if (resultIterator.next().getId().equals(id)) {
+				resultIterator.remove();
+				break;
 			}
-		} else {
-			String error = "Could not update run. Run with id " + updatedRunInfo.getId() + " was not found";
-			LOGGER.error(error);
-			model.addAttribute(ERROR_TEXT_KEY, error);
+		}
+		return "redirect:/onlinedyno";
+	}
+
+	@RequestMapping("/onlinedyno")
+	public String onlineDyno(Model model) {
+		clearInvalidEntries();
+		if (logRunEntries.isEmpty()) {
+			return "redirect:/clearall";
+		}
+		try {
+			final List<LoggedRunsEntry> activeRuns = logRunEntries.stream().filter(LoggedRunsEntry::isActive).collect(Collectors.toList());
+			String chartDef = objectMapper.writeValueAsString(new ChartDataProvider().createMainChartDefinition(activeRuns));
+			String auxChartDef = objectMapper.writeValueAsString(new ChartDataProvider().createAuxuliaryChartDefinition(activeRuns, "AFR"));
+			model.addAttribute("chartDef", chartDef);
+			model.addAttribute("auxChartDef", auxChartDef);
+		} catch (JsonProcessingException e) {
+			LOGGER.error("Could not plot runs.", e);
+			model.addAttribute(ERROR_TEXT_KEY, e.getMessage());
 			return "error";
 		}
+		model.addAttribute("runInfoList", logRunEntries);
+		model.addAttribute("nav", "onlinedyno");
+		return "online-dyno-plot";
 	}
 
 	@RequestMapping("/clearall")
@@ -215,74 +240,12 @@ public class RoadDynoController {
 		return "contact";
 	}
 
-	@RequestMapping(value = "/changeStatus", method = RequestMethod.POST)
-	public String changeStatus(String rid, Boolean active, Model model) {
-		Optional<LoggedRunsEntry> existingRunInfo = logRunEntries.stream().filter(r -> r.getId().equals(rid)).findFirst();
-		if (existingRunInfo.isPresent()) {
-			existingRunInfo.get().setActive(active == null ? false : active);
-			return "redirect:/onlinedyno";
-		}
-		String error = "Could not change statue of run with id " + rid + ". Run not found.";
-		LOGGER.error(error);
-		model.addAttribute(ERROR_TEXT_KEY, error);
-		return "error";
-	}
-
-	@RequestMapping("/onlinedyno")
-	public String onlineDyno(Model model) {
-		clearInvalidEntries();
-		if (logRunEntries.isEmpty()) {
-			return "redirect:/clearall";
-		}
-		try {
-			final List<LoggedRunsEntry> activeRuns = logRunEntries.stream().filter(LoggedRunsEntry::isActive).collect(Collectors.toList());
-			String chartDef = objectMapper.writeValueAsString(new ChartDataProvider().createMainChartDefinition(activeRuns));
-			String auxChartDef = objectMapper.writeValueAsString(new ChartDataProvider().createAuxuliaryChartDefinition(activeRuns, "AFR"));
-			model.addAttribute("chartDef", chartDef);
-			model.addAttribute("auxChartDef", auxChartDef);
-		} catch (JsonProcessingException e) {
-			LOGGER.error("Could not plot runs.", e);
-			model.addAttribute(ERROR_TEXT_KEY, e.getMessage());
-			return "error";
-		}
-		model.addAttribute("runInfoList", logRunEntries);
-		model.addAttribute("nav", "onlinedyno");
-		return "online-dyno-plot";
-	}
-
 	private void clearInvalidEntries() {
 		Iterator<LoggedRunsEntry> loggedRunsEntryIterator = logRunEntries.iterator();
-		while (loggedRunsEntryIterator.hasNext()){
-			if (loggedRunsEntryIterator.next().getColor()==null){
+		while (loggedRunsEntryIterator.hasNext()) {
+			if (loggedRunsEntryIterator.next().getColor() == null) {
 				loggedRunsEntryIterator.remove();
 			}
 		}
 	}
-
-	@RequestMapping("edit/{id}")
-	public String edit(@PathVariable String id, Model model) {
-		Optional<LoggedRunsEntry> runInfo = logRunEntries.stream().filter(r -> id.equals(r.getId())).findFirst();
-		if (runInfo.isPresent()) {
-			model.addAttribute("runInfo", runInfo.get());
-			model.addAttribute("nav", "onlinedyno");
-			return "update-run-form";
-		}
-		String error = "Could not edit run with id " + id + ". Run not found.";
-		LOGGER.error(error);
-		model.addAttribute(ERROR_TEXT_KEY, error);
-		return "error";
-	}
-
-	@RequestMapping("remove/{id}")
-	public String remove(@PathVariable String id) {
-		Iterator<LoggedRunsEntry> resultIterator = logRunEntries.iterator();
-		while (resultIterator.hasNext()) {
-			if (resultIterator.next().getId().equals(id)) {
-				resultIterator.remove();
-				break;
-			}
-		}
-		return "redirect:/onlinedyno";
-	}
-
 }
