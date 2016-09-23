@@ -1,6 +1,7 @@
 package sikrip.roaddyno.web.logger;
 
 import java.io.IOException;
+import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -9,7 +10,7 @@ import org.springframework.web.multipart.MultipartFile;
 import sikrip.roaddyno.eculogreader.MegasquirtLogReader;
 import sikrip.roaddyno.gpslogreader.VBOLogReader;
 import sikrip.roaddyno.model.InvalidLogFormatException;
-import sikrip.roaddyno.model.LogFileData;
+import sikrip.roaddyno.model.LogEntry;
 
 public final class LogFileReader {
 
@@ -21,22 +22,31 @@ public final class LogFileReader {
 		// no instantiation
 	}
 
-	public static LogFileData readLogEntries(MultipartFile file) throws IOException, InvalidLogFormatException {
+	public static LogFileData readLog(MultipartFile file) throws IOException, InvalidLogFormatException {
 		if (!file.isEmpty()) {
-			boolean logTypeFound = true;
+			List<LogEntry> logEntries = null;
+			boolean rpmBased = false;
+
 			try {
-				return new LogFileData(true, new MegasquirtLogReader().readLog(file.getInputStream(), TPS_START_THRESHOLD));
+				// try megasquirt file
+				logEntries = new MegasquirtLogReader().readLog(file.getInputStream(), TPS_START_THRESHOLD);
+				rpmBased = true;
 			} catch (InvalidLogFormatException e) {
 				// will try other log file types
 				LOGGER.info("File {} is not a valid megasquirt log file", file.getName());
 			}
 
-			// Last chance to read the file
 			try {
-				return new LogFileData(false, new VBOLogReader().readLog(file.getInputStream()));
+				// try vbo file
+				logEntries = new VBOLogReader().readLog(file.getInputStream());
+				rpmBased = false;
 			} catch (InvalidLogFormatException e) {
-				LOGGER.info("File {} is not a valid vbo log file", file.getName());
-				throw e;
+				LOGGER.info("File {} is not a valid vbo log file", file.getOriginalFilename());
+			}
+			if (logEntries == null) {
+				throw new IllegalArgumentException("Could not read file, unknown format.");
+			} else {
+				return new LogFileData(rpmBased, logEntries);
 			}
 		} else {
 			throw new InvalidLogFormatException("Log file is empty");

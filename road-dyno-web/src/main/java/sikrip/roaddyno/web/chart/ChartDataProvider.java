@@ -11,6 +11,7 @@ import java.util.Map;
 import sikrip.roaddyno.engine.DynoSimulationEntry;
 import sikrip.roaddyno.engine.DynoSimulationResult;
 import sikrip.roaddyno.model.LogValue;
+import sikrip.roaddyno.web.controller.LoggedRunsEntry;
 
 public class ChartDataProvider {
 
@@ -25,7 +26,7 @@ public class ChartDataProvider {
 		df.setRoundingMode(RoundingMode.DOWN);
 	}
 
-	public Map<String, Object> createMainChartDefinition(List<UploadedRun> runs) {
+	public Map<String, Object> createMainChartDefinition(List<LoggedRunsEntry> runs) {
 		root.clear();
 
 		root.put("type", "xy");
@@ -51,7 +52,7 @@ public class ChartDataProvider {
 		return root;
 	}
 
-	public Map<String, Object> createAuxuliaryChartDefinition(List<UploadedRun> runs, String field) {
+	public Map<String, Object> createAuxuliaryChartDefinition(List<LoggedRunsEntry> runs, String field) {
 		root.clear();
 
 		root.put("type", "xy");
@@ -75,13 +76,13 @@ public class ChartDataProvider {
 		return root;
 	}
 
-	private void createGraphDefinitions(List<UploadedRun> runs) {
+	private void createGraphDefinitions(List<LoggedRunsEntry> runs) {
 
 		List<Map<String, Object>> graphs = new ArrayList<>();
 
 		for (int iRun = 0; iRun < runs.size(); iRun++) {
 
-			UploadedRun run = runs.get(iRun);
+			LoggedRunsEntry run = runs.get(iRun);
 
 			DynoSimulationResult simulationResult = run.getResult();
 
@@ -124,7 +125,7 @@ public class ChartDataProvider {
 		root.put("graphs", graphs);
 	}
 
-	private void createDataDefinition(List<UploadedRun> runs) {
+	private void createDataDefinition(List<LoggedRunsEntry> runs) {
 		List<Map<String, Object>> dataProvider = new ArrayList<>();
 
 		List<Double> rpmValues = getRpmValuesUnion(runs);
@@ -154,13 +155,13 @@ public class ChartDataProvider {
 		root.put("dataProvider", dataProvider);
 	}
 
-	private void createGraphDefinitions(List<UploadedRun> runs, String field) {
+	private void createGraphDefinitions(List<LoggedRunsEntry> runs, String field) {
 
 		List<Map<String, Object>> graphs = new ArrayList<>();
 
 		for (int iRun = 0; iRun < runs.size(); iRun++) {
 
-			UploadedRun run = runs.get(iRun);
+			LoggedRunsEntry run = runs.get(iRun);
 
 			String runColor = run.getColor();
 
@@ -182,7 +183,7 @@ public class ChartDataProvider {
 		root.put("graphs", graphs);
 	}
 
-	private void createDataDefinition(List<UploadedRun> runs, String field) {
+	private void createDataDefinition(List<LoggedRunsEntry> runs, String field) {
 
 		List<Map<String, Object>> dataProvider = new ArrayList<>();
 
@@ -203,9 +204,9 @@ public class ChartDataProvider {
 		root.put("dataProvider", dataProvider);
 	}
 
-	private List<Double> getRpmValuesUnion(List<UploadedRun> runs) {
+	private List<Double> getRpmValuesUnion(List<LoggedRunsEntry> runs) {
 		List<Double> rpmValues = new ArrayList<>();
-		for (UploadedRun run : runs) {
+		for (LoggedRunsEntry run : runs) {
 			for (int i=0; i< run.getResult().getEntriesSize(); i++) {
 				rpmValues.add(run.getResult().getSmoothedRpmAt(i));
 			}

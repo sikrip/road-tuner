@@ -1,4 +1,4 @@
-package sikrip.roaddyno.web.chart;
+package sikrip.roaddyno.web.logger;
 
 import java.text.DecimalFormat;
 

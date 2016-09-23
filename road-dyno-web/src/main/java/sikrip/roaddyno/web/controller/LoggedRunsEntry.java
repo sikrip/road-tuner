@@ -1,4 +1,4 @@
-package sikrip.roaddyno.web.chart;
+package sikrip.roaddyno.web.controller;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -8,13 +8,18 @@ import sikrip.roaddyno.engine.DynoSimulationEntry;
 import sikrip.roaddyno.engine.DynoSimulationResult;
 import sikrip.roaddyno.engine.RunInfo;
 import sikrip.roaddyno.model.LogEntry;
-import sikrip.roaddyno.model.LogFileData;
-import sikrip.roaddyno.web.controller.SessionVehicleData;
+import sikrip.roaddyno.web.logger.AccelerationRun;
+import sikrip.roaddyno.web.logger.LogFileData;
 
 /**
  * Wraps the info of a logged run, including the simulation result, name identifier and color.
  */
-public class UploadedRun implements RunInfo {
+public class LoggedRunsEntry implements RunInfo, Comparable {
+
+	/**
+	 * The index of this entry.
+	 */
+	private int index;
 
 	/**
 	 * The id of the run.
@@ -57,8 +62,21 @@ public class UploadedRun implements RunInfo {
 
 	private int selectedAccelerationIdx;
 
-	public UploadedRun() {
+	public LoggedRunsEntry() {
+		/*used by spring web*/
+	}
+
+	public LoggedRunsEntry(int index) {
 		id = UUID.randomUUID().toString();
+		this.index = index;
+	}
+
+	public int getIndex() {
+		return index;
+	}
+
+	public void setIndex(int index) {
+		this.index = index;
 	}
 
 	public void setName(String name) {
@@ -173,15 +191,11 @@ public class UploadedRun implements RunInfo {
 		return result != null ? result.maxTorque() : null;
 	}
 
-	public List<AccelerationRun> getAccelerations(){
+	public List<AccelerationRun> getAccelerations() {
 		return accelerations;
 	}
 
-	public void addAccelerations(List<AccelerationRun> accelerations) {
-		this.accelerations.addAll(accelerations);
-	}
-
-	public UploadedRun fromVehicleData(SessionVehicleData vehicleData) {
+	public LoggedRunsEntry fromVehicleData(SessionVehicleData vehicleData) {
 		setFinalGearRatio(vehicleData.getFinalGearRatio());
 		setGearRatio(vehicleData.getGearRatio());
 		setTyreDiameter(vehicleData.getTyreDiameter());
@@ -197,9 +211,10 @@ public class UploadedRun implements RunInfo {
 		return logEntries.subList(selectedAcceleration.getStart(), selectedAcceleration.getEnd());
 	}
 
-	public void addLogEntries(LogFileData logFileData) {
+	public void setLogData(LogFileData logFileData) {
 		this.logEntries.addAll(logFileData.getLogEntries());
 		this.rpmBased = logFileData.isRpmBased();
+		this.accelerations.addAll(logFileData.getAccelerationRuns());
 	}
 
 	public boolean isRpmBased() {
@@ -223,7 +238,7 @@ public class UploadedRun implements RunInfo {
 			return false;
 		}
 
-		UploadedRun run = (UploadedRun) o;
+		LoggedRunsEntry run = (LoggedRunsEntry) o;
 
 		return id.equals(run.id);
 
@@ -232,5 +247,10 @@ public class UploadedRun implements RunInfo {
 	@Override
 	public int hashCode() {
 		return id.hashCode();
+	}
+
+	@Override
+	public int compareTo(Object o) {
+		return 0;
 	}
 }

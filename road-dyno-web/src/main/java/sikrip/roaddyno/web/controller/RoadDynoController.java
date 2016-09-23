@@ -1,10 +1,10 @@
 package sikrip.roaddyno.web.controller;
 
-import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.TreeSet;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
@@ -22,15 +22,11 @@ import org.springframework.web.multipart.MultipartFile;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import sikrip.roaddyno.engine.AccelerationBounds;
-import sikrip.roaddyno.engine.DynoRunDetector;
 import sikrip.roaddyno.engine.DynoSimulationResult;
 import sikrip.roaddyno.engine.DynoSimulator;
-import sikrip.roaddyno.model.LogFileData;
-import sikrip.roaddyno.web.chart.AccelerationRun;
+import sikrip.roaddyno.web.logger.LogFileData;
 import sikrip.roaddyno.web.chart.ChartDataProvider;
 import sikrip.roaddyno.web.chart.PlotColorProvider;
-import sikrip.roaddyno.web.chart.UploadedRun;
 import sikrip.roaddyno.web.logger.LogFileReader;
 
 @Controller
@@ -47,7 +43,7 @@ public class RoadDynoController {
 	@Autowired
 	private SessionVehicleData vehicleData;
 
-	private final List<UploadedRun> uploadedRuns = new ArrayList<>();
+	private final Set<LoggedRunsEntry> logRunEntries = new TreeSet<>();
 
 	private final PlotColorProvider colorProvider = new PlotColorProvider();
 
@@ -56,50 +52,24 @@ public class RoadDynoController {
 		return "index";
 	}
 
-	@RequestMapping("/selectlogfile")
+	@RequestMapping("/select-log-file")
 	public String selectLogFile(Model model) {
 		model.addAttribute("nav", "onlinedyno");
-		model.addAttribute("runInfo", new UploadedRun().fromVehicleData(vehicleData));
+		model.addAttribute("runInfo", new LoggedRunsEntry(logRunEntries.size()).fromVehicleData(vehicleData));
 		return "select-log-file-form";
 	}
 
-	@RequestMapping(value = "/selectlogfile", method = RequestMethod.POST)
-	public String selectLogFile(UploadedRun runInfo, @RequestParam("file") MultipartFile file, Model model) {
+	@RequestMapping(value = "/select-log-file", method = RequestMethod.POST)
+	public String selectLogFile(LoggedRunsEntry runInfo, @RequestParam("file") MultipartFile file, Model model) {
 		if (!file.isEmpty()) {
 			try {
-				List<AccelerationRun> accelerations = new ArrayList<>();
-
-				LogFileData logFileData = LogFileReader.readLogEntries(file);
-				if(logFileData.isRpmBased()){
-					// FIXME for rpm based we do no acceleration detection for now
-					accelerations.add(new AccelerationRun(0, logFileData.getLogEntries().size(),
-							logFileData.getLogEntries().get(0), logFileData.getLogEntries().get(logFileData.getLogEntries().size())));
-				}else {
-					for (AccelerationBounds accelerationBounds : DynoRunDetector.getAccelerationBoundsBySpeed(logFileData.getLogEntries())) {
-						final int start = accelerationBounds.getStart();
-						final int end = accelerationBounds.getEnd();
-						accelerations.add(new AccelerationRun(start, end, logFileData.getLogEntries().get(start), logFileData.getLogEntries().get(end)));
-					}
-				}
-
-				// sort by speed diff descending
-				accelerations = accelerations.stream().sorted((o1, o2) -> {
-					if (o1.getVelocityDiff() == o2.getVelocityDiff()) {
-						return 0;
-					} else if (o2.getVelocityDiff() < o1.getVelocityDiff()) {
-						return -1;
-					} else {
-						return 1;
-					}
-				}).collect(Collectors.toList());
+				LogFileData logFileData = LogFileReader.readLog(file);
 
 				runInfo.setSelectedAccelerationIdx(0);
-				runInfo.addAccelerations(accelerations);
-				runInfo.addLogEntries(logFileData);
+				runInfo.setLogData(logFileData);
 				runInfo.setName(file.getOriginalFilename());
-				runInfo.setColor(colorProvider.pop());
 
-				uploadedRuns.add(runInfo);
+				logRunEntries.add(runInfo);
 				vehicleData.updateFromRunInfo(runInfo);
 
 				// go to add run page
@@ -118,13 +88,13 @@ public class RoadDynoController {
 		}
 	}
 
-	@RequestMapping(value = "/addrun", method = RequestMethod.POST)
-	public String addRun(UploadedRun updatedRunInfo, Model model) {
+	@RequestMapping(value = "/add-run", method = RequestMethod.POST)
+	public String addRun(LoggedRunsEntry updatedRunInfo, Model model) {
 
-		Optional<UploadedRun> existingRunInfo = uploadedRuns.stream().filter(r -> r.equals(updatedRunInfo)).findFirst();
+		Optional<LoggedRunsEntry> existingRunInfo = logRunEntries.stream().filter(r -> r.equals(updatedRunInfo)).findFirst();
 
 		if (existingRunInfo.isPresent()) {
-			UploadedRun runInfo = existingRunInfo.get();
+			LoggedRunsEntry runInfo = existingRunInfo.get();
 
 			runInfo.setFinalGearRatio(updatedRunInfo.getFinalGearRatio());
 			runInfo.setGearRatio(updatedRunInfo.getGearRatio());
@@ -134,6 +104,10 @@ public class RoadDynoController {
 			runInfo.setFrontalArea(updatedRunInfo.getFrontalArea());
 			runInfo.setCoefficientOfDrag(updatedRunInfo.getCoefficientOfDrag());
 			runInfo.setSelectedAccelerationIdx(updatedRunInfo.getSelectedAccelerationIdx());
+
+			if(runInfo.getColor()==null) {
+				runInfo.setColor(colorProvider.pop());
+			}
 
 			vehicleData.updateFromRunInfo(updatedRunInfo);
 
@@ -175,9 +149,9 @@ public class RoadDynoController {
 	}
 
 	@RequestMapping(value = "/updaterun", method = RequestMethod.POST)
-	public String updateRun(UploadedRun updatedRunInfo, Model model) {
+	public String updateRun(LoggedRunsEntry updatedRunInfo, Model model) {
 
-		Optional<UploadedRun> existingRunInfo = uploadedRuns.stream().filter(r -> r.equals(updatedRunInfo)).findFirst();
+		Optional<LoggedRunsEntry> existingRunInfo = logRunEntries.stream().filter(r -> r.equals(updatedRunInfo)).findFirst();
 
 		if (existingRunInfo.isPresent()) {
 			existingRunInfo.get().setFinalGearRatio(updatedRunInfo.getFinalGearRatio());
@@ -216,7 +190,7 @@ public class RoadDynoController {
 
 	@RequestMapping("/clearall")
 	public String clearAll(Model model) {
-		uploadedRuns.clear();
+		logRunEntries.clear();
 		colorProvider.reset();
 		model.addAttribute("nav", "onlinedyno");
 		//TODO clear vehicleData?
@@ -243,7 +217,7 @@ public class RoadDynoController {
 
 	@RequestMapping(value = "/changeStatus", method = RequestMethod.POST)
 	public String changeStatus(String rid, Boolean active, Model model) {
-		Optional<UploadedRun> existingRunInfo = uploadedRuns.stream().filter(r -> r.getId().equals(rid)).findFirst();
+		Optional<LoggedRunsEntry> existingRunInfo = logRunEntries.stream().filter(r -> r.getId().equals(rid)).findFirst();
 		if (existingRunInfo.isPresent()) {
 			existingRunInfo.get().setActive(active == null ? false : active);
 			return "redirect:/onlinedyno";
@@ -256,30 +230,38 @@ public class RoadDynoController {
 
 	@RequestMapping("/onlinedyno")
 	public String onlineDyno(Model model) {
-		if (uploadedRuns.isEmpty()) {
+		clearInvalidEntries();
+		if (logRunEntries.isEmpty()) {
 			return "redirect:/clearall";
 		}
 		try {
-			List<UploadedRun> activeRuns = uploadedRuns.stream().filter(UploadedRun::isActive).collect(Collectors.toList());
+			final List<LoggedRunsEntry> activeRuns = logRunEntries.stream().filter(LoggedRunsEntry::isActive).collect(Collectors.toList());
 			String chartDef = objectMapper.writeValueAsString(new ChartDataProvider().createMainChartDefinition(activeRuns));
 			String auxChartDef = objectMapper.writeValueAsString(new ChartDataProvider().createAuxuliaryChartDefinition(activeRuns, "AFR"));
-
 			model.addAttribute("chartDef", chartDef);
 			model.addAttribute("auxChartDef", auxChartDef);
-			model.addAttribute("runInfoList", uploadedRuns);
-			model.addAttribute("nav", "onlinedyno");
-
-			return "online-dyno-plot";
 		} catch (JsonProcessingException e) {
 			LOGGER.error("Could not plot runs.", e);
 			model.addAttribute(ERROR_TEXT_KEY, e.getMessage());
 			return "error";
 		}
+		model.addAttribute("runInfoList", logRunEntries);
+		model.addAttribute("nav", "onlinedyno");
+		return "online-dyno-plot";
+	}
+
+	private void clearInvalidEntries() {
+		Iterator<LoggedRunsEntry> loggedRunsEntryIterator = logRunEntries.iterator();
+		while (loggedRunsEntryIterator.hasNext()){
+			if (loggedRunsEntryIterator.next().getColor()==null){
+				loggedRunsEntryIterator.remove();
+			}
+		}
 	}
 
 	@RequestMapping("edit/{id}")
 	public String edit(@PathVariable String id, Model model) {
-		Optional<UploadedRun> runInfo = uploadedRuns.stream().filter(r -> id.equals(r.getId())).findFirst();
+		Optional<LoggedRunsEntry> runInfo = logRunEntries.stream().filter(r -> id.equals(r.getId())).findFirst();
 		if (runInfo.isPresent()) {
 			model.addAttribute("runInfo", runInfo.get());
 			model.addAttribute("nav", "onlinedyno");
@@ -293,7 +275,7 @@ public class RoadDynoController {
 
 	@RequestMapping("remove/{id}")
 	public String remove(@PathVariable String id) {
-		Iterator<UploadedRun> resultIterator = uploadedRuns.iterator();
+		Iterator<LoggedRunsEntry> resultIterator = logRunEntries.iterator();
 		while (resultIterator.hasNext()) {
 			if (resultIterator.next().getId().equals(id)) {
 				resultIterator.remove();
