@@ -20,14 +20,14 @@
             <div class="panel panel-default">
                 <div class="panel-heading">
                     <a th:href="@{/add}" class="btn btn-primary">Add run</a>
-                    <a th:href="@{/clearall}" class="btn btn-warning pull-right">Clear all</a>
+                    <a th:href="@{/clear-all}" class="btn btn-warning pull-right">Clear all</a>
                 </div>
                 <div class="panel-body">
                     <div th:if="${not #lists.isEmpty(runInfoList)}">
 
                         <div class="panel panel-info" th:each="runInfo : ${runInfoList}">
                             <div class="panel-heading" th:attr="style='color:' + ${runInfo.color}">
-                                <form th:action="@{/changeStatus}" method="post" class="pull-left">
+                                <form th:action="@{/change-status}" method="post" class="pull-left">
                                     <input type="hidden" th:name="rid" th:value="${runInfo.id}"/>
                                     <input type="checkbox" class="form-post" th:name="active" th:checked="${runInfo.active}"/>
                                 </form>

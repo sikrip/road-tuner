@@ -103,7 +103,7 @@ public class RoadDynoController {
 		return "error";
 	}
 
-	@RequestMapping(value = "/update-run", method = RequestMethod.POST)
+	@RequestMapping(value = "/edit", method = RequestMethod.POST)
 	public String edit(LoggedRunsEntry updatedRunInfo, Model model) {
 
 		Optional<LoggedRunsEntry> existingEntryContainer = logRunEntries.stream().filter(r -> r.equals(updatedRunInfo)).findFirst();
@@ -152,7 +152,7 @@ public class RoadDynoController {
 				}
 				existingEntry.setResult(dynoResult);
 
-				return "redirect:/onlinedyno";
+				return "redirect:/online-dyno";
 			} catch (Exception e) {
 				LOGGER.error("Could not update run.", e);
 				model.addAttribute(ERROR_TEXT_KEY, e.getMessage());
@@ -166,12 +166,12 @@ public class RoadDynoController {
 		}
 	}
 
-	@RequestMapping(value = "/changeStatus", method = RequestMethod.POST)
+	@RequestMapping(value = "/change-status", method = RequestMethod.POST)
 	public String changeStatus(String rid, Boolean active, Model model) {
 		Optional<LoggedRunsEntry> existingRunInfo = logRunEntries.stream().filter(r -> r.getId().equals(rid)).findFirst();
 		if (existingRunInfo.isPresent()) {
 			existingRunInfo.get().setActive(active == null ? false : active);
-			return "redirect:/onlinedyno";
+			return "redirect:/online-dyno";
 		}
 		String error = "Could not change statue of run with id " + rid + ". Run not found.";
 		LOGGER.error(error);
@@ -188,14 +188,14 @@ public class RoadDynoController {
 				break;
 			}
 		}
-		return "redirect:/onlinedyno";
+		return "redirect:/online-dyno";
 	}
 
-	@RequestMapping("/onlinedyno")
+	@RequestMapping("/online-dyno")
 	public String onlineDyno(Model model) {
 		clearInvalidEntries();
 		if (logRunEntries.isEmpty()) {
-			return "redirect:/clearall";
+			return "redirect:/clear-all";
 		}
 		try {
 			final List<LoggedRunsEntry> activeRuns = logRunEntries.stream().filter(LoggedRunsEntry::isActive).collect(Collectors.toList());
@@ -213,7 +213,7 @@ public class RoadDynoController {
 		return "online-dyno-plot";
 	}
 
-	@RequestMapping("/clearall")
+	@RequestMapping("/clear-all")
 	public String clearAll(Model model) {
 		logRunEntries.clear();
 		colorProvider.reset();
