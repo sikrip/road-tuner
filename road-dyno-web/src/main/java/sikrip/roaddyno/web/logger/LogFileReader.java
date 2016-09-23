@@ -33,7 +33,7 @@ public final class LogFileReader {
 				rpmBased = true;
 			} catch (InvalidLogFormatException e) {
 				// will try other log file types
-				LOGGER.info("File {} is not a valid megasquirt log file", file.getName());
+				LOGGER.info("File {} is not a valid megasquirt log file", file.getOriginalFilename());
 			}
 
 			try {
