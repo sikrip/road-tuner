@@ -1,6 +1,7 @@
 package sikrip.roaddyno.web.controller;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
@@ -26,6 +27,7 @@ import sikrip.roaddyno.engine.DynoRunDetector;
 import sikrip.roaddyno.engine.DynoSimulationResult;
 import sikrip.roaddyno.engine.DynoSimulator;
 import sikrip.roaddyno.model.LogFileData;
+import sikrip.roaddyno.web.chart.AccelerationRun;
 import sikrip.roaddyno.web.chart.ChartDataProvider;
 import sikrip.roaddyno.web.chart.PlotColorProvider;
 import sikrip.roaddyno.web.chart.UploadedRun;
@@ -65,16 +67,32 @@ public class RoadDynoController {
 	public String selectLogFile(UploadedRun runInfo, @RequestParam("file") MultipartFile file, Model model) {
 		if (!file.isEmpty()) {
 			try {
-				final List<AccelerationBounds> accelerations = new ArrayList<>();
+				List<AccelerationRun> accelerations = new ArrayList<>();
 
 				LogFileData logFileData = LogFileReader.readLogEntries(file);
 				if(logFileData.isRpmBased()){
 					// FIXME for rpm based we do no acceleration detection for now
-					accelerations.add(new AccelerationBounds(0, logFileData.getLogEntries().size(),
+					accelerations.add(new AccelerationRun(0, logFileData.getLogEntries().size(),
 							logFileData.getLogEntries().get(0), logFileData.getLogEntries().get(logFileData.getLogEntries().size())));
 				}else {
-					accelerations.addAll(DynoRunDetector.getAccelerationBoundsBySpeed(logFileData.getLogEntries()));
+					for (AccelerationBounds accelerationBounds : DynoRunDetector.getAccelerationBoundsBySpeed(logFileData.getLogEntries())) {
+						final int start = accelerationBounds.getStart();
+						final int end = accelerationBounds.getEnd();
+						accelerations.add(new AccelerationRun(start, end, logFileData.getLogEntries().get(start), logFileData.getLogEntries().get(end)));
+					}
 				}
+
+				// sort by speed diff descending
+				accelerations = accelerations.stream().sorted((o1, o2) -> {
+					if (o1.getVelocityDiff() == o2.getVelocityDiff()) {
+						return 0;
+					} else if (o2.getVelocityDiff() < o1.getVelocityDiff()) {
+						return -1;
+					} else {
+						return 1;
+					}
+				}).collect(Collectors.toList());
+
 				runInfo.setSelectedAccelerationIdx(0);
 				runInfo.addAccelerations(accelerations);
 				runInfo.addLogEntries(logFileData);

@@ -38,19 +38,7 @@ public final class DynoRunDetector {
 			}
 			offset = accelerationBounds.getEnd();
 		}
-		// sort by speed diff
-		return accelerationBoundsList.stream().sorted(new Comparator<AccelerationBounds>() {
-			@Override
-			public int compare(AccelerationBounds o1, AccelerationBounds o2) {
-				if (o1.getVelocityDiff() == o2.getVelocityDiff()) {
-					return 0;
-				} else if (o2.getVelocityDiff() < o1.getVelocityDiff()) {
-					return -1;
-				} else {
-					return 1;
-				}
-			}
-		}).collect(Collectors.<AccelerationBounds>toList());
+		return accelerationBoundsList;
 	}
 
 }

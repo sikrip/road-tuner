@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import sikrip.roaddyno.engine.AccelerationBounds;
 import sikrip.roaddyno.engine.DynoSimulationEntry;
 import sikrip.roaddyno.engine.DynoSimulationResult;
 import sikrip.roaddyno.engine.RunInfo;
@@ -54,7 +53,7 @@ public class UploadedRun implements RunInfo {
 	private Double frontalArea;
 	private Double coefficientOfDrag;
 
-	private final List<AccelerationBounds> accelerations = new ArrayList<>();
+	private final List<AccelerationRun> accelerations = new ArrayList<>();
 
 	private int selectedAccelerationIdx;
 
@@ -174,11 +173,11 @@ public class UploadedRun implements RunInfo {
 		return result != null ? result.maxTorque() : null;
 	}
 
-	public List<AccelerationBounds> getAccelerations(){
+	public List<AccelerationRun> getAccelerations(){
 		return accelerations;
 	}
 
-	public void addAccelerations(List<AccelerationBounds> accelerations) {
+	public void addAccelerations(List<AccelerationRun> accelerations) {
 		this.accelerations.addAll(accelerations);
 	}
 
@@ -194,7 +193,7 @@ public class UploadedRun implements RunInfo {
 	}
 
 	public List<LogEntry> getSelectedLogEntries() {
-		AccelerationBounds selectedAcceleration = accelerations.get(selectedAccelerationIdx);
+		AccelerationRun selectedAcceleration = accelerations.get(selectedAccelerationIdx);
 		return logEntries.subList(selectedAcceleration.getStart(), selectedAcceleration.getEnd());
 	}
 
