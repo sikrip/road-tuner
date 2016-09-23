@@ -36,7 +36,7 @@ public final class LogFileData {
 		final List<AccelerationRun> accelerationRuns = new ArrayList<>();
 		if (rpmBased) {
 			// FIXME for rpm based we do no acceleration detection for now
-			accelerationRuns.add(new AccelerationRun(0, logEntries.size(), logEntries.get(0), logEntries.get(logEntries.size())));
+			accelerationRuns.add(new AccelerationRun(0, logEntries.size(), logEntries.get(0), logEntries.get(logEntries.size() - 1)));
 		} else {
 			for (AccelerationBounds accelerationBounds : DynoRunDetector.getAccelerationBoundsBySpeed(logEntries)) {
 				final int start = accelerationBounds.getStart();
