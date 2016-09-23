@@ -14,7 +14,7 @@ import sikrip.roaddyno.web.logger.LogFileData;
 /**
  * Wraps the info of a logged run, including the simulation result, name identifier and color.
  */
-public class LoggedRunsEntry implements RunInfo, Comparable {
+public class LoggedRunsEntry implements RunInfo, Comparable<LoggedRunsEntry> {
 
 	/**
 	 * The index of this entry.
@@ -250,7 +250,7 @@ public class LoggedRunsEntry implements RunInfo, Comparable {
 	}
 
 	@Override
-	public int compareTo(Object o) {
-		return 0;
+	public int compareTo(LoggedRunsEntry o) {
+		return Integer.valueOf(this.index).compareTo(o.getIndex());
 	}
 }
