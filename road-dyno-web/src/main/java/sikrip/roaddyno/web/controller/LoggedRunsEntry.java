@@ -195,7 +195,7 @@ public class LoggedRunsEntry implements RunInfo, Comparable<LoggedRunsEntry> {
 		return accelerations;
 	}
 
-	public LoggedRunsEntry fromVehicleData(SessionVehicleData vehicleData) {
+	public LoggedRunsEntry updateVehicleData(SessionVehicleData vehicleData) {
 		setFinalGearRatio(vehicleData.getFinalGearRatio());
 		setGearRatio(vehicleData.getGearRatio());
 		setTyreDiameter(vehicleData.getTyreDiameter());
