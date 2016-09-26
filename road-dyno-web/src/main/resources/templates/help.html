@@ -23,7 +23,7 @@
         </div>
 
         <div class="panel-body">
-            With Road Dyno, you can create accurate dyno graphs based on data taken by ECU logs.
+            With Road Dyno, you can create accurate dyno graphs based on data taken by ECU or GPS logs.
             In order to achieve that, you need to log a few key parameters while making wide open throttle runs in one gear.
         </div>
     </div>
@@ -34,7 +34,12 @@
         </div>
 
         <div class="panel-body">
-            For the time being, only Megasquirt(msl) logs are supported.
+            For the time being, supported log formats are:
+            <ul>
+                <li>Megasquirt(msl) logs</li>
+                <li>V-Box(vbo) logs</li>
+                <li>Driftbox Tools CSV (csv) logs (DBN files from driftbox can be converted to csv files with Driftbox tools)</li>
+            </ul>
         </div>
     </div>
 
@@ -44,7 +49,8 @@
         </div>
 
         <div class="panel-body">
-            <p>In order for log files to be used in road dyno, they need contain the following data:</p>
+            <p>For GPS logs you do not any special setup, just make sure you are using at least 5hz refresh rate antenna.</p>
+            <p>For ECU logs make sure that the following values are logged:</p>
             <ul>
                 <li><strong>Time</strong></li>
                 <li>
