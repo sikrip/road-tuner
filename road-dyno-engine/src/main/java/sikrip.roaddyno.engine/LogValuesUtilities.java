@@ -1,7 +1,10 @@
 package sikrip.roaddyno.engine;
 
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.math3.analysis.UnivariateFunction;
 import org.apache.commons.math3.analysis.differentiation.DerivativeStructure;
@@ -19,7 +22,7 @@ import sikrip.roaddyno.model.LogEntry;
 final class LogValuesUtilities {
 
 	/**
-	 * Maximum Number of consecutive deceleration log entries in order to decide that deceleration is occurring.
+	 * Maximum Number of deceleration log entries in order to decide that deceleration is occurring.
 	 */
 	private static final int DECELERATION_THRESHOLD = 3;
 
@@ -58,17 +61,20 @@ final class LogValuesUtilities {
 		double[] rawSpeedValues = rawValuesExtractor.getRawVelocityValues();
 
 		// Find the first derivative of the the time/speed function
+		// Positive number in this array indicate acceleration; negative numbers deceleration
 		double[] speedDS = getDSYValues(timeValues, rawSpeedValues, 1);
 
-		int start = findStart(speedDS, offset);
+		// The index of the first value of the 1st derivative that is greater than the
+		// mean value of all 1st derivative positive(acceleration) values is considered the start of the acceleration.
+		int start = findIndexOfFirstGreaterThanMean(speedDS, offset);
 
 		if (start == -1) {
 			return null;
 		}
 
-		// The first negative value(after the start) of the 1st derivative indicates deceleration, so this is the end of the run
-		//FIXME better add 1 in the end index here (the end should be non inclusive)
-		int end = findFirstNegative(speedDS, start, DECELERATION_THRESHOLD);
+		// The nth-negative value(after the start) of the 1st derivative indicates deceleration, so this is the end of the run
+		// FIXME consider adding 1 in the end index here (the end should be non inclusive)
+		int end = findNthNegativeIndex(speedDS, start, DECELERATION_THRESHOLD);
 
 		if (end == -1) {
 			// no negative value found, log entries do not contain deceleration
@@ -80,6 +86,7 @@ final class LogValuesUtilities {
 		return new AccelerationBounds(start, end);
 	}
 
+	//TODO review this method, currently not used because it does not work well
 	static AccelerationBounds getAccelerationBoundsByRPM(List<LogEntry> rawEntries) {
 
 		final int logSize = rawEntries.size();
@@ -90,7 +97,7 @@ final class LogValuesUtilities {
 
 		double[] rpmDS = getDSYValues(timeValues, rawRPMValues, 1);
 
-		int start = findStart(rpmDS, 0);
+		int start = findIndexOfFirstGreaterThanMean(rpmDS, 0);
 
 		int end = findIndexOfMin(rpmDS, start);
 
@@ -102,7 +109,7 @@ final class LogValuesUtilities {
 
 		rpmDS = getDSYValues(timeValues, rawRPMValues, 1);
 
-		start = findStart(rpmDS, 0);
+		start = findIndexOfFirstGreaterThanMean(rpmDS, 0);
 
 		start = Math.min(start, logSize);
 		end = Math.min(end, logSize);
@@ -133,7 +140,9 @@ final class LogValuesUtilities {
 		// using DerivativeStructure
 		UnivariateDifferentiableFunction completeF = differentiator.differentiate(basicF);
 
-		double[] yDSValues = new double[yValues.length];
+		final double[] yDSValues = new double[yValues.length];
+		final Set<Integer> interpolationErrorIndices = new HashSet<>();
+
 		for (int i = 0; i < xValues.length; i++) {
 			try {
 				double xValue = xValues[i];
@@ -142,17 +151,24 @@ final class LogValuesUtilities {
 				yDSValues[i] = yDS.getPartialDerivative(order);
 			} catch (Exception e) {
 				// x value cannot be interpolated via the function
+				interpolationErrorIndices.add(i);
 				yDSValues[i] = Double.MIN_VALUE;
 			}
 		}
 
-		// fix invalid y values produced by x values that could not be interpolated via the function
-		for (int i = 0; i < yDSValues.length; i++) {
-			if (yDSValues[i] == Double.MIN_VALUE) {
-				if (i == 0) {
-					yDSValues[i] = yDSValues[1];
+		// Fix invalid y values produced by x values that could not be interpolated via the function
+		while (!interpolationErrorIndices.isEmpty()) {
+			final Iterator<Integer> errorValuesIterator = interpolationErrorIndices.iterator();
+			while (errorValuesIterator.hasNext()) {
+				final int errorValueIndex = errorValuesIterator.next();
+				if (errorValueIndex == 0) {
+					yDSValues[errorValueIndex] = yDSValues[1];
 				} else {
-					yDSValues[i] = yDSValues[i - 1];
+					yDSValues[errorValueIndex] = yDSValues[errorValueIndex - 1];
+				}
+				if (yDSValues[errorValueIndex] != Double.MIN_VALUE) {
+					// if the value is fixed remove the index; otherwise it will be fixed in next iterations
+					errorValuesIterator.remove();
 				}
 			}
 		}
@@ -160,7 +176,19 @@ final class LogValuesUtilities {
 		return yDSValues;
 	}
 
-	private static int findStart(double[] values, int offset) {
+	/**
+	 * Finds the index of the first value that is greater that the mean
+	 * value of the positives within the provided array of values
+	 * starting from the provided offset.
+	 *
+	 * @param values
+	 * 		the array of values
+	 * @param offset
+	 * 		the offset within the array to start the operation from
+	 * @return the index of the first value that is greater that the mean
+	 * value of the positives
+	 */
+	private static int findIndexOfFirstGreaterThanMean(double[] values, int offset) {
 		double mean = 0;
 		int sumCount = 0;
 		for (int i = offset; i < values.length; i++) {
@@ -171,7 +199,7 @@ final class LogValuesUtilities {
 		}
 
 		if (sumCount == 0) {
-			// no acceleration
+			// no positive
 			return -1;
 		}
 
@@ -185,20 +213,34 @@ final class LogValuesUtilities {
 		return -1;
 	}
 
-	private static int findFirstNegative(double[] values, int offset, int nthNegative) {
+	/**
+	 * Finds the index of the nth negative number in the provided array.
+	 * If no n negatives exists the index of the n-1 negative will be returned and so on.
+	 *
+	 * If no negative exists, -1 is returned.
+	 *
+	 * @param values
+	 * 		the array of values
+	 * @param offset
+	 * 		the offset within the array to start the operation from
+	 * @param maxNegativeCount
+	 * 		the requested number of negatives
+	 * @return the index of the nth negative number in the provided array
+	 */
+	private static int findNthNegativeIndex(double[] values, int offset, int maxNegativeCount) {
 		int negativeCount = 0;
-		int lastNegative = 1;
+		int lastNegativeIdx = 1;
 		for (int i = offset; i < values.length; i++) {
 			if (values[i] < 0) {
-				lastNegative = i;
+				lastNegativeIdx = i;
 				negativeCount++;
 			}
-			if (negativeCount == nthNegative) {
-				return lastNegative;
+			if (negativeCount == maxNegativeCount) {
+				return lastNegativeIdx;
 			}
 		}
-		if (negativeCount < nthNegative) {
-			return lastNegative;
+		if (negativeCount < maxNegativeCount) {
+			return lastNegativeIdx;
 		}
 		return -1;
 	}
