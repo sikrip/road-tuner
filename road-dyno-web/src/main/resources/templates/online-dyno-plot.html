@@ -51,7 +51,7 @@
                                 <div class="vehicleInfo">
                                     <div class="row">
                                         <div class="col-sm-5">
-                                            <label>FGR</label>
+                                            <label>Final gear ratio</label>
                                         </div>
                                         <div class="col-sm-6">
                                             <span th:text="${runInfo.finalGearRatio}"/>
@@ -59,7 +59,7 @@
                                     </div>
                                     <div class="row">
                                         <div class="col-sm-5">
-                                            <label>Gear Ratio</label>
+                                            <label>Gear ratio</label>
                                         </div>
                                         <div class="col-sm-6">
                                             <span th:text="${runInfo.gearRatio}"/>
@@ -70,31 +70,31 @@
                                             <label>Tyre diameter</label>
                                         </div>
                                         <div class="col-sm-6">
-                                            <span th:text="${#numbers.formatDecimal(runInfo.tyreDiameter, 3, 0)} + 'mm ('+ ${#numbers.formatDecimal(runInfo.tyreDiameter * 0.03937007 , 2, 1)}+' inch)'"/>
+                                            <span th:text="${#numbers.formatDecimal(runInfo.tyreDiameter, 3, 0)} + 'mm ('+ ${#numbers.formatDecimal(runInfo.tyreDiameter * 0.03937007 , 2, 1)}+'in)'"/>
                                         </div>
                                     </div>
                                     <div class="row">
                                         <div class="col-sm-5">
-                                            <label>Curb Weight</label>
+                                            <label>Curb weight</label>
                                         </div>
                                         <div class="col-sm-6">
-                                            <span th:text="${runInfo.carWeight} + 'kg ('+ ${#numbers.formatDecimal(runInfo.carWeight * 2.20462262 , 2, 2)}+' pounds)'"/>
+                                            <span th:text="${runInfo.carWeight} + 'kg ('+ ${#numbers.formatDecimal(runInfo.carWeight * 2.20462262 , 2, 2)}+'lb)'"/>
                                         </div>
                                     </div>
                                     <div class="row">
                                         <div class="col-sm-5">
-                                            <label>Occ. Weight</label>
+                                            <label>Occ. weight</label>
                                         </div>
                                         <div class="col-sm-6">
-                                            <span th:text="${runInfo.occupantsWeight} + 'kg ('+ ${#numbers.formatDecimal(runInfo.occupantsWeight * 2.20462262 , 2, 2)}+' pounds)'"/>
+                                            <span th:text="${runInfo.occupantsWeight} + 'kg ('+ ${#numbers.formatDecimal(runInfo.occupantsWeight * 2.20462262 , 2, 2)}+'lb)'"/>
                                         </div>
                                     </div>
                                     <div class="row">
                                         <div class="col-sm-5">
-                                            <label>Frontal Area</label>
+                                            <label>Frontal area</label>
                                         </div>
                                         <div class="col-sm-6">
-                                            <span th:text="${runInfo.frontalArea} + 'sgm ('+ ${#numbers.formatDecimal(runInfo.frontalArea * 10.7639104 , 2, 2)}+' sqft)'"/>
+                                            <span th:text="${runInfo.frontalArea} + 'sgm ('+ ${#numbers.formatDecimal(runInfo.frontalArea * 10.7639104 , 2, 2)}+'sqft)'"/>
                                         </div>
                                     </div>
                                     <div class="row">
