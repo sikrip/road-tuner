@@ -44,55 +44,66 @@
 
                             <div class="panel-body">
                                 <strong th:text="'Power '+ ${#numbers.formatDecimal(runInfo.maxPower.power, 2, 1)} +'HP @ ' + ${#numbers.formatDecimal(runInfo.maxPower.rpm, 2, 0)}"></strong>
+                                <br/>
                                 <strong th:text="'Torgue '+ ${#numbers.formatDecimal(runInfo.maxTorque.torque, 2, 1)} +'lb/ft @ ' + ${#numbers.formatDecimal(runInfo.maxTorque.rpm, 2, 0)}"></strong>
                                 <hr/>
-                                <div class="form-horizontal vehicleInfo">
-                                    <div class="form-group">
-                                        <label class="col-sm-3">FGR</label>
-                                        <div class="col-sm-3 control-label">
+
+                                <div class="vehicleInfo">
+                                    <div class="row">
+                                        <div class="col-sm-5">
+                                            <label>FGR</label>
+                                        </div>
+                                        <div class="col-sm-6">
                                             <span th:text="${runInfo.finalGearRatio}"/>
                                         </div>
-                                        <label class="col-sm-3">Gear Ratio</label>
-                                        <div class="col-sm-3 control-label">
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-sm-5">
+                                            <label>Gear Ratio</label>
+                                        </div>
+                                        <div class="col-sm-6">
                                             <span th:text="${runInfo.gearRatio}"/>
                                         </div>
                                     </div>
-
-                                    <div class="form-group">
-                                        <label class="col-sm-5">Tyre diameter</label>
-                                        <div class="col-sm-7 control-label">
+                                    <div class="row">
+                                        <div class="col-sm-5">
+                                            <label>Tyre diameter</label>
+                                        </div>
+                                        <div class="col-sm-6">
                                             <span th:text="${#numbers.formatDecimal(runInfo.tyreDiameter, 3, 0)} + 'mm ('+ ${#numbers.formatDecimal(runInfo.tyreDiameter * 0.03937007 , 2, 1)}+' inch)'"/>
                                         </div>
                                     </div>
-
-                                    <div class="form-group">
-                                        <label class="col-sm-5">Curb Weight</label>
-                                        <div class="col-sm-7 control-label">
+                                    <div class="row">
+                                        <div class="col-sm-5">
+                                            <label>Curb Weight</label>
+                                        </div>
+                                        <div class="col-sm-6">
                                             <span th:text="${runInfo.carWeight} + 'kg ('+ ${#numbers.formatDecimal(runInfo.carWeight * 2.20462262 , 2, 2)}+' pounds)'"/>
                                         </div>
                                     </div>
-
-                                    <div class="form-group">
-                                        <label class="col-sm-5">Occ. Weight</label>
-                                        <div class="col-sm-7 control-label">
+                                    <div class="row">
+                                        <div class="col-sm-5">
+                                            <label>Occ. Weight</label>
+                                        </div>
+                                        <div class="col-sm-6">
                                             <span th:text="${runInfo.occupantsWeight} + 'kg ('+ ${#numbers.formatDecimal(runInfo.occupantsWeight * 2.20462262 , 2, 2)}+' pounds)'"/>
                                         </div>
                                     </div>
-
-                                    <div class="form-group">
-                                        <label class="col-sm-3">Frontal Area</label>
-                                        <div class="col-sm-3 control-label">
+                                    <div class="row">
+                                        <div class="col-sm-5">
+                                            <label>Frontal Area</label>
+                                        </div>
+                                        <div class="col-sm-6">
                                             <span th:text="${runInfo.frontalArea} + 'sgm ('+ ${#numbers.formatDecimal(runInfo.frontalArea * 10.7639104 , 2, 2)}+' sqft)'"/>
                                         </div>
-
-                                        <label class="col-sm-3">CoD</label>
-                                        <div class="col-sm-3 control-label">
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-sm-5">
+                                            <label>CoD</label>
+                                        </div>
+                                        <div class="col-sm-6">
                                             <span th:text="${runInfo.coefficientOfDrag}"/>
                                         </div>
-                                    </div>
-
-                                    <div class="form-group">
-
                                     </div>
                                 </div>
                             </div>
@@ -126,7 +137,7 @@
     /*]]>*/
 
     $(document).ready(function () {
-        $('input[type=checkbox].form-post').change(function(){
+        $('input[type=checkbox].form-post').change(function () {
             var form = $(this).parent();
             form.submit();
         });

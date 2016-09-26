@@ -44,5 +44,9 @@ footer, footer a {
 }
 
 div.vehicleInfo {
-    font-size: small;
+    font-size: 10px;
+}
+
+div.vehicleInfo div {
+    padding: 0 0 0 8px;
 }
