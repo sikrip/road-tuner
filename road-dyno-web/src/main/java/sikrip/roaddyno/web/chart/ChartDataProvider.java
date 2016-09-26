@@ -11,7 +11,7 @@ import java.util.Map;
 import sikrip.roaddyno.engine.DynoSimulationEntry;
 import sikrip.roaddyno.engine.DynoSimulationResult;
 import sikrip.roaddyno.model.LogValue;
-import sikrip.roaddyno.web.controller.LoggedRunsEntry;
+import sikrip.roaddyno.web.model.LoggedRunsEntry;
 
 public class ChartDataProvider {
 

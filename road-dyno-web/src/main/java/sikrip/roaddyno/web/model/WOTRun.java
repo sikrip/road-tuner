@@ -1,19 +1,36 @@
-package sikrip.roaddyno.web.logger;
+package sikrip.roaddyno.web.model;
 
 import java.text.DecimalFormat;
 
 import sikrip.roaddyno.model.LogEntry;
 import sikrip.roaddyno.model.LogValue;
 
-public class AccelerationRun {
+/**
+ * Contains the indices of a possible WOT run within a collection of {@link LogEntry} data.
+ */
+public class WOTRun {
 
+	/**
+	 * Start index of the WOT.
+	 */
 	private final int start;
+
+	/**
+	 * End index of the WOT.
+	 */
 	private final int end;
 
+	/**
+	 * The logged data at the start of the WOT.
+	 */
 	private final LogEntry startEntry;
+
+	/**
+	 * The logged data at the end of the WOT.
+	 */
 	private final LogEntry endEntry;
 
-	public AccelerationRun(int start, int end, LogEntry startEntry, LogEntry endEntry) {
+	public WOTRun(int start, int end, LogEntry startEntry, LogEntry endEntry) {
 		this.start = start;
 		this.end = end;
 		this.startEntry = startEntry;
@@ -42,7 +59,7 @@ public class AccelerationRun {
 
 	@Override
 	public String toString() {
-		DecimalFormat decimalFormat = new DecimalFormat( "#,###,###,##0.00" );
+		DecimalFormat decimalFormat = new DecimalFormat("#,###,###,##0.00");
 		StringBuilder builder = new StringBuilder()
 				.append(startEntry.getVelocity().getValue())
 				.append(startEntry.getVelocity().getUnit())
@@ -59,9 +76,9 @@ public class AccelerationRun {
 			builder.append(", height diff: ")
 					.append(decimalFormat.format(heightDiff))
 					.append(startHeight.getUnit());
-			if(heightDiff>0) {
+			if (heightDiff > 0) {
 				builder.append(" downhill");
-			}else {
+			} else {
 				builder.append(" uphill");
 			}
 		}

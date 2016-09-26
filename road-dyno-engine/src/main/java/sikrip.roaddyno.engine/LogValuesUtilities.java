@@ -67,6 +67,7 @@ final class LogValuesUtilities {
 		}
 
 		// The first negative value(after the start) of the 1st derivative indicates deceleration, so this is the end of the run
+		//FIXME better add 1 in the end index here (the end should be non inclusive)
 		int end = findFirstNegative(speedDS, start, DECELERATION_THRESHOLD);
 
 		if (end == -1) {

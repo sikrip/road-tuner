@@ -1,7 +1,6 @@
 package sikrip.roaddyno.web.logger;
 
 import java.io.IOException;
-import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,7 +10,11 @@ import sikrip.roaddyno.eculogreader.MegasquirtLogReader;
 import sikrip.roaddyno.gpslogreader.VBOLogReader;
 import sikrip.roaddyno.model.InvalidLogFormatException;
 import sikrip.roaddyno.model.LogEntry;
+import sikrip.roaddyno.web.model.LogFileData;
 
+/**
+ * Responsible to read a log file and create the collection of {@link LogEntry} raw data.
+ */
 public final class LogFileReader {
 
 	private final static Logger LOGGER = LoggerFactory.getLogger(LogFileReader.class);
@@ -24,32 +27,25 @@ public final class LogFileReader {
 
 	public static LogFileData readLog(MultipartFile file) throws IOException, InvalidLogFormatException {
 		if (!file.isEmpty()) {
-			List<LogEntry> logEntries = null;
-			boolean rpmBased = false;
 
+			// Try megasquirt file
 			try {
-				// try megasquirt file
-				logEntries = new MegasquirtLogReader().readLog(file.getInputStream(), TPS_START_THRESHOLD);
-				rpmBased = true;
+				return new LogFileData(true, new MegasquirtLogReader().readLog(file.getInputStream(), TPS_START_THRESHOLD));
 			} catch (InvalidLogFormatException e) {
-				// will try other log file types
-				LOGGER.info("File {} is not a valid megasquirt log file, trying the next known file type...", file.getOriginalFilename());
+				LOGGER.info("File {} is not a valid megasquirt log file.", file.getOriginalFilename());
 			}
 
+			// Try vbo file
 			try {
-				// try vbo file
-				logEntries = new VBOLogReader().readLog(file.getInputStream());
-				rpmBased = false;
+				return new LogFileData(false, new VBOLogReader().readLog(file.getInputStream()));
 			} catch (InvalidLogFormatException e) {
-				LOGGER.info("File {} is not a valid vbo log file", file.getOriginalFilename());
+				LOGGER.info("File {} is not a valid vbo log file.", file.getOriginalFilename());
 			}
-			if (logEntries == null) {
-				throw new IllegalArgumentException("Could not read file, unknown format.");
-			} else {
-				return new LogFileData(rpmBased, logEntries);
-			}
+
+			// Log file not recognized
+			throw new InvalidLogFormatException("Log file is non of the supported types.");
 		} else {
-			throw new InvalidLogFormatException("Log file is empty");
+			throw new InvalidLogFormatException("Log file is empty.");
 		}
 	}
 }

@@ -29,11 +29,11 @@ public class LogEntry {
 	}
 
 	public LogEntry getCopy() {
-		Map<String, LogValue<Double>> valuesCopy = new HashMap<>();
+		final Map<String, LogValue<Double>> valuesCopy = new HashMap<>();
 
-		for (String valueKey : this.values.keySet()) {
-			LogValue<Double> value = this.values.get(valueKey);
-			valuesCopy.put(valueKey, new LogValue<>(value.getValue(), value.getUnit()));
+		for (Map.Entry<String, LogValue<Double>> valueEntry : values.entrySet()) {
+			LogValue<Double> value = valueEntry.getValue();
+			valuesCopy.put(valueEntry.getKey(), new LogValue<>(value.getValue(), value.getUnit()));
 		}
 
 		return new LogEntry(valuesCopy, timeKey, velocityKey);

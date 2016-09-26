@@ -1,6 +1,5 @@
-package sikrip.roaddyno.web.controller;
+package sikrip.roaddyno.web.model;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -8,8 +7,7 @@ import sikrip.roaddyno.engine.DynoSimulationEntry;
 import sikrip.roaddyno.engine.DynoSimulationResult;
 import sikrip.roaddyno.engine.RunInfo;
 import sikrip.roaddyno.model.LogEntry;
-import sikrip.roaddyno.web.logger.AccelerationRun;
-import sikrip.roaddyno.web.logger.LogFileData;
+import sikrip.roaddyno.web.controller.SessionVehicleData;
 
 /**
  * Wraps the info of a logged run, including the simulation result, name identifier and color.
@@ -44,11 +42,14 @@ public class LoggedRunsEntry implements RunInfo, Comparable<LoggedRunsEntry> {
 	private DynoSimulationResult result;
 
 	/**
-	 * The raw log entries that produced this result.
+	 * Contains the read log file data along with possible WOT runs within these data.
 	 */
-	private final List<LogEntry> logEntries = new ArrayList<>();
+	private LogFileData logFileData;
 
-	private boolean rpmBased;
+	/**
+	 * The selected WOT run to be used for the dyno simulation.
+	 */
+	private int selectedAccelerationIdx;
 
 	private Double finalGearRatio;
 	private Double gearRatio;
@@ -57,10 +58,6 @@ public class LoggedRunsEntry implements RunInfo, Comparable<LoggedRunsEntry> {
 	private Double occupantsWeight;
 	private Double frontalArea;
 	private Double coefficientOfDrag;
-
-	private final List<AccelerationRun> accelerations = new ArrayList<>();
-
-	private int selectedAccelerationIdx;
 
 	public LoggedRunsEntry() {
 		/*used by spring web*/
@@ -191,8 +188,8 @@ public class LoggedRunsEntry implements RunInfo, Comparable<LoggedRunsEntry> {
 		return result != null ? result.maxTorque() : null;
 	}
 
-	public List<AccelerationRun> getAccelerations() {
-		return accelerations;
+	public List<WOTRun> getAccelerations() {
+		return logFileData.getWOTRuns();
 	}
 
 	public LoggedRunsEntry updateVehicleData(SessionVehicleData vehicleData) {
@@ -207,18 +204,16 @@ public class LoggedRunsEntry implements RunInfo, Comparable<LoggedRunsEntry> {
 	}
 
 	public List<LogEntry> getSelectedLogEntries() {
-		AccelerationRun selectedAcceleration = accelerations.get(selectedAccelerationIdx);
-		return logEntries.subList(selectedAcceleration.getStart(), selectedAcceleration.getEnd());
+		WOTRun selectedAcceleration = logFileData.getWOTRuns().get(selectedAccelerationIdx);
+		return logFileData.getLogEntries().subList(selectedAcceleration.getStart(), selectedAcceleration.getEnd());
 	}
 
 	public void setLogData(LogFileData logFileData) {
-		this.logEntries.addAll(logFileData.getLogEntries());
-		this.rpmBased = logFileData.isRpmBased();
-		this.accelerations.addAll(logFileData.getAccelerationRuns());
+		this.logFileData = logFileData;
 	}
 
 	public boolean isRpmBased() {
-		return rpmBased;
+		return logFileData.isRpmBased();
 	}
 
 	public int getSelectedAccelerationIdx() {
