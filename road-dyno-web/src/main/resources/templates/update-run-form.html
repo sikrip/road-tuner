@@ -36,7 +36,7 @@
 
                     <label class="col-sm-2 control-label" for="run-list">Select a run</label>
                     <div class="col-sm-6 control-label">
-                        <select th:field="*{selectedAccelerationIdx}" id="run-list">
+                        <select th:field="*{selectedAccelerationIdx}" id="run-list" class="pull-left">
                             <option th:each="accelerationRun, i : ${runInfo.accelerations}"
                                     th:value="${i.index}"
                                     th:text="${accelerationRun}"></option>
