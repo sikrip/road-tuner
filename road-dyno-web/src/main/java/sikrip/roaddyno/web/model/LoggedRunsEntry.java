@@ -60,16 +60,7 @@ public class LoggedRunsEntry implements RunInfo, Comparable<LoggedRunsEntry> {
 	private Double coefficientOfDrag;
 
 	public LoggedRunsEntry() {
-		/*used by spring web*/
-	}
-
-	public LoggedRunsEntry(int index) {
 		id = UUID.randomUUID().toString();
-		this.index = index;
-	}
-
-	public int getIndex() {
-		return index;
 	}
 
 	public void setIndex(int index) {
@@ -246,6 +237,6 @@ public class LoggedRunsEntry implements RunInfo, Comparable<LoggedRunsEntry> {
 
 	@Override
 	public int compareTo(LoggedRunsEntry o) {
-		return Integer.valueOf(this.index).compareTo(o.getIndex());
+		return Integer.valueOf(this.index).compareTo(o.index);
 	}
 }

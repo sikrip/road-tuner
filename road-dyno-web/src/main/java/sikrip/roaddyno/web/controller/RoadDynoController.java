@@ -56,7 +56,7 @@ public class RoadDynoController {
 	@RequestMapping("/add")
 	public String add(Model model) {
 		model.addAttribute("nav", "onlinedyno");
-		model.addAttribute("runInfo", new LoggedRunsEntry(logRunEntries.size()));
+		model.addAttribute("runInfo", new LoggedRunsEntry());
 		return "select-log-file-form";
 	}
 
@@ -66,6 +66,7 @@ public class RoadDynoController {
 			try {
 				LogFileData logFileData = LogFileReader.readLog(file);
 
+				runInfo.setIndex(logRunEntries.size());
 				runInfo.setSelectedAccelerationIdx(0);
 				runInfo.setLogData(logFileData);
 				runInfo.setName(file.getOriginalFilename());
