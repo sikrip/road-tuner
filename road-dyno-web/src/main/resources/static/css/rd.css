@@ -50,3 +50,7 @@ div.vehicleInfo {
 div.vehicleInfo div {
     padding: 0 0 0 8px;
 }
+
+div.vehicleInfo hr {
+    margin: 5px;
+}

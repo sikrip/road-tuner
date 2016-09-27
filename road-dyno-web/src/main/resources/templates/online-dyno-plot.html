@@ -42,68 +42,67 @@
                                 </a>
                             </div>
 
-                            <div class="panel-body">
+                            <div class="panel-body vehicleInfo">
                                 <strong th:text="'Power '+ ${#numbers.formatDecimal(runInfo.maxPower.power, 2, 1)} +'HP @ ' + ${#numbers.formatDecimal(runInfo.maxPower.rpm, 2, 0)}"></strong>
                                 <br/>
                                 <strong th:text="'Torgue '+ ${#numbers.formatDecimal(runInfo.maxTorque.torque, 2, 1)} +'lb/ft @ ' + ${#numbers.formatDecimal(runInfo.maxTorque.rpm, 2, 0)}"></strong>
                                 <hr/>
 
-                                <div class="vehicleInfo">
-                                    <div class="row">
-                                        <div class="col-sm-5">
-                                            <label>Final gear ratio</label>
-                                        </div>
-                                        <div class="col-sm-6">
-                                            <span th:text="${runInfo.finalGearRatio}"/>
-                                        </div>
+
+                                <div class="row">
+                                    <div class="col-sm-5">
+                                        <label>Final gear ratio</label>
                                     </div>
-                                    <div class="row">
-                                        <div class="col-sm-5">
-                                            <label>Gear ratio</label>
-                                        </div>
-                                        <div class="col-sm-6">
-                                            <span th:text="${runInfo.gearRatio}"/>
-                                        </div>
+                                    <div class="col-sm-6">
+                                        <span th:text="${runInfo.finalGearRatio}"/>
                                     </div>
-                                    <div class="row">
-                                        <div class="col-sm-5">
-                                            <label>Tyre diameter</label>
-                                        </div>
-                                        <div class="col-sm-6">
-                                            <span th:text="${#numbers.formatDecimal(runInfo.tyreDiameter, 3, 0)} + 'mm ('+ ${#numbers.formatDecimal(runInfo.tyreDiameter * 0.03937007 , 2, 1)}+'in)'"/>
-                                        </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-5">
+                                        <label>Gear ratio</label>
                                     </div>
-                                    <div class="row">
-                                        <div class="col-sm-5">
-                                            <label>Curb weight</label>
-                                        </div>
-                                        <div class="col-sm-6">
-                                            <span th:text="${runInfo.carWeight} + 'kg ('+ ${#numbers.formatDecimal(runInfo.carWeight * 2.20462262 , 2, 2)}+'lb)'"/>
-                                        </div>
+                                    <div class="col-sm-6">
+                                        <span th:text="${runInfo.gearRatio}"/>
                                     </div>
-                                    <div class="row">
-                                        <div class="col-sm-5">
-                                            <label>Occ. weight</label>
-                                        </div>
-                                        <div class="col-sm-6">
-                                            <span th:text="${runInfo.occupantsWeight} + 'kg ('+ ${#numbers.formatDecimal(runInfo.occupantsWeight * 2.20462262 , 2, 2)}+'lb)'"/>
-                                        </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-5">
+                                        <label>Tyre diameter</label>
                                     </div>
-                                    <div class="row">
-                                        <div class="col-sm-5">
-                                            <label>Frontal area</label>
-                                        </div>
-                                        <div class="col-sm-6">
-                                            <span th:text="${runInfo.frontalArea} + 'sgm ('+ ${#numbers.formatDecimal(runInfo.frontalArea * 10.7639104 , 2, 2)}+'sqft)'"/>
-                                        </div>
+                                    <div class="col-sm-6">
+                                        <span th:text="${#numbers.formatDecimal(runInfo.tyreDiameter, 3, 0)} + 'mm ('+ ${#numbers.formatDecimal(runInfo.tyreDiameter * 0.03937007 , 2, 1)}+'in)'"/>
                                     </div>
-                                    <div class="row">
-                                        <div class="col-sm-5">
-                                            <label>CoD</label>
-                                        </div>
-                                        <div class="col-sm-6">
-                                            <span th:text="${runInfo.coefficientOfDrag}"/>
-                                        </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-5">
+                                        <label>Curb weight</label>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <span th:text="${runInfo.carWeight} + 'kg ('+ ${#numbers.formatDecimal(runInfo.carWeight * 2.20462262 , 2, 2)}+'lb)'"/>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-5">
+                                        <label>Occ. weight</label>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <span th:text="${runInfo.occupantsWeight} + 'kg ('+ ${#numbers.formatDecimal(runInfo.occupantsWeight * 2.20462262 , 2, 2)}+'lb)'"/>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-5">
+                                        <label>Frontal area</label>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <span th:text="${runInfo.frontalArea} + 'sgm ('+ ${#numbers.formatDecimal(runInfo.frontalArea * 10.7639104 , 2, 2)}+'sqft)'"/>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-5">
+                                        <label>CoD</label>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <span th:text="${runInfo.coefficientOfDrag}"/>
                                     </div>
                                 </div>
                             </div>
