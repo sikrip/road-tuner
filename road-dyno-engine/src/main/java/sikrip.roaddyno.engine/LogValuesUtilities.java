@@ -52,40 +52,6 @@ final class LogValuesUtilities {
 		return smoothedEntries;
 	}
 
-	static AccelerationBounds getAccelerationBoundsBySpeed(List<LogEntry> rawEntries, int offset) {
-
-		final int logSize = rawEntries.size();
-
-		RawValuesExtractor rawValuesExtractor = new RawValuesExtractor(rawEntries).invoke();
-		double[] timeValues = rawValuesExtractor.getTimeValues();
-		double[] rawSpeedValues = rawValuesExtractor.getRawVelocityValues();
-
-		// Find the first derivative of the the time/speed function
-		// Positive number in this array indicate acceleration; negative numbers deceleration
-		double[] speedDS = getDSYValues(timeValues, rawSpeedValues, 1);
-
-		// The index of the first value of the 1st derivative that is greater than the
-		// mean value of all 1st derivative positive(acceleration) values is considered the start of the acceleration.
-		int start = findIndexOfFirstGreaterThanMean(speedDS, offset);
-
-		if (start == -1) {
-			return null;
-		}
-
-		// The nth-negative value(after the start) of the 1st derivative indicates deceleration, so this is the end of the run
-		// FIXME consider adding 1 in the end index here (the end should be non inclusive)
-		int end = findNthNegativeIndex(speedDS, start, DECELERATION_THRESHOLD);
-
-		if (end == -1) {
-			// no negative value found, log entries do not contain deceleration
-			end = rawSpeedValues.length;
-		}
-
-		start = Math.min(start, logSize);
-		end = Math.min(end, logSize);
-		return new AccelerationBounds(start, end);
-	}
-
 	//TODO review this method, currently not used because it does not work well
 	static AccelerationBounds getAccelerationBoundsByRPM(List<LogEntry> rawEntries) {
 
@@ -110,6 +76,35 @@ final class LogValuesUtilities {
 		rpmDS = getDSYValues(timeValues, rawRPMValues, 1);
 
 		start = findIndexOfFirstGreaterThanMean(rpmDS, 0);
+
+		start = Math.min(start, logSize);
+		end = Math.min(end, logSize);
+		return new AccelerationBounds(start, end);
+	}
+
+	static AccelerationBounds getAccelerationBoundsBySpeed(List<LogEntry> rawEntries, int offset) {
+
+		final int logSize = rawEntries.size();
+
+		RawValuesExtractor rawValuesExtractor = new RawValuesExtractor(rawEntries).invoke();
+		double[] timeValues = rawValuesExtractor.getTimeValues();
+		double[] rawSpeedValues = rawValuesExtractor.getRawVelocityValues();
+
+		// Find the first derivative of the the time/speed function
+		// Positive number in this array indicate acceleration; negative numbers deceleration
+		double[] speedDS = getDSYValues(timeValues, rawSpeedValues, 1);
+
+		// The index of the first value of the 1st derivative that is greater than the
+		// mean value of all 1st derivative positive(acceleration) values is considered the start of the acceleration.
+		int start = findIndexOfFirstGreaterThanMean(speedDS, offset);
+
+		if (start == -1) {
+			return null;
+		}
+
+		// The nth-negative value(after the start) of the 1st derivative indicates deceleration, so this is the end of the run
+		// FIXME consider adding 1 in the end index here (the end should be non inclusive)
+		int end = findNthNegativeIndex(speedDS, start, DECELERATION_THRESHOLD);
 
 		start = Math.min(start, logSize);
 		end = Math.min(end, logSize);
@@ -217,8 +212,6 @@ final class LogValuesUtilities {
 	 * Finds the index of the nth negative number in the provided array.
 	 * If no n negatives exists the index of the n-1 negative will be returned and so on.
 	 *
-	 * If no negative exists, -1 is returned.
-	 *
 	 * @param values
 	 * 		the array of values
 	 * @param offset
@@ -229,7 +222,7 @@ final class LogValuesUtilities {
 	 */
 	private static int findNthNegativeIndex(double[] values, int offset, int maxNegativeCount) {
 		int negativeCount = 0;
-		int lastNegativeIdx = 1;
+		int lastNegativeIdx = -1;
 		for (int i = offset; i < values.length; i++) {
 			if (values[i] < 0) {
 				lastNegativeIdx = i;
@@ -239,10 +232,13 @@ final class LogValuesUtilities {
 				return lastNegativeIdx;
 			}
 		}
-		if (negativeCount < maxNegativeCount) {
+
+		if (negativeCount != 0 && negativeCount < maxNegativeCount) {
 			return lastNegativeIdx;
+		} else {
+			// no deceleration
+			return values.length - 1;
 		}
-		return -1;
 	}
 
 	private static int findIndexOfMin(double[] values, int idxFrom) {

@@ -12,30 +12,30 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import sikrip.roaddyno.model.InvalidLogFormatException;
+import sikrip.roaddyno.model.InvalidLogFileException;
 import sikrip.roaddyno.model.LogEntry;
 import sikrip.roaddyno.model.LogValue;
 
 public class VBOLogReader implements GPSLogReader {
 
 	private static final String TIME_KEY = "time";
-	private static final String VELOCITY_KEY = "velocity kmh";	// FIXME this may be different btw vbo files
+	private static final String VELOCITY_KEY = "velocity kmh";    // FIXME this may be different btw vbo files
 	private static final String HEIGHT_KEY = "height";
 
-	public List<LogEntry> readLog(String filePath) throws IOException, InvalidLogFormatException {
+	public List<LogEntry> readLog(String filePath) throws IOException, InvalidLogFileException {
 		File logFile = new File(filePath);
 		try (InputStream fileStream = new FileInputStream(logFile);) {
 			return readLog(fileStream);
 		}
 	}
 
-	public List<LogEntry> readLog(InputStream inputStream) throws IOException, InvalidLogFormatException {
+	public List<LogEntry> readLog(InputStream inputStream) throws IOException, InvalidLogFileException {
 		BufferedReader logReader = new BufferedReader(new InputStreamReader(inputStream));
 		List<String> headers = readHeaders(logReader);
 		return readData(logReader, headers);
 	}
 
-	private List<String> readHeaders(BufferedReader logReader) throws IOException, InvalidLogFormatException {
+	private List<String> readHeaders(BufferedReader logReader) throws IOException, InvalidLogFileException {
 		String logLine;
 		boolean headersSectionFound = false;
 		while ((logLine = logReader.readLine()) != null) {
@@ -58,15 +58,15 @@ public class VBOLogReader implements GPSLogReader {
 				}
 			}
 		}
-		if (!headers.contains(VELOCITY_KEY)){
-			throw new InvalidLogFormatException("Invalid log file: speed header not found.");
-		}else if (!headers.contains(TIME_KEY)){
-			throw new InvalidLogFormatException("Invalid log file: time header not found.");
+		if (!headers.contains(VELOCITY_KEY)) {
+			throw new InvalidLogFileException("Invalid log file: speed header not found.");
+		} else if (!headers.contains(TIME_KEY)) {
+			throw new InvalidLogFileException("Invalid log file: time header not found.");
 		}
 		return headers;
 	}
 
-	private List<LogEntry> readData(BufferedReader logReader, List<String> headers) throws IOException, InvalidLogFormatException {
+	private List<LogEntry> readData(BufferedReader logReader, List<String> headers) throws IOException, InvalidLogFileException {
 		String logLine;
 		boolean dataSectionFound = false;
 		while ((logLine = logReader.readLine()) != null) {
@@ -83,7 +83,7 @@ public class VBOLogReader implements GPSLogReader {
 				Map<String, LogValue<Double>> logEntryValues = new HashMap<>();
 				for (int i = 0; i < rawValues.size(); i++) {
 					final String header = headers.get(i);
-					switch (header){
+					switch (header) {
 					case TIME_KEY:
 						logEntryValues.put(TIME_KEY, new LogValue<>(Double.valueOf(rawValues.get(i)), "sec"));
 						break;
@@ -97,13 +97,21 @@ public class VBOLogReader implements GPSLogReader {
 					}
 				}
 				LogEntry logEntry = new LogEntry(logEntryValues, TIME_KEY, VELOCITY_KEY);
+				if (!data.isEmpty()) {
+					final double currentTime = logEntry.getTime().getValue();
+					final double prevTime = data.get(data.size() - 1).getTime().getValue();
+					if (currentTime < prevTime) {
+						throw new InvalidLogFileException(
+								String.format("Invalid log file: found non-increasing time values (%s => %s)", prevTime, currentTime));
+					}
+				}
 				data.add(logEntry);
 			}
 		}
 		return data;
 	}
 
-	private List<String> getRawValues(String logLine, int expectedNumberOfValues) throws InvalidLogFormatException {
+	private List<String> getRawValues(String logLine, int expectedNumberOfValues) throws InvalidLogFileException {
 		List<String> rawValues = Arrays.asList((logLine.split(" ")));
 		if (rawValues.size() == expectedNumberOfValues) {
 			return rawValues;
@@ -116,7 +124,7 @@ public class VBOLogReader implements GPSLogReader {
 		if (rawValues.size() == expectedNumberOfValues) {
 			return rawValues;
 		}
-		throw new InvalidLogFormatException("Invalid log file. Expecting " + expectedNumberOfValues + " values, and found " + rawValues.size());
+		throw new InvalidLogFileException("Invalid log file. Expecting " + expectedNumberOfValues + " values, and found " + rawValues.size());
 	}
 
 }

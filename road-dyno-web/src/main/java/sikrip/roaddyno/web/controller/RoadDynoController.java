@@ -26,8 +26,8 @@ import sikrip.roaddyno.engine.DynoSimulationResult;
 import sikrip.roaddyno.engine.DynoSimulator;
 import sikrip.roaddyno.web.chart.ChartDataProvider;
 import sikrip.roaddyno.web.chart.PlotColorProvider;
-import sikrip.roaddyno.web.model.LogFileData;
 import sikrip.roaddyno.web.logger.LogFileReader;
+import sikrip.roaddyno.web.model.LogFileData;
 import sikrip.roaddyno.web.model.LoggedRunsEntry;
 
 @Controller

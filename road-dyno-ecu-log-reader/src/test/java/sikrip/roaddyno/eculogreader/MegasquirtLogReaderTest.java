@@ -8,7 +8,7 @@ import java.util.List;
 
 import org.junit.Test;
 
-import sikrip.roaddyno.model.InvalidLogFormatException;
+import sikrip.roaddyno.model.InvalidLogFileException;
 import sikrip.roaddyno.model.LogEntry;
 
 /**
@@ -16,8 +16,8 @@ import sikrip.roaddyno.model.LogEntry;
  */
 public class MegasquirtLogReaderTest {
 
-	@Test(expected = InvalidLogFormatException.class)
-	public void emptyFileShouldProduceInvalidLogFormatException() throws InvalidLogFormatException {
+	@Test(expected = InvalidLogFileException.class)
+	public void emptyFileShouldProduceInvalidLogFormatException() throws InvalidLogFileException {
 
 		EcuLogReader reader = new MegasquirtLogReader();
 		try {
@@ -28,8 +28,8 @@ public class MegasquirtLogReaderTest {
 
 	}
 
-	@Test(expected = InvalidLogFormatException.class)
-	public void logWithNoEntriesShouldProduceInvalidLogFormatException() throws InvalidLogFormatException {
+	@Test(expected = InvalidLogFileException.class)
+	public void logWithNoEntriesShouldProduceInvalidLogFormatException() throws InvalidLogFileException {
 
 		EcuLogReader reader = new MegasquirtLogReader();
 		try {
@@ -40,8 +40,8 @@ public class MegasquirtLogReaderTest {
 
 	}
 
-	@Test(expected = InvalidLogFormatException.class)
-	public void logWithNoTimeHeaderShouldProduceInvalidLogFormatException() throws InvalidLogFormatException {
+	@Test(expected = InvalidLogFileException.class)
+	public void logWithNoTimeHeaderShouldProduceInvalidLogFormatException() throws InvalidLogFileException {
 
 		EcuLogReader reader = new MegasquirtLogReader();
 		try {
@@ -52,8 +52,8 @@ public class MegasquirtLogReaderTest {
 
 	}
 
-	@Test(expected = InvalidLogFormatException.class)
-	public void logWithNoRPMHeaderShouldProduceInvalidLogFormatException() throws InvalidLogFormatException {
+	@Test(expected = InvalidLogFileException.class)
+	public void logWithNoRPMHeaderShouldProduceInvalidLogFormatException() throws InvalidLogFileException {
 
 		EcuLogReader reader = new MegasquirtLogReader();
 		try {
@@ -65,7 +65,7 @@ public class MegasquirtLogReaderTest {
 	}
 
 	@Test
-	public void verifyValidLogReading() throws InvalidLogFormatException {
+	public void verifyValidLogReading() throws InvalidLogFileException {
 
 		EcuLogReader reader = new MegasquirtLogReader();
 		try {
@@ -105,7 +105,7 @@ public class MegasquirtLogReaderTest {
 			assertEquals("%", logEntry.get("TPS").getUnit());
 			assertNotNull(logEntry.get("TPS").getValue());
 
-		} catch (IOException | InvalidLogFormatException e) {
+		} catch (IOException | InvalidLogFileException e) {
 			fail("This should not fail");
 		}
 

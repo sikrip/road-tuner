@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 
-import sikrip.roaddyno.model.InvalidLogFormatException;
+import sikrip.roaddyno.model.InvalidLogFileException;
 import sikrip.roaddyno.model.LogEntry;
 
 /**
@@ -22,10 +22,10 @@ public interface EcuLogReader {
 	 * @return a list of log entries
 	 * @throws IOException
 	 * 		if reading the file goes wrong
-	 * @throws InvalidLogFormatException
-	 * 		if the log format is invalid
+	 * @throws InvalidLogFileException
+	 * 		if the log file is invalid
 	 */
-	List<LogEntry> readLog(String file, double tpsStartThreshold) throws IOException, InvalidLogFormatException;
+	List<LogEntry> readLog(String file, double tpsStartThreshold) throws IOException, InvalidLogFileException;
 
 	/**
 	 * Reads the log from the provided stream.
@@ -37,9 +37,9 @@ public interface EcuLogReader {
 	 * @return a list of log entries
 	 * @throws IOException
 	 * 		if reading the file goes wrong
-	 * @throws InvalidLogFormatException
-	 * 		if the log format is invalid
+	 * @throws InvalidLogFileException
+	 * 		if the log file is invalid
 	 */
-	List<LogEntry> readLog(InputStream inputStream, double tpsStartThreshold) throws IOException, InvalidLogFormatException;
+	List<LogEntry> readLog(InputStream inputStream, double tpsStartThreshold) throws IOException, InvalidLogFileException;
 
 }

@@ -12,7 +12,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import sikrip.roaddyno.model.InvalidLogFormatException;
+import sikrip.roaddyno.model.InvalidLogFileException;
 import sikrip.roaddyno.model.LogEntry;
 import sikrip.roaddyno.model.LogValue;
 
@@ -27,7 +27,7 @@ public final class MegasquirtLogReader implements EcuLogReader {
 	public static final int RPM_NOISE_THRESHOLD = 800;
 
 	@Override
-	public final List<LogEntry> readLog(String filePath, double tpsStartThreshold) throws IOException, InvalidLogFormatException {
+	public final List<LogEntry> readLog(String filePath, double tpsStartThreshold) throws IOException, InvalidLogFileException {
 		File logFile = new File(filePath);
 		try (InputStream fileStream = new FileInputStream(logFile);) {
 			return readLog(fileStream, tpsStartThreshold);
@@ -37,7 +37,7 @@ public final class MegasquirtLogReader implements EcuLogReader {
 	}
 
 	@Override
-	public List<LogEntry> readLog(InputStream inputStream, double tpsStartThreshold) throws IOException, InvalidLogFormatException {
+	public List<LogEntry> readLog(InputStream inputStream, double tpsStartThreshold) throws IOException, InvalidLogFileException {
 		BufferedReader logReader = new BufferedReader(new InputStreamReader(inputStream));
 
 		List<String> headers = new ArrayList<>();
@@ -62,7 +62,7 @@ public final class MegasquirtLogReader implements EcuLogReader {
 					tpsColumnKey = headers.indexOf("TPS") != -1 ? "TPS" : null;
 
 					if (timeColumnKey == null || rpmColumnKey == null || tpsColumnKey == null) {
-						throw new InvalidLogFormatException("Invalid log file format. Cannot find Time, RPM or TPS data.");
+						throw new InvalidLogFileException("Invalid log file format. Cannot find Time, RPM or TPS data.");
 					}
 
 				} else if (units.size() == 0) {
@@ -81,7 +81,7 @@ public final class MegasquirtLogReader implements EcuLogReader {
 		List<LogEntry> trimmedLogValues = trimByRPM(logEntries);
 
 		if (trimmedLogValues.size() == 0) {
-			throw new InvalidLogFormatException("Invalid log file format. No log entries found.");
+			throw new InvalidLogFileException("Invalid log file format. No log entries found.");
 		}
 		return trimmedLogValues;
 	}

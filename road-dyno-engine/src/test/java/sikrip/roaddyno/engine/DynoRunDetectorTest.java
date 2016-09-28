@@ -69,6 +69,20 @@ public class DynoRunDetectorTest {
 		}
 	}
 
+	@Test
+	public void verifyVBOWithNoDecelAtTheEnd() throws Exception {
+		GPSLogReader logReader = new VBOLogReader();
+
+		List<LogEntry> logEntries = logReader.readLog(getTestResourceUrl("/vbo-no-deceleration-at-the-end.vbo").getPath());
+
+		System.out.println("vbo-no-deceleration-at-the-end.vbo");
+		for (AccelerationBounds accelerationBounds : DynoRunDetector.getAccelerationBoundsBySpeed(logEntries)) {
+			System.out.println("" + accelerationBounds.getStart() + ": " + logEntries.get(accelerationBounds.getStart()).getVelocity()
+					+ " => " + accelerationBounds.getEnd()+": "+ logEntries.get(accelerationBounds.getEnd()).getVelocity());
+
+		}
+	}
+
 	public static URL getTestResourceUrl(String filename) {
 		URL resource = DynoRunDetectorTest.class.getResource(filename);
 		if (resource == null) {

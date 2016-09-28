@@ -8,7 +8,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import sikrip.roaddyno.eculogreader.MegasquirtLogReader;
 import sikrip.roaddyno.gpslogreader.VBOLogReader;
-import sikrip.roaddyno.model.InvalidLogFormatException;
+import sikrip.roaddyno.model.InvalidLogFileException;
 import sikrip.roaddyno.model.LogEntry;
 import sikrip.roaddyno.web.model.LogFileData;
 
@@ -25,27 +25,23 @@ public final class LogFileReader {
 		// no instantiation
 	}
 
-	public static LogFileData readLog(MultipartFile file) throws IOException, InvalidLogFormatException {
+	public static LogFileData readLog(MultipartFile file) throws InvalidLogFileException {
 		if (!file.isEmpty()) {
-
-			// Try megasquirt file
 			try {
-				return new LogFileData(true, new MegasquirtLogReader().readLog(file.getInputStream(), TPS_START_THRESHOLD));
-			} catch (InvalidLogFormatException e) {
-				LOGGER.info("File {} is not a valid megasquirt log file.", file.getOriginalFilename());
+				final String originalFileName = file.getOriginalFilename().toLowerCase();
+				if (originalFileName.endsWith("msl")) {
+					// megasquirt file
+					return new LogFileData(true, new MegasquirtLogReader().readLog(file.getInputStream(), TPS_START_THRESHOLD));
+				} else if (originalFileName.endsWith("vbo")) {
+					// vbo file
+					return new LogFileData(false, new VBOLogReader().readLog(file.getInputStream()));
+				}
+				throw new InvalidLogFileException("Unknown / not supported log file");
+			} catch (IOException e) {
+				throw new InvalidLogFileException("Could not read log file");
 			}
-
-			// Try vbo file
-			try {
-				return new LogFileData(false, new VBOLogReader().readLog(file.getInputStream()));
-			} catch (InvalidLogFormatException e) {
-				LOGGER.info("File {} is not a valid vbo log file.", file.getOriginalFilename());
-			}
-
-			// Log file not recognized
-			throw new InvalidLogFormatException("Log file is non of the supported types.");
 		} else {
-			throw new InvalidLogFormatException("Log file is empty.");
+			throw new InvalidLogFileException("Log file is empty.");
 		}
 	}
 }
