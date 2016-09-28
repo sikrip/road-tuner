@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+
+<head lang="en">
+    <title>Road Dyno | Add run</title>
+    <th:block th:include="fragments/includes :: head"></th:block>
+</head>
+
+<body>
+
+<h1 th:replace="fragments/fragments :: header"></h1>
+
+
+<div class="container">
+    <div class="page-header">
+        <h1>Online dyno
+            <small>Add run</small>
+        </h1>
+    </div>
+    <form class="form-horizontal" th:object="${runInfo}" th:action="@{/add}" method="post" enctype="multipart/form-data">
+
+        <input type="hidden" th:field="*{id}"/>
+
+        <div class="panel panel-info">
+            <div class="panel-heading">
+                <h4>Log file</h4>
+            </div>
+
+            <div class="panel-body">
+                <input type="file" required="required" name="file" accept=".msl, .vbo"/>
+            </div>
+        </div>
+
+        <hr/>
+        <button type="submit" class="btn btn-primary active">Load file</button>
+        <a th:href="@{/online-dyno}" class="btn btn-default active">Cancel</a>
+    </form>
+    <div th:include="fragments/fragments :: footer"></div>
+</div>
+
+</body>
+</html>

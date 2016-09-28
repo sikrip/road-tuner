@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>[ROAD DYNO] - %d %5p %40.40c:%4L - %m%n</pattern>
+        </encoder>
+    </appender>
+    <!-- enable these for debugging
+    <logger name="org.springframework.context.annotation.ClassPathBeanDefinitionScanner" level="debug"/>
+    <logger name="org.springframework.boot.context.config.ConfigFileApplicationListener" level="debug"/>
+    <logger name="org.springframework.boot.autoconfigure.logging.AutoConfigurationReportLoggingInitializer" level="debug"/>
+
+    <logger name="sikrip.roaddyno" level="trace"/>
+    <logger name="p6spy" level="error"/>
+    -->
+    <root level="info">
+        <appender-ref ref="console"/>
+    </root>
+</configuration>

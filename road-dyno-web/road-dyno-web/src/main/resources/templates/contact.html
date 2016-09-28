@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+
+<head lang="en">
+    <title>Road Dyno | Help</title>
+    <th:block th:include="fragments/includes :: head"></th:block>
+</head>
+
+<body>
+
+<h1 th:replace="fragments/fragments :: header"></h1>
+
+<div class="container">
+    <div class="page-header">
+        <h1>Road dyno
+            <small>Contact</small>
+        </h1>
+    </div>
+
+    <div class="panel panel-info">
+        <div class="panel-heading">
+            <h3>Hello there!</h3>
+        </div>
+        <div class="panel-body">
+            <p>I am George Sikalias, and I am creating this tool in my spare time.</p>
+
+            <p>If you found a bug or have something (good or bad) to say
+                about roaddyno, feel free to get in touch via
+                <a href="mailto:road.dyno.app@gmail.com">email</a>,
+                 <a href="https://www.facebook.com/sikrip">facebook</a>,
+                or <a href="https://twitter.com/sikrip">twitter!</a> :)
+            </p>
+        </div>
+    </div>
+
+    <div th:include="fragments/fragments :: footer"></div>
+</div>
+
+</body>
+</html>

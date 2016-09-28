@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+
+<head lang="en">
+    <title>Road Dyno | Welcome!</title>
+    <th:block th:include="fragments/includes :: head"></th:block>
+</head>
+
+<body>
+
+<h1 th:replace="fragments/fragments :: header"></h1>
+
+<div class="container">
+    <div class="page-header">
+        <h1>Road dyno <small>For car enthusiasts like you!</small></h1>
+    </div>
+    <div class="jumbotron">
+        <h1>Welcome to road dyno!</h1>
+        <p>The online dyno is here! Wondering how much power and torque your car makes...?</p>
+        <p><a class="btn btn-primary btn-lg" th:href="@{/add}" role="button">... load your WOT log now!</a></p>
+    </div>
+    <div th:include="fragments/fragments :: footer"></div>
+</div>
+
+</body>
+</html>
