@@ -1,0 +1,3 @@
+build-with-tests:
+  script:
+    - mvn clean install
