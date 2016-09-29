@@ -35,6 +35,7 @@ import sikrip.roaddyno.web.model.LoggedRunsEntry;
 public class RoadDynoController {
 
 	private static final String ERROR_TEXT_KEY = "errorTxt";
+	public static final int MAX_FILE_KB = 4 * 1024; // 4 mb
 
 	private final Logger LOGGER = LoggerFactory.getLogger(RoadDynoController.class);
 
@@ -63,31 +64,32 @@ public class RoadDynoController {
 	@RequestMapping(value = "/add", method = RequestMethod.POST)
 	public String add(LoggedRunsEntry runInfo, @RequestParam("file") MultipartFile file, Model model) {
 		if (!file.isEmpty()) {
-			try {
-				LogFileData logFileData = LogFileReader.readLog(file);
+			if (file.getSize() <= MAX_FILE_KB) {
+				try {
+					LogFileData logFileData = LogFileReader.readLog(file);
 
-				runInfo.setIndex(logRunEntries.size());
-				runInfo.setSelectedAccelerationIdx(0);
-				runInfo.setLogData(logFileData);
-				runInfo.setName(file.getOriginalFilename());
-				runInfo.updateVehicleData(vehicleData);
+					runInfo.setIndex(logRunEntries.size());
+					runInfo.setSelectedAccelerationIdx(0);
+					runInfo.setLogData(logFileData);
+					runInfo.setName(file.getOriginalFilename());
+					runInfo.updateVehicleData(vehicleData);
 
-				logRunEntries.add(runInfo);
+					logRunEntries.add(runInfo);
 
-				// show update run form
-				model.addAttribute("runInfo", runInfo);
-				model.addAttribute("nav", "onlinedyno");
+					// show update run form
+					model.addAttribute("runInfo", runInfo);
+					model.addAttribute("nav", "onlinedyno");
 
-				return "update-run-form";
-			} catch (Exception e) {
-				LOGGER.error("Could not add run.", e);
-				model.addAttribute(ERROR_TEXT_KEY, e.getMessage());
-				return "error";
+					return "update-run-form";
+				} catch (Exception e) {
+					return showErrorPage(model, "Could not add run", e);
+				}
+			} else {
+				final String error = String.format("Maximum file size(%smb) exceeded, please select a smaller log file.", MAX_FILE_KB / 1024);
+				return showErrorPage(model, error);
 			}
 		} else {
-			LOGGER.error("Could not add run, uploaded file is empty");
-			model.addAttribute(ERROR_TEXT_KEY, "Could not add run, uploaded file is empty.");
-			return "error";
+			return showErrorPage(model, "Could not add run, uploaded file is empty.");
 		}
 	}
 
@@ -100,9 +102,7 @@ public class RoadDynoController {
 			return "update-run-form";
 		}
 		String error = "Could not edit run with id " + id + ". Run not found.";
-		LOGGER.error(error);
-		model.addAttribute(ERROR_TEXT_KEY, error);
-		return "error";
+		return showErrorPage(model, error);
 	}
 
 	@RequestMapping(value = "/edit", method = RequestMethod.POST)
@@ -156,15 +156,11 @@ public class RoadDynoController {
 
 				return "redirect:/online-dyno";
 			} catch (Exception e) {
-				LOGGER.error("Could not update run.", e);
-				model.addAttribute(ERROR_TEXT_KEY, e.getMessage());
-				return "error";
+				return showErrorPage(model, "Could not update run", e);
 			}
 		} else {
 			String error = "Could not update run. Run with id " + updatedRunInfo.getId() + " was not found";
-			LOGGER.error(error);
-			model.addAttribute(ERROR_TEXT_KEY, error);
-			return "error";
+			return showErrorPage(model, error);
 		}
 	}
 
@@ -176,9 +172,7 @@ public class RoadDynoController {
 			return "redirect:/online-dyno";
 		}
 		String error = "Could not change statue of run with id " + rid + ". Run not found.";
-		LOGGER.error(error);
-		model.addAttribute(ERROR_TEXT_KEY, error);
-		return "error";
+		return showErrorPage(model, error);
 	}
 
 	@RequestMapping("remove/{id}")
@@ -206,9 +200,7 @@ public class RoadDynoController {
 			model.addAttribute("chartDef", chartDef);
 			model.addAttribute("auxChartDef", auxChartDef);
 		} catch (JsonProcessingException e) {
-			LOGGER.error("Could not plot runs.", e);
-			model.addAttribute(ERROR_TEXT_KEY, e.getMessage());
-			return "error";
+			return showErrorPage(model, "Could not plot runs", e);
 		}
 		model.addAttribute("runInfoList", logRunEntries);
 		model.addAttribute("nav", "onlinedyno");
@@ -240,6 +232,24 @@ public class RoadDynoController {
 	public String contact(Model model) {
 		model.addAttribute("nav", "contact");
 		return "contact";
+	}
+
+	private String showErrorPage(Model model, String error) {
+		LOGGER.error(error);
+		model.addAttribute(ERROR_TEXT_KEY, error);
+		return "error";
+	}
+
+	private String showErrorPage(Model model, String message, Exception e) {
+		String error = message;
+		if (e == null || e.getMessage() == null) {
+			error += ". Unexpected error occurred.";
+		} else {
+			error = ". " + e.getMessage();
+		}
+		LOGGER.error(error, e);
+		model.addAttribute(ERROR_TEXT_KEY, error);
+		return "error";
 	}
 
 	private void clearInvalidEntries() {
