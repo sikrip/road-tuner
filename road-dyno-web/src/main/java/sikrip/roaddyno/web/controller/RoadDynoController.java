@@ -35,7 +35,7 @@ import sikrip.roaddyno.web.model.LoggedRunsEntry;
 public class RoadDynoController {
 
 	private static final String ERROR_TEXT_KEY = "errorTxt";
-	public static final int MAX_FILE_KB = 4 * 1024; // 4 mb
+	public static final int MAX_FILE_BYTES = 4 * 1024 * 1024; // 4 mb
 
 	private final Logger LOGGER = LoggerFactory.getLogger(RoadDynoController.class);
 
@@ -64,7 +64,7 @@ public class RoadDynoController {
 	@RequestMapping(value = "/add", method = RequestMethod.POST)
 	public String add(LoggedRunsEntry runInfo, @RequestParam("file") MultipartFile file, Model model) {
 		if (!file.isEmpty()) {
-			if (file.getSize() <= MAX_FILE_KB) {
+			if (file.getSize() <= MAX_FILE_BYTES) {
 				try {
 					LogFileData logFileData = LogFileReader.readLog(file);
 
@@ -85,7 +85,7 @@ public class RoadDynoController {
 					return showErrorPage(model, "Could not add run", e);
 				}
 			} else {
-				final String error = String.format("Maximum file size(%smb) exceeded, please select a smaller log file.", MAX_FILE_KB / 1024);
+				final String error = String.format("Maximum file size(%smb) exceeded, please select a smaller log file.", MAX_FILE_BYTES / 1024);
 				return showErrorPage(model, error);
 			}
 		} else {
@@ -243,9 +243,9 @@ public class RoadDynoController {
 	private String showErrorPage(Model model, String message, Exception e) {
 		String error = message;
 		if (e == null || e.getMessage() == null) {
-			error += ". Unexpected error occurred.";
+			error += ": Unexpected error occurred.";
 		} else {
-			error = ". " + e.getMessage();
+			error += ": " + e.getMessage();
 		}
 		LOGGER.error(error, e);
 		model.addAttribute(ERROR_TEXT_KEY, error);
