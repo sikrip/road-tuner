@@ -16,7 +16,7 @@
         <module>road-dyno-gps-log-reader</module>
         <module>road-dyno-standalone</module>
         <module>road-dyno-web</module>
-        <module>road-dyno-ts-plugin</module>
+        <!--<module>road-dyno-ts-plugin</module>-->
     </modules>
 
     <properties>
