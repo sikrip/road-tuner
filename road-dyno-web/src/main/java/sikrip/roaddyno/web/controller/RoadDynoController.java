@@ -196,7 +196,7 @@ public class RoadDynoController {
 		try {
 			final List<LoggedRunsEntry> activeRuns = logRunEntries.stream().filter(LoggedRunsEntry::isActive).collect(Collectors.toList());
 			String chartDef = objectMapper.writeValueAsString(new ChartDataProvider().createMainChartDefinition(activeRuns));
-			String auxChartDef = objectMapper.writeValueAsString(new ChartDataProvider().createAuxuliaryChartDefinition(activeRuns, "AFR"));
+			String auxChartDef = objectMapper.writeValueAsString(new ChartDataProvider().createAuxiliaryChartDefinition(activeRuns, "AFR"));
 			model.addAttribute("chartDef", chartDef);
 			model.addAttribute("auxChartDef", auxChartDef);
 		} catch (JsonProcessingException e) {

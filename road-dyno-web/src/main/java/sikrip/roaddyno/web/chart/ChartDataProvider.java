@@ -52,7 +52,7 @@ public class ChartDataProvider {
 		return root;
 	}
 
-	public Map<String, Object> createAuxuliaryChartDefinition(List<LoggedRunsEntry> runs, String field) {
+	public Map<String, Object> createAuxiliaryChartDefinition(List<LoggedRunsEntry> runs, String field) {
 		root.clear();
 
 		root.put("type", "xy");
