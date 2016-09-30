@@ -12,17 +12,24 @@
 
 <div class="container">
     <div class="page-header">
-        <h1>Road dyno <small>For car enthusiasts like you!</small></h1>
+        <h1>Road dyno
+            <small>For car enthusiasts like you!</small>
+        </h1>
     </div>
 
-    <div class="alert alert-danger" role="alert">
-        <h3>Oh snap!</h3>
-        <p>The following error occurred:</p>
-        <strong th:text="${errorTxt}"></strong>
-        <br/>
-        <br/>
-        <p>Please try again or if you think this should not happen <a href="mailto:road.dyno.app@gmail.com">send me a bug report</a>.</p>
+    <div class="page-content">
+        <div class="panel panel-danger">
+            <div class="panel-heading">
+                <h4>The following error occurred</h4>
+            </div>
+            <div class="panel-body">
+                <strong th:text="${errorTxt}"></strong>
+                <hr/>
+                <p><a class="btn btn-primary" th:href="@{/online-dyno}" role="button">Back to plots</a></p>
+            </div>
+        </div>
     </div>
+
 
     <div th:include="fragments/fragments :: footer"></div>
 </div>

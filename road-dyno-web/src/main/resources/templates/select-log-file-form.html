@@ -17,7 +17,7 @@
             <small>Add run</small>
         </h1>
     </div>
-    <form class="form-horizontal" th:object="${runInfo}" th:action="@{/add}" method="post" enctype="multipart/form-data">
+    <form class="form-horizontal page-content" th:object="${runInfo}" th:action="@{/add}" method="post" enctype="multipart/form-data">
 
         <input type="hidden" th:field="*{id}"/>
 

@@ -51,7 +51,11 @@ public class RoadDynoController {
 
 	@RequestMapping("/")
 	public String index() {
-		return "index";
+		if(logRunEntries.isEmpty()) {
+			return "index";
+		}else {
+			return "redirect:/online-dyno";
+		}
 	}
 
 	@RequestMapping("/add")

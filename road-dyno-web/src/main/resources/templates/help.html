@@ -17,85 +17,90 @@
         </h1>
     </div>
 
-    <div class="panel panel-info">
-        <div class="panel-heading">
-            <h3>What is road dyno?</h3>
+    <div class="page-content">
+        <div class="panel panel-info">
+            <div class="panel-heading">
+                <h3>What is road dyno?</h3>
+            </div>
+
+            <div class="panel-body">
+                With Road Dyno, you can create accurate dyno graphs based on data taken by ECU or GPS logs.
+                In order to achieve that, you need to log a few key parameters while making wide open throttle runs in one gear.
+            </div>
         </div>
 
-        <div class="panel-body">
-            With Road Dyno, you can create accurate dyno graphs based on data taken by ECU or GPS logs.
-            In order to achieve that, you need to log a few key parameters while making wide open throttle runs in one gear.
-        </div>
-    </div>
+        <div class="panel panel-info">
+            <div class="panel-heading">
+                <h3>What log formats are supported?</h3>
+            </div>
 
-    <div class="panel panel-info">
-        <div class="panel-heading">
-            <h3>What log formats are supported?</h3>
-        </div>
-
-        <div class="panel-body">
-            For the time being, supported log formats are:
-            <ul>
-                <li>Megasquirt(msl) logs</li>
-                <li>VBox(vbo) logs (Drfitbox .dbn files can be converted to .vbo files with Driftbox tools [open and save as .vbo])</li>
-            </ul>
-        </div>
-    </div>
-
-    <div class="panel panel-info">
-        <div class="panel-heading">
-            <h3>What should be logged?</h3>
+            <div class="panel-body">
+                For the time being, supported log formats are:
+                <ul>
+                    <li>Megasquirt(msl) logs</li>
+                    <li>VBox(vbo) logs (Drfitbox .dbn files can be converted to .vbo files with Driftbox tools [open and save as .vbo])</li>
+                </ul>
+            </div>
         </div>
 
-        <div class="panel-body">
-            <p>For GPS logs you do not any special setup, just make sure you are logging with at least 5hz refresh rate.</p>
-            <p>For ECU logs make sure that the following values are logged:</p>
-            <ul>
-                <li><strong>Time</strong></li>
-                <li>
-                    <strong>RPM</strong>
-                </li>
-                <li><strong>TPS</strong></li>
-            </ul>
+        <div class="panel panel-info">
+            <div class="panel-heading">
+                <h3>What should be logged?</h3>
+            </div>
+
+            <div class="panel-body">
+                <p>For GPS logs you do not any special setup, just make sure you are logging with at least 5hz refresh rate.</p>
+                <p>For ECU logs make sure that the following values are logged:</p>
+                <ul>
+                    <li><strong>Time</strong></li>
+                    <li>
+                        <strong>RPM</strong>
+                    </li>
+                    <li><strong>TPS</strong></li>
+                </ul>
+            </div>
         </div>
-    </div>
 
-    <div class="panel panel-info">
-        <div class="panel-heading">
-            <h3>Where and how to perform the runs?</h3>
-        </div>
+        <div class="panel panel-info">
+            <div class="panel-heading">
+                <h3>Where and how to perform the runs?</h3>
+            </div>
 
-        <div class="panel-body">
-            <h4>Select a suitable/flat road or track</h4>
+            <div class="panel-body">
+                <h4>Select a suitable/flat road or track</h4>
 
-            <p>
-                <strong>First and foremost, make sure you drive safely!</strong>
-                Try to do all runs on a flat road and preferably always start the runs in the same spot so that
-                subsequent runs can be comparable. If you get unexpectedly low or high numbers, try running in both directions on the same stretch because some
-                roadways can be deceiving and may not actually be level.
-            </p>
+                <p>
+                    <strong>First and foremost, make sure you drive safely!</strong>
+                    Try to do all runs on a flat road and preferably always start the runs in the same spot so that
+                    subsequent runs can be comparable. If you get unexpectedly low or high numbers, try running in both directions on the same stretch because
+                    some
+                    roadways can be deceiving and may not actually be level.
+                </p>
 
-            <h4>Making the dyno run</h4>
+                <h4>Making the dyno run</h4>
 
-            <p>
-                Start by rolling the vehicle at about 2000 RPM in a gear like second or third where you are able to hold full throttle all the way to redline
-                safely/legally.
-            </p>
+                <p>
+                    Start by rolling the vehicle at about 2000 RPM in a gear like second or third where you are able to hold full throttle all the way to
+                    redline
+                    safely/legally.
+                </p>
 
-            <p>
-                Then smoothly go to full throttle(WOT) quickly but without "slamming" the throttle.
-            </p>
+                <p>
+                    Then smoothly go to full throttle(WOT) quickly but without "slamming" the throttle.
+                </p>
 
-            <p>
-                Continue the WOT run until you reach redline or whatever engine speed you choose and then left the throttle.
-            </p>
+                <p>
+                    Continue the WOT run until you reach redline or whatever engine speed you choose and then left the throttle.
+                </p>
 
-            <p>
-                Lift the throttle first and then press the clutch (pressing the clutch at the same time as lifting the throttle can cause the engine to
-                "wind up", causing a spike at the end of the dyno graph. For automatics that do not have manual control, you may be forced to do the dyno run
-                in first gear unless you can start the run in second above where the car would normally downshift to first.
-                Avoid first gear, or any gear that will cause wheelspin, because false readings will be logged and the graph won't be accurate.
-            </p>
+                <p>
+                    Lift the throttle first and then press the clutch (pressing the clutch at the same time as lifting the throttle can cause the engine to
+                    "wind up", causing a spike at the end of the dyno graph. For automatics that do not have manual control, you may be forced to do the dyno
+                    run
+                    in first gear unless you can start the run in second above where the car would normally downshift to first.
+                    Avoid first gear, or any gear that will cause wheelspin, because false readings will be logged and the graph won't be accurate.
+                </p>
+            </div>
         </div>
     </div>
 
