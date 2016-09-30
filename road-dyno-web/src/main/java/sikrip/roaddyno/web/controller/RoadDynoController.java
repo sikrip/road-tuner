@@ -56,9 +56,13 @@ public class RoadDynoController {
 
 	@RequestMapping("/add")
 	public String add(Model model) {
-		model.addAttribute("nav", "onlinedyno");
-		model.addAttribute("runInfo", new LoggedRunsEntry());
-		return "select-log-file-form";
+		if (logRunEntries.size() < colorProvider.size()) {
+			model.addAttribute("nav", "onlinedyno");
+			model.addAttribute("runInfo", new LoggedRunsEntry());
+			return "select-log-file-form";
+		} else {
+			return showErrorPage(model, "Maximum number of plots reached.");
+		}
 	}
 
 	@RequestMapping(value = "/add", method = RequestMethod.POST)
@@ -179,7 +183,9 @@ public class RoadDynoController {
 	public String remove(@PathVariable String id) {
 		Iterator<LoggedRunsEntry> resultIterator = logRunEntries.iterator();
 		while (resultIterator.hasNext()) {
-			if (resultIterator.next().getId().equals(id)) {
+			LoggedRunsEntry entry = resultIterator.next();
+			if (entry.getId().equals(id)) {
+				colorProvider.push(entry.getColor());
 				resultIterator.remove();
 				break;
 			}
