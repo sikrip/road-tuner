@@ -32,6 +32,10 @@ public class ChartDataProvider {
 		root.put("type", "xy");
 		root.put("startDuration", 1);
 
+		Map<String, Object> exportSettings = new HashMap<>();
+		exportSettings.put("enabled", true);
+		root.put("export", exportSettings);
+
 		root.put("trendLines", new ArrayList<>());
 
 		createGraphDefinitions(runs);

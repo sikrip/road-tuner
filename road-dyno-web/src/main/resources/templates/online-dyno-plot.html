@@ -6,8 +6,12 @@
     <th:block th:include="fragments/includes :: head"></th:block>
 
     <!-- amCharts javascript sources -->
-    <script src="http://www.amcharts.com/lib/3/amcharts.js" th:src="@{/js/amcharts.js}" type="text/javascript"></script>
-    <script src="http://www.amcharts.com/lib/3/xy.js" th:src="@{/js/xy.js}" type="text/javascript"></script>
+    <script src="http://www.amcharts.com/lib/3/amcharts.js" th:src="@{/js/amcharts/amcharts.js}" type="text/javascript"></script>
+    <script src="http://www.amcharts.com/lib/3/xy.js" th:src="@{/js/amcharts/xy.js}" type="text/javascript"></script>
+
+    <!-- amCharts plugins -->
+    <script type="text/javascript" src="https://www.amcharts.com/lib/3/plugins/export/export.min.js" th:src="@{/js/amcharts/plugins/export/export.min.js}"></script>
+    <link rel="stylesheet" href="https://www.amcharts.com/lib/3/plugins/export/export.css" th:href="@{/js/amcharts/plugins/export/export.css}"/>
 </head>
 
 <body>

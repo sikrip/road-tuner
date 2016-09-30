@@ -93,8 +93,7 @@ public class RoadDynoController {
 					return showErrorPage(model, "Could not add run", e);
 				}
 			} else {
-				final String error = String.format("Maximum file size(%smb) exceeded, please select a smaller log file.", MAX_FILE_BYTES / 1024);
-				return showErrorPage(model, error);
+				return showErrorPage(model, String.format("Maximum file size(%smb) exceeded, please select a smaller log file.", MAX_FILE_BYTES / 1024));
 			}
 		} else {
 			return showErrorPage(model, "Could not add run, uploaded file is empty.");
@@ -204,7 +203,7 @@ public class RoadDynoController {
 			return "redirect:/clear-all";
 		}
 		try {
-			final List<LoggedRunsEntry> activeRuns = logRunEntries.stream().filter(LoggedRunsEntry::isActive).collect(Collectors.toList());
+			final List<LoggedRunsEntry> activeRuns = getActiveRuns();
 			String chartDef = objectMapper.writeValueAsString(new ChartDataProvider().createMainChartDefinition(activeRuns));
 			String auxChartDef = objectMapper.writeValueAsString(new ChartDataProvider().createAuxiliaryChartDefinition(activeRuns, "AFR"));
 			model.addAttribute("chartDef", chartDef);
@@ -215,6 +214,10 @@ public class RoadDynoController {
 		model.addAttribute("runInfoList", logRunEntries);
 		model.addAttribute("nav", "onlinedyno");
 		return "online-dyno-plot";
+	}
+
+	private List<LoggedRunsEntry> getActiveRuns() {
+		return logRunEntries.stream().filter(LoggedRunsEntry::isActive).collect(Collectors.toList());
 	}
 
 	@RequestMapping("/clear-all")
