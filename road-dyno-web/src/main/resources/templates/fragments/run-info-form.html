@@ -46,7 +46,7 @@
             <div class="col-sm-3">
                 <div class="input-group">
                     <input id="occWeight" type="number" step="any" min="0" required="required" th:field="*{occupantsWeight}" class="form-control"/>
-                    <div id="curbWeight-alt" class="input-group-addon">kg (0 pounds)</div>
+                    <div id="occWeight-alt" class="input-group-addon">kg (0 pounds)</div>
                 </div>
                 <span class="help-block">The weight in <strong>kilograms</strong> of the occupants during the run (equivalent in pounds).</span>
             </div>
@@ -80,10 +80,10 @@
     <script>
         $(document).ready(function () {
 
-            // Tyre diameter mm to inch
+            // Tyre diameter, mm to inch
             var $tyreDiameter = $('#tyreDiameter');
             var $tyreDiameterAlt = $('#tyreDiameter-alt');
-            $tyreDiameter.keyup(function (event) {
+            function tyreDiameterAltUnit() {
                 var mm = parseFloat($tyreDiameter.val());
                 if (isNaN(mm)) {
                     $tyreDiameterAlt.text('mm (0 inch)');
@@ -91,12 +91,17 @@
                     var inch = (mm * 0.03937007).toPrecision(4);
                     $tyreDiameterAlt.text('mm (' + inch + ' inch)');
                 }
-            });
+            }
+            // Register the conversion events
+            $tyreDiameter.change(tyreDiameterAltUnit);
+            $tyreDiameter.keyup(tyreDiameterAltUnit);
+            // Convert on render
+            tyreDiameterAltUnit();
 
             // Curb weight, kg to pounds
             var $curbWeight = $('#curbWeight');
             var $curbWeightAlt = $('#curbWeight-alt');
-            $curbWeight.keyup(function () {
+            function curbWeightAltUnit() {
                 var kg = parseFloat($curbWeight.val());
                 if (isNaN(kg)) {
                     $curbWeightAlt.text('mm (0 inch)');
@@ -104,12 +109,17 @@
                     var pounds = (kg * 2.20462262).toPrecision(4);
                     $curbWeightAlt.text('kg (' + pounds + ' pounds)');
                 }
-            });
+            }
+            // Register the conversion events
+            $curbWeight.keyup(curbWeightAltUnit);
+            $curbWeight.change(curbWeightAltUnit);
+            // Convert on render
+            curbWeightAltUnit();
 
             // Occupants weight, kg to pounds
             var $occWeight = $('#occWeight');
             var $occWeightAlt = $('#occWeight-alt');
-            $occWeight.keyup(function () {
+            function occWeightAltUnit() {
                 var kg = parseFloat($occWeight.val());
                 if (isNaN(kg)) {
                     $occWeightAlt.text('mm (0 inch)');
@@ -117,12 +127,17 @@
                     var pounds = (kg * 2.20462262).toPrecision(4);
                     $occWeightAlt.text('kg (' + pounds + ' pounds)');
                 }
-            });
+            }
+            // Register the conversion events
+            $occWeight.keyup(occWeightAltUnit);
+            $occWeight.change(occWeightAltUnit);
+            // Convert on render
+            occWeightAltUnit();
 
             // Frontal area, sqm to sqf
             var $frontalArea = $('#frontalArea');
             var $frontalAreaAlt = $('#frontalArea-alt');
-            $frontalArea.keyup(function () {
+            function frontalAreaAltUnit() {
                 var sqm = parseFloat($frontalArea.val());
                 if (isNaN(sqm)) {
                     $frontalAreaAlt.text('mm (0 inch)');
@@ -130,7 +145,12 @@
                     var sqft = (sqm * 10.7639104).toPrecision(4);
                     $frontalAreaAlt.text('sqm (' + sqft + ' sqft)');
                 }
-            });
+            }
+            // Register the conversion events
+            $frontalArea.keyup(frontalAreaAltUnit);
+            $frontalArea.change(frontalAreaAltUnit);
+            // Convert on render
+            frontalAreaAltUnit();
         });
     </script>
 </div>
