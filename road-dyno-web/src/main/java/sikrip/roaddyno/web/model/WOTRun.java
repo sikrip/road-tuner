@@ -74,7 +74,7 @@ public class WOTRun {
 		if (startHeight != null) {
 			double heightDiff = startHeight.getValue() - endEntry.get("height").getValue();
 			builder.append(", height diff: ")
-					.append(decimalFormat.format(heightDiff))
+					.append(decimalFormat.format(Math.abs(heightDiff)))
 					.append(startHeight.getUnit());
 			if (heightDiff > 0) {
 				builder.append(" downhill");
