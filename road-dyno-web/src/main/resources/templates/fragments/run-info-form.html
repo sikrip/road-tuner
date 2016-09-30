@@ -104,7 +104,7 @@
             function curbWeightAltUnit() {
                 var kg = parseFloat($curbWeight.val());
                 if (isNaN(kg)) {
-                    $curbWeightAlt.text('mm (0 inch)');
+                    $curbWeightAlt.text('kg (0 pounds)');
                 } else {
                     var pounds = (kg * 2.20462262).toPrecision(4);
                     $curbWeightAlt.text('kg (' + pounds + ' pounds)');
@@ -122,7 +122,7 @@
             function occWeightAltUnit() {
                 var kg = parseFloat($occWeight.val());
                 if (isNaN(kg)) {
-                    $occWeightAlt.text('mm (0 inch)');
+                    $occWeightAlt.text('kg (0 pounds)');
                 } else {
                     var pounds = (kg * 2.20462262).toPrecision(4);
                     $occWeightAlt.text('kg (' + pounds + ' pounds)');
@@ -140,7 +140,7 @@
             function frontalAreaAltUnit() {
                 var sqm = parseFloat($frontalArea.val());
                 if (isNaN(sqm)) {
-                    $frontalAreaAlt.text('mm (0 inch)');
+                    $frontalAreaAlt.text('sqm (0 sqft)');
                 } else {
                     var sqft = (sqm * 10.7639104).toPrecision(4);
                     $frontalAreaAlt.text('sqm (' + sqft + ' sqft)');
