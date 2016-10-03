@@ -61,7 +61,7 @@ public class RoadDynoController {
 		if (!file.isEmpty()) {
 			if (file.getSize() <= MAX_FILE_BYTES) {
 				try {
-					loggedRunsManager.addRun(runInfo, file);
+					loggedRunsManager.add(runInfo, file);
 
 					// show update run form
 					model.addAttribute("runInfo", runInfo);

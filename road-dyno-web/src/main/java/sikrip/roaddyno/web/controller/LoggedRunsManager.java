@@ -7,8 +7,6 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
 
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
 import sikrip.roaddyno.engine.DynoSimulationResult;
@@ -39,14 +37,14 @@ final class LoggedRunsManager {
 		return loggedRuns.size() < MAX_RUNS;
 	}
 
-	void addRun(LoggedRunsEntry loggedRun, MultipartFile file) throws InvalidLogFileException {
+	void add(LoggedRunsEntry loggedRun, MultipartFile file) throws InvalidLogFileException {
 		final LogFileData logFileData = LogFileReader.readLog(file);
 
 		loggedRun.setIndex(loggedRuns.size());
 		loggedRun.setSelectedAccelerationIdx(0);
 		loggedRun.setLogData(logFileData);
 		loggedRun.setName(file.getOriginalFilename());
-		loggedRun.updateVehicleData(vehicleData);
+		loggedRun.updateFrom(vehicleData);
 
 		loggedRuns.add(loggedRun);
 	}
@@ -113,7 +111,7 @@ final class LoggedRunsManager {
 	LoggedRunsEntry get(String id) {
 		final Optional<LoggedRunsEntry> runInfo = loggedRuns.stream().filter(r -> id.equals(r.getId())).findFirst();
 		if (runInfo.isPresent()) {
-			runInfo.get();
+			return runInfo.get();
 		}
 		return null;
 	}
