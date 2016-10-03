@@ -36,7 +36,7 @@ public final class LogFileReader {
 					// vbo file
 					return new LogFileData(false, new VBOLogReader().readLog(file.getInputStream()));
 				}
-				throw new InvalidLogFileException("Unknown / not supported log file");
+				throw new InvalidLogFileException("Unknown or not supported log file");
 			} catch (IOException e) {
 				throw new InvalidLogFileException("Could not read log file");
 			}

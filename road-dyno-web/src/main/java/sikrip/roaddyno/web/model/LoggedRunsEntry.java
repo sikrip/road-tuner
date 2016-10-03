@@ -178,8 +178,8 @@ public class LoggedRunsEntry implements RunInfo, Comparable<LoggedRunsEntry> {
 		return result != null ? result.maxTorque() : null;
 	}
 
-	public List<WOTRun> getAccelerations() {
-		return logFileData.getWOTRuns();
+	public List<WOTRunBounds> getAccelerations() {
+		return logFileData.getWOTRunBoundses();
 	}
 
 	public LoggedRunsEntry updateFrom(VehicleData vehicleData) {
@@ -194,7 +194,7 @@ public class LoggedRunsEntry implements RunInfo, Comparable<LoggedRunsEntry> {
 	}
 
 	public List<LogEntry> getSelectedLogEntries() {
-		WOTRun selectedAcceleration = logFileData.getWOTRuns().get(selectedAccelerationIdx);
+		WOTRunBounds selectedAcceleration = logFileData.getWOTRunBoundses().get(selectedAccelerationIdx);
 		return logFileData.getLogEntries().subList(selectedAcceleration.getStart(), selectedAcceleration.getEnd());
 	}
 

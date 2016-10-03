@@ -8,7 +8,7 @@ import sikrip.roaddyno.model.LogValue;
 /**
  * Contains the indices of a possible WOT run within a collection of {@link LogEntry} data.
  */
-public class WOTRun {
+public class WOTRunBounds {
 
 	/**
 	 * Start index of the WOT.
@@ -30,7 +30,7 @@ public class WOTRun {
 	 */
 	private final LogEntry endEntry;
 
-	public WOTRun(int start, int end, LogEntry startEntry, LogEntry endEntry) {
+	public WOTRunBounds(int start, int end, LogEntry startEntry, LogEntry endEntry) {
 		this.start = start;
 		this.end = end;
 		this.startEntry = startEntry;
@@ -63,7 +63,7 @@ public class WOTRun {
 		StringBuilder builder = new StringBuilder()
 				.append(startEntry.getVelocity().getValue())
 				.append(startEntry.getVelocity().getUnit())
-				.append(" - ")
+				.append(" -> ")
 				.append(endEntry.getVelocity().getValue())
 				.append(endEntry.getVelocity().getUnit())
 				.append(", duration ")

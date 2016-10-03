@@ -27,12 +27,12 @@ public final class LogFileData {
 	/**
 	 * The bounds(indeces within the {@link #logEntries}) of the possible WOT runs.
 	 */
-	private final List<WOTRun> WOTRuns = new ArrayList<>();
+	private final List<WOTRunBounds> WOTRunBoundses = new ArrayList<>();
 
 	public LogFileData(boolean rpmBased, List<LogEntry> logEntries) {
 		this.rpmBased = rpmBased;
 		this.logEntries = logEntries;
-		this.WOTRuns.addAll(findAccelerationRuns(rpmBased, logEntries));
+		this.WOTRunBoundses.addAll(findAccelerationRuns(rpmBased, logEntries));
 	}
 
 	/**
@@ -44,20 +44,20 @@ public final class LogFileData {
 	 * 		the raw data
 	 * @return a list of possible WOT runs
 	 */
-	private List<WOTRun> findAccelerationRuns(boolean rpmBased, List<LogEntry> logEntries) {
-		final List<WOTRun> WOTRuns = new ArrayList<>();
+	private List<WOTRunBounds> findAccelerationRuns(boolean rpmBased, List<LogEntry> logEntries) {
+		final List<WOTRunBounds> WOTRunBoundses = new ArrayList<>();
 		if (rpmBased) {
 			// FIXME for rpm based we do no acceleration detection for now
-			WOTRuns.add(new WOTRun(0, logEntries.size(), logEntries.get(0), logEntries.get(logEntries.size() - 1)));
+			WOTRunBoundses.add(new WOTRunBounds(0, logEntries.size(), logEntries.get(0), logEntries.get(logEntries.size() - 1)));
 		} else {
 			for (AccelerationBounds accelerationBounds : DynoRunDetector.getAccelerationBoundsBySpeed(logEntries)) {
 				final int start = accelerationBounds.getStart();
 				final int end = accelerationBounds.getEnd();
-				WOTRuns.add(new WOTRun(start, end, logEntries.get(start), logEntries.get(end)));
+				WOTRunBoundses.add(new WOTRunBounds(start, end, logEntries.get(start), logEntries.get(end)));
 			}
 		}
 		// sort by speed diff descending
-		return WOTRuns.stream().sorted((o1, o2) -> {
+		return WOTRunBoundses.stream().sorted((o1, o2) -> {
 			if (o1.getVelocityDiff() == o2.getVelocityDiff()) {
 				return 0;
 			} else if (o2.getVelocityDiff() < o1.getVelocityDiff()) {
@@ -76,7 +76,7 @@ public final class LogFileData {
 		return logEntries;
 	}
 
-	public List<WOTRun> getWOTRuns() {
-		return WOTRuns;
+	public List<WOTRunBounds> getWOTRunBoundses() {
+		return WOTRunBoundses;
 	}
 }

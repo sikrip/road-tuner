@@ -14,7 +14,7 @@
 <div class="container">
     <div class="page-header">
         <h1>Online dyno
-            <small>Add run</small>
+            <small>Update run and vehicle info</small>
         </h1>
     </div>
     <form class="form-horizontal page-content" th:object="${runInfo}" th:action="@{/edit}" method="post"
@@ -24,7 +24,7 @@
 
         <div class="panel panel-info">
             <div class="panel-heading">
-                <h4>Log file</h4>
+                <h4>Run info</h4>
             </div>
 
             <div class="panel-body">
@@ -34,7 +34,7 @@
                         <input type="text" disabled="disabled" id="selected-file" name="ignored" th:value="${runInfo.name}"/>
                     </div>
 
-                    <label class="col-sm-2 control-label" for="run-list">Select a run</label>
+                    <label class="col-sm-2 control-label" for="run-list">Select a WOT run</label>
                     <div class="col-sm-6 control-label">
                         <select th:field="*{selectedAccelerationIdx}" id="run-list" class="pull-left">
                             <option th:each="accelerationRun, i : ${runInfo.accelerations}"
