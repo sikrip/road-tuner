@@ -7,7 +7,6 @@ import sikrip.roaddyno.engine.DynoSimulationEntry;
 import sikrip.roaddyno.engine.DynoSimulationResult;
 import sikrip.roaddyno.engine.RunInfo;
 import sikrip.roaddyno.model.LogEntry;
-import sikrip.roaddyno.web.controller.SessionVehicleData;
 
 /**
  * Wraps the info of a logged run, including the simulation result, name identifier and color.
@@ -183,7 +182,7 @@ public class LoggedRunsEntry implements RunInfo, Comparable<LoggedRunsEntry> {
 		return logFileData.getWOTRuns();
 	}
 
-	public LoggedRunsEntry updateVehicleData(SessionVehicleData vehicleData) {
+	public LoggedRunsEntry updateVehicleData(VehicleData vehicleData) {
 		setFinalGearRatio(vehicleData.getFinalGearRatio());
 		setGearRatio(vehicleData.getGearRatio());
 		setTyreDiameter(vehicleData.getTyreDiameter());

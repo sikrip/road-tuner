@@ -1,12 +1,8 @@
-package sikrip.roaddyno.web.controller;
+package sikrip.roaddyno.web.model;
 
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Component;
 import sikrip.roaddyno.engine.RunInfo;
 
-@Component
-@Scope("session")
-public class SessionVehicleData {
+public class VehicleData {
 
     private Double finalGearRatio;
     private Double gearRatio;

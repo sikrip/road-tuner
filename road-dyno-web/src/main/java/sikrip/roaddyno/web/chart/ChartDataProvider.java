@@ -13,14 +13,14 @@ import sikrip.roaddyno.engine.DynoSimulationResult;
 import sikrip.roaddyno.model.LogValue;
 import sikrip.roaddyno.web.model.LoggedRunsEntry;
 
-public class ChartDataProvider {
+public final class ChartDataProvider {
 
 	public static final String RPM_AXIS = "rpm";
 	public static final String POWER_FIELD = "power_";
 	public static final String TORQUE_FIELD = "torque_";
 
-	private Map<String, Object> root = new HashMap<>();
-	private DecimalFormat df = new DecimalFormat("#.0");
+	private final Map<String, Object> root = new HashMap<>();
+	private final DecimalFormat df = new DecimalFormat("#.0");
 
 	public ChartDataProvider() {
 		df.setRoundingMode(RoundingMode.DOWN);
