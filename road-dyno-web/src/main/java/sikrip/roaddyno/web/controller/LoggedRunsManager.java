@@ -117,7 +117,6 @@ final class LoggedRunsManager {
 	}
 
 	List<LoggedRunsEntry> getRunsToPlot() {
-		clearInvalidEntries();
 		return loggedRuns.stream().filter(LoggedRunsEntry::isActive).collect(Collectors.toList());
 	}
 
@@ -140,7 +139,7 @@ final class LoggedRunsManager {
 		//TODO clear vehicleData?
 	}
 
-	private void clearInvalidEntries() {
+	void clearRunsWithoutVehicleData() {
 		final Iterator<LoggedRunsEntry> loggedRunsEntryIterator = loggedRuns.iterator();
 		while (loggedRunsEntryIterator.hasNext()) {
 			if (loggedRunsEntryIterator.next().getColor() == null) {

@@ -122,6 +122,9 @@ public class RoadDynoController {
 
 	@RequestMapping("/online-dyno")
 	public String onlineDyno(Model model) {
+
+		loggedRunsManager.clearRunsWithoutVehicleData();
+
 		if (loggedRunsManager.isEmpty()) {
 			return "redirect:/clear-all";
 		}
