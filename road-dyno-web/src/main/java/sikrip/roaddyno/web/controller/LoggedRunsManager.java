@@ -120,7 +120,7 @@ final class LoggedRunsManager {
 		return loggedRuns.stream().filter(LoggedRunsEntry::isActive).collect(Collectors.toList());
 	}
 
-	public Set<LoggedRunsEntry> getRuns() {
+	Set<LoggedRunsEntry> getRuns() {
 		return loggedRuns;
 	}
 
