@@ -5,6 +5,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -17,15 +18,15 @@ import org.springframework.web.multipart.MultipartFile;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import sikrip.roaddyno.engine.SimulationException;
+import sikrip.roaddyno.model.InvalidLogFileException;
+import sikrip.roaddyno.web.RoadDynoWebApplication;
 import sikrip.roaddyno.web.chart.ChartDataProvider;
 import sikrip.roaddyno.web.model.LoggedRunsEntry;
 
 @Controller
 @Scope("session")
 public class RoadDynoController {
-
-	private static final String ERROR_TEXT_KEY = "errorTxt";
-	public static final int MAX_FILE_BYTES = 4 * 1024 * 1024; // 4 mb
 
 	private final Logger LOGGER = LoggerFactory.getLogger(RoadDynoController.class);
 
@@ -35,6 +36,9 @@ public class RoadDynoController {
 	private final LoggedRunsManager loggedRunsManager = new LoggedRunsManager();
 
 	private final ChartDataProvider chartDataProvider = new ChartDataProvider();
+
+	@Value("${multipart.maxFileSize}")
+	private String maxFileSize;
 
 	@RequestMapping("/")
 	public String index() {
@@ -50,6 +54,7 @@ public class RoadDynoController {
 		if (loggedRunsManager.canAddRun()) {
 			model.addAttribute("nav", "onlinedyno");
 			model.addAttribute("runInfo", new LoggedRunsEntry());
+			model.addAttribute("maxFileSize", maxFileSize);
 			return "select-log-file-form";
 		} else {
 			return showErrorPage(model, "Maximum number of plots reached.");
@@ -59,20 +64,16 @@ public class RoadDynoController {
 	@RequestMapping(value = "/add", method = RequestMethod.POST)
 	public String add(LoggedRunsEntry runInfo, @RequestParam("file") MultipartFile file, Model model) {
 		if (!file.isEmpty()) {
-			if (file.getSize() <= MAX_FILE_BYTES) {
-				try {
-					loggedRunsManager.add(runInfo, file);
+			try {
+				loggedRunsManager.add(runInfo, file);
 
-					// show update run form
-					model.addAttribute("runInfo", runInfo);
-					model.addAttribute("nav", "onlinedyno");
+				// show update run form
+				model.addAttribute("runInfo", runInfo);
+				model.addAttribute("nav", "onlinedyno");
 
-					return "update-run-form";
-				} catch (Exception e) {
-					return showErrorPage(model, "Could not add run", e);
-				}
-			} else {
-				return showErrorPage(model, String.format("Maximum file size(%smb) exceeded, please select a smaller log file.", MAX_FILE_BYTES / 1024));
+				return "update-run-form";
+			} catch (InvalidLogFileException e) {
+				return showErrorPage(model, "Could not add run. " + e.getMessage());
 			}
 		} else {
 			return showErrorPage(model, "Could not add run, uploaded file is empty.");
@@ -95,28 +96,20 @@ public class RoadDynoController {
 		try {
 			loggedRunsManager.update(updatedRun);
 			return "redirect:/online-dyno";
-		} catch (Exception e) {
-			return showErrorPage(model, "Could not update run", e);
+		} catch (SimulationException e) {
+			return showErrorPage(model, "Could not update run. " + e.getMessage());
 		}
 	}
 
 	@RequestMapping(value = "/change-status", method = RequestMethod.POST)
 	public String changeStatus(String rid, Boolean active, Model model) {
-		try {
-			loggedRunsManager.activate(rid, active == null ? false : active);
-			return "redirect:/online-dyno";
-		} catch (Exception e) {
-			return showErrorPage(model, "Could not change status of the run", e);
-		}
+		loggedRunsManager.activate(rid, active == null ? false : active);
+		return "redirect:/online-dyno";
 	}
 
 	@RequestMapping("remove/{id}")
 	public String remove(@PathVariable String id) {
-		try {
-			loggedRunsManager.delete(id);
-		} catch (Exception e) {
-			/* ignore it*/
-		}
+		loggedRunsManager.delete(id);
 		return "redirect:/online-dyno";
 	}
 
@@ -135,7 +128,7 @@ public class RoadDynoController {
 			model.addAttribute("chartDef", chartDef);
 			model.addAttribute("auxChartDef", auxChartDef);
 		} catch (JsonProcessingException e) {
-			return showErrorPage(model, "Could not plot runs", e);
+			return showErrorPage(model, "Could not plot runs. " + e.getMessage());
 		}
 		model.addAttribute("runInfoList", loggedRunsManager.getRuns());
 		model.addAttribute("nav", "onlinedyno");
@@ -169,19 +162,8 @@ public class RoadDynoController {
 
 	private String showErrorPage(Model model, String error) {
 		LOGGER.error(error);
-		model.addAttribute(ERROR_TEXT_KEY, error);
+		model.addAttribute(RoadDynoWebApplication.ERROR_TEXT_KEY, error);
 		return "error";
 	}
 
-	private String showErrorPage(Model model, String message, Exception e) {
-		String error = message;
-		if (e == null || e.getMessage() == null) {
-			error += ": Unexpected error occurred.";
-		} else {
-			error += ": " + e.getMessage();
-		}
-		LOGGER.error(error, e);
-		model.addAttribute(ERROR_TEXT_KEY, error);
-		return "error";
-	}
 }

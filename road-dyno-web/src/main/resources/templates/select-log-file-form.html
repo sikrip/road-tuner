@@ -19,6 +19,7 @@
     </div>
     <form class="form-horizontal page-content" th:object="${runInfo}" th:action="@{/add}" method="post" enctype="multipart/form-data">
 
+        <input type="hidden"  name="${_csrf.parameterName}"   value="${_csrf.token}"/>
         <input type="hidden" th:field="*{id}"/>
 
         <div class="panel panel-info">
@@ -28,6 +29,7 @@
 
             <div class="panel-body">
                 <input type="file" required="required" name="file" accept=".msl, .vbo"/>
+                <small>Max file size is <strong th:text="${maxFileSize}"></strong></small>
             </div>
         </div>
 
