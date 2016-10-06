@@ -29,7 +29,22 @@
 
             <div class="panel-body">
                 <input type="file" required="required" name="file" accept=".msl, .vbo"/>
-                <small>Max file size is <strong th:text="${maxFileSize}"></strong></small>
+                <hr/>
+                <p>Max file size is <strong th:text="${maxFileSize}"></strong></p>
+                <p>For the time being, supported log formats are:</p>
+                <ul>
+                    <li>Megasquirt (.msl) logs</li>
+                    <li>VBox (.vbo) logs (drfitbox .dbn files can be converted to .vbo files with Driftbox tools [open and save as .vbo])</li>
+                </ul>
+                <p>For GPS logs no special settings are required, just make sure you are logging with at least 5hz refresh rate.</p>
+                <p>For ECU logs make sure that the following data are logged:</p>
+                <ul>
+                    <li><strong>Time</strong></li>
+                    <li>
+                        <strong>RPM</strong>
+                    </li>
+                    <li><strong>TPS</strong></li>
+                </ul>
             </div>
         </div>
 
