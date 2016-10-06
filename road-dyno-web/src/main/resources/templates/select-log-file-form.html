@@ -10,7 +10,6 @@
 
 <h1 th:replace="fragments/fragments :: header"></h1>
 
-
 <div class="container">
     <div class="page-header">
         <h1>Online dyno
@@ -30,19 +29,17 @@
             <div class="panel-body">
                 <input type="file" required="required" name="file" accept=".msl, .vbo"/>
                 <hr/>
-                <p>Max file size is <strong th:text="${maxFileSize}"></strong></p>
+                <p>Max file size is <strong th:text="${maxFileSize}"></strong>.</p>
                 <p>For the time being, supported log formats are:</p>
                 <ul>
-                    <li>Megasquirt (.msl) logs</li>
-                    <li>VBox (.vbo) logs (drfitbox .dbn files can be converted to .vbo files with Driftbox tools [open and save as .vbo])</li>
+                    <li>Megasquirt (<strong>.msl</strong>) logs</li>
+                    <li>VBox (<strong>.vbo</strong>) logs (drfitbox <strong>.dbn</strong> files can be converted to .vbo files with Driftbox tools [open and save as .vbo])</li>
                 </ul>
-                <p>For GPS logs no special settings are required, just make sure you are logging with at least 5hz refresh rate.</p>
-                <p>For ECU logs make sure that the following data are logged:</p>
+                <p>For <strong>GPS logs</strong> make sure you are logging with <strong>at least 5hz refresh rate</strong>.</p>
+                <p>For <strong>ECU logs</strong> make sure that the following data are logged:</p>
                 <ul>
                     <li><strong>Time</strong></li>
-                    <li>
-                        <strong>RPM</strong>
-                    </li>
+                    <li><strong>RPM</strong></li>
                     <li><strong>TPS</strong></li>
                 </ul>
             </div>
