@@ -1,4 +1,4 @@
-package sikrip.roaddyno.eculogreader;
+package sikrip.roaddyno.logreader;
 
 import static org.junit.Assert.*;
 
@@ -19,9 +19,9 @@ public class MegasquirtLogReaderTest {
 	@Test(expected = InvalidLogFileException.class)
 	public void emptyFileShouldProduceInvalidLogFormatException() throws InvalidLogFileException {
 
-		EcuLogReader reader = new MegasquirtLogReader();
+		MegasquirtLogReader reader = new MegasquirtLogReader();
 		try {
-			reader.readLog(getTestResourceUrl("/empty-file-log.msl").getPath(), 98);
+			reader.readLog(getTestResourceUrl("/empty-file-log.msl").getPath());
 		} catch (IOException e) {
 			fail("Should fail with IO exception");
 		}
@@ -31,9 +31,9 @@ public class MegasquirtLogReaderTest {
 	@Test(expected = InvalidLogFileException.class)
 	public void logWithNoEntriesShouldProduceInvalidLogFormatException() throws InvalidLogFileException {
 
-		EcuLogReader reader = new MegasquirtLogReader();
+		MegasquirtLogReader reader = new MegasquirtLogReader();
 		try {
-			reader.readLog(getTestResourceUrl("/no-values-log.msl").getPath(), 98);
+			reader.readLog(getTestResourceUrl("/no-values-log.msl").getPath());
 		} catch (IOException e) {
 			fail("Should fail with IO exception");
 		}
@@ -43,9 +43,9 @@ public class MegasquirtLogReaderTest {
 	@Test(expected = InvalidLogFileException.class)
 	public void logWithNoTimeHeaderShouldProduceInvalidLogFormatException() throws InvalidLogFileException {
 
-		EcuLogReader reader = new MegasquirtLogReader();
+		MegasquirtLogReader reader = new MegasquirtLogReader();
 		try {
-			reader.readLog(getTestResourceUrl("/no-time-header-log.msl").getPath(), 98);
+			reader.readLog(getTestResourceUrl("/no-time-header-log.msl").getPath());
 		} catch (IOException e) {
 			fail("Should fail with IO exception");
 		}
@@ -55,9 +55,9 @@ public class MegasquirtLogReaderTest {
 	@Test(expected = InvalidLogFileException.class)
 	public void logWithNoRPMHeaderShouldProduceInvalidLogFormatException() throws InvalidLogFileException {
 
-		EcuLogReader reader = new MegasquirtLogReader();
+		MegasquirtLogReader reader = new MegasquirtLogReader();
 		try {
-			reader.readLog(getTestResourceUrl("/no-rpm-header-log.msl").getPath(), 98);
+			reader.readLog(getTestResourceUrl("/no-rpm-header-log.msl").getPath());
 		} catch (IOException e) {
 			fail("Should fail with IO exception");
 		}
@@ -67,11 +67,11 @@ public class MegasquirtLogReaderTest {
 	@Test
 	public void verifyValidLogReading() throws InvalidLogFileException {
 
-		EcuLogReader reader = new MegasquirtLogReader();
+		MegasquirtLogReader reader = new MegasquirtLogReader();
 		try {
-			List<LogEntry> logEntries = reader.readLog(getTestResourceUrl("/valid-log.msl").getPath(), 98);
+			List<LogEntry> logEntries = reader.readLog(getTestResourceUrl("/valid-log.msl").getPath());
 
-			assertEquals(105, logEntries.size());
+			assertEquals(1406, logEntries.size());
 
 			LogEntry logEntry = logEntries.get(0);
 
@@ -87,9 +87,9 @@ public class MegasquirtLogReaderTest {
 			assertEquals("%", logEntry.get("TPS").getUnit());
 			assertNotNull(logEntry.get("TPS").getValue());
 
-			logEntries = reader.readLog(getTestResourceUrl("/valid-log-without-comment-lines.msl").getPath(), 98);
+			logEntries = reader.readLog(getTestResourceUrl("/valid-log-without-comment-lines.msl").getPath());
 
-			assertEquals(105, logEntries.size());
+			assertEquals(1406, logEntries.size());
 
 			logEntry = logEntries.get(0);
 

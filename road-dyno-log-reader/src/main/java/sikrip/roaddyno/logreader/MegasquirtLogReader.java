@@ -1,4 +1,4 @@
-package sikrip.roaddyno.eculogreader;
+package sikrip.roaddyno.logreader;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -19,40 +19,31 @@ import sikrip.roaddyno.model.LogValue;
 /**
  * Read log of mls format (megasquirt).
  */
-public final class MegasquirtLogReader implements EcuLogReader {
+public final class MegasquirtLogReader {
 
-	/**
-	 * RPM value that one log entry RPM cannot be lower than the previous.
-	 */
-	public static final int RPM_NOISE_THRESHOLD = 800;
-
-	@Override
-	public final List<LogEntry> readLog(String filePath, double tpsStartThreshold) throws IOException, InvalidLogFileException {
-		File logFile = new File(filePath);
+	public final List<LogEntry> readLog(String filePath) throws IOException, InvalidLogFileException {
+		final File logFile = new File(filePath);
 		try (InputStream fileStream = new FileInputStream(logFile);) {
-			return readLog(fileStream, tpsStartThreshold);
+			return readLog(fileStream);
 		} catch (IOException e) {
 			throw e;
 		}
 	}
 
-	@Override
-	public List<LogEntry> readLog(InputStream inputStream, double tpsStartThreshold) throws IOException, InvalidLogFileException {
-		BufferedReader logReader = new BufferedReader(new InputStreamReader(inputStream));
+	public List<LogEntry> readLog(InputStream inputStream) throws IOException, InvalidLogFileException {
+		final BufferedReader logReader = new BufferedReader(new InputStreamReader(inputStream));
 
-		List<String> headers = new ArrayList<>();
-		List<String> units = new ArrayList<>();
+		final List<String> headers = new ArrayList<>();
+		final List<String> units = new ArrayList<>();
+		final List<LogEntry> logEntries = new ArrayList<>();
 
 		String timeColumnKey = null;
 		String rpmColumnKey = null;
 		String tpsColumnKey = null;
-
 		String logLine;
-		List<LogEntry> logEntries = new ArrayList<>();
 		while ((logLine = logReader.readLine()) != null) {
 
-			List<String> rawValues = Arrays.asList((logLine.split("\t")));
-
+			final List<String> rawValues = Arrays.asList((logLine.split("\t")));
 			if (rawValues.size() > 1) {
 				if (headers.size() == 0) {
 					// headers line
@@ -64,49 +55,19 @@ public final class MegasquirtLogReader implements EcuLogReader {
 					if (timeColumnKey == null || rpmColumnKey == null || tpsColumnKey == null) {
 						throw new InvalidLogFileException("Invalid log file format. Cannot find Time, RPM or TPS data.");
 					}
-
 				} else if (units.size() == 0) {
 					// units line
 					units.addAll(rawValues);
 				} else {
 					// data line
-					LogEntry entry = createLogEntry(headers, units, rawValues, timeColumnKey, rpmColumnKey, tpsColumnKey);
-					if (entry.get(tpsColumnKey).getValue() > tpsStartThreshold) {
-						logEntries.add(entry);
-					}
+					logEntries.add(createLogEntry(headers, units, rawValues, timeColumnKey, rpmColumnKey, tpsColumnKey));
 				}
 			}
 		}
-
-		List<LogEntry> trimmedLogValues = trimByRPM(logEntries);
-
-		if (trimmedLogValues.size() == 0) {
+		if (logEntries.isEmpty()) {
 			throw new InvalidLogFileException("Invalid log file format. No log entries found.");
 		}
-		return trimmedLogValues;
-	}
-
-	/**
-	 * Removes any entries that RPM was abruptly dropped (usually near the end of the WOT run).
-	 *
-	 * @param logEntries
-	 * 		the initial log entries
-	 * @return the trimmed log entries
-	 */
-	private List<LogEntry> trimByRPM(List<LogEntry> logEntries) {
-
-		int maxIdx = logEntries.size();
-
-		for (int i = 1; i < logEntries.size(); i++) {
-			if (logEntries.get(i).getVelocity().getValue() - logEntries.get(i - 1).getVelocity().getValue() < -RPM_NOISE_THRESHOLD) {
-				maxIdx = i - 1;
-				break;
-			}
-		}
-		if (maxIdx == logEntries.size()) {
-			return logEntries;
-		}
-		return logEntries.subList(0, maxIdx);
+		return logEntries;
 	}
 
 	private static LogEntry createLogEntry(List<String> headers, List<String> units, List<String> values,

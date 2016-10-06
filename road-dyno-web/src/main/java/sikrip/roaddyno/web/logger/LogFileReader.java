@@ -2,12 +2,10 @@ package sikrip.roaddyno.web.logger;
 
 import java.io.IOException;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.web.multipart.MultipartFile;
 
-import sikrip.roaddyno.eculogreader.MegasquirtLogReader;
-import sikrip.roaddyno.gpslogreader.VBOLogReader;
+import sikrip.roaddyno.logreader.MegasquirtLogReader;
+import sikrip.roaddyno.logreader.VBOLogReader;
 import sikrip.roaddyno.model.InvalidLogFileException;
 import sikrip.roaddyno.model.LogEntry;
 import sikrip.roaddyno.web.model.LogFileData;
@@ -16,10 +14,6 @@ import sikrip.roaddyno.web.model.LogFileData;
  * Responsible to read a log file and create the collection of {@link LogEntry} raw data.
  */
 public final class LogFileReader {
-
-	private final static Logger LOGGER = LoggerFactory.getLogger(LogFileReader.class);
-
-	private static final int TPS_START_THRESHOLD = 95;
 
 	private LogFileReader() {
 		// no instantiation
@@ -31,7 +25,7 @@ public final class LogFileReader {
 				final String originalFileName = file.getOriginalFilename().toLowerCase();
 				if (originalFileName.endsWith("msl")) {
 					// megasquirt file
-					return new LogFileData(true, new MegasquirtLogReader().readLog(file.getInputStream(), TPS_START_THRESHOLD));
+					return new LogFileData(true, new MegasquirtLogReader().readLog(file.getInputStream()));
 				} else if (originalFileName.endsWith("vbo")) {
 					// vbo file
 					return new LogFileData(false, new VBOLogReader().readLog(file.getInputStream()));

@@ -45,19 +45,20 @@ public final class LogFileData {
 	 * @return a list of possible WOT runs
 	 */
 	private List<WOTRunBounds> findAccelerationRuns(boolean rpmBased, List<LogEntry> logEntries) {
-		final List<WOTRunBounds> WOTRunBoundses = new ArrayList<>();
+		final List<WOTRunBounds> wotRuns = new ArrayList<>();
+		final List<AccelerationBounds> accelerations;
 		if (rpmBased) {
-			// FIXME for rpm based we do no acceleration detection for now
-			WOTRunBoundses.add(new WOTRunBounds(0, logEntries.size(), logEntries.get(0), logEntries.get(logEntries.size() - 1)));
+			accelerations = DynoRunDetector.getAccelerationBoundsByRPM(logEntries);
 		} else {
-			for (AccelerationBounds accelerationBounds : DynoRunDetector.getAccelerationBoundsBySpeed(logEntries)) {
-				final int start = accelerationBounds.getStart();
-				final int end = accelerationBounds.getEnd();
-				WOTRunBoundses.add(new WOTRunBounds(start, end, logEntries.get(start), logEntries.get(end)));
-			}
+			accelerations = DynoRunDetector.getAccelerationBoundsBySpeed(logEntries);
+		}
+		for (AccelerationBounds accelerationBounds : accelerations) {
+			final int start = accelerationBounds.getStart();
+			final int end = accelerationBounds.getEnd();
+			wotRuns.add(new WOTRunBounds(start, end, logEntries.get(start), logEntries.get(end)));
 		}
 		// sort by speed diff descending
-		return WOTRunBoundses.stream().sorted((o1, o2) -> {
+		return wotRuns.stream().sorted((o1, o2) -> {
 			if (o1.getVelocityDiff() == o2.getVelocityDiff()) {
 				return 0;
 			} else if (o2.getVelocityDiff() < o1.getVelocityDiff()) {

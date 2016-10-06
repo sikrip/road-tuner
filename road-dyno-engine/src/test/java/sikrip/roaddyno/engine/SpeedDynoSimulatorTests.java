@@ -4,9 +4,8 @@ import java.util.List;
 
 import org.junit.Test;
 
-import sikrip.roaddyno.gpslogreader.GPSLogReader;
-import sikrip.roaddyno.gpslogreader.VBOLogReader;
 import sikrip.roaddyno.model.LogEntry;
+import sikrip.roaddyno.logreader.VBOLogReader;
 
 public class SpeedDynoSimulatorTests {
 
@@ -20,7 +19,7 @@ public class SpeedDynoSimulatorTests {
 		double fa = 1.7;
 		double cd = 0.33;
 
-		GPSLogReader logReader = new VBOLogReader();
+		VBOLogReader logReader = new VBOLogReader();
 
 		List<LogEntry> logEntries = logReader.readLog(DynoRunDetectorTest.getTestResourceUrl("/sample-vbo-1.vbo").getPath());
 

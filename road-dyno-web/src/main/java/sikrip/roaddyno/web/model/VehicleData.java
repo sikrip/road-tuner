@@ -4,13 +4,13 @@ import sikrip.roaddyno.engine.RunInfo;
 
 public class VehicleData {
 
-    private Double finalGearRatio;
-    private Double gearRatio;
-    private Double tyreDiameter;
-    private Double carWeight;
-    private Double occupantsWeight;
-    private Double frontalArea;
-    private Double coefficientOfDrag;
+    private Double finalGearRatio = 3.944;
+    private Double gearRatio = 1.310;
+    private Double tyreDiameter = 632.0;
+    private Double carWeight = 1380.0;
+    private Double occupantsWeight = 90.0;
+    private Double frontalArea = 2.1;
+    private Double coefficientOfDrag = 0.29;
 
     public void updateFromRunInfo(RunInfo runInfo){
         setFinalGearRatio(runInfo.getFinalGearRatio());

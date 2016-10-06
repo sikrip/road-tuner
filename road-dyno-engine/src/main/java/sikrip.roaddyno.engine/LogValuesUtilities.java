@@ -21,10 +21,7 @@ import sikrip.roaddyno.model.LogEntry;
  */
 final class LogValuesUtilities {
 
-	/**
-	 * Maximum Number of deceleration log entries in order to decide that deceleration is occurring.
-	 */
-	private static final int DECELERATION_THRESHOLD = 3;
+	private LogValuesUtilities(){}
 
 	/**
 	 * Smooths the velocity values of the given log entries using the Local Regression Algorithm (Loess, Lowess).
@@ -52,37 +49,31 @@ final class LogValuesUtilities {
 		return smoothedEntries;
 	}
 
-	//TODO review this method, currently not used because it does not work well
-	static AccelerationBounds getAccelerationBoundsByRPM(List<LogEntry> rawEntries) {
+	static AccelerationBounds getAccelerationBoundsByRPM(int tpsWotThreshold, List<LogEntry> rawEntries, int offset) {
 
 		final int logSize = rawEntries.size();
 
-		RawValuesExtractor rawValuesExtractor = new RawValuesExtractor(rawEntries).invoke();
-		double[] timeValues = rawValuesExtractor.getTimeValues();
-		double[] rawRPMValues = rawValuesExtractor.getRawVelocityValues();
+		int start;
 
-		double[] rpmDS = getDSYValues(timeValues, rawRPMValues, 1);
+		for (start = offset; start < rawEntries.size(); start++) {
+			if (rawEntries.get(start).get("TPS").getValue() >= tpsWotThreshold) {
+				break;
+			}
+		}
 
-		int start = findIndexOfFirstGreaterThanMean(rpmDS, 0);
-
-		int end = findIndexOfMin(rpmDS, start);
-
-		List<LogEntry> smoothedEntries = smoothVelocity(rawEntries.subList(0, end));
-
-		rawValuesExtractor = new RawValuesExtractor(smoothedEntries).invoke();
-		timeValues = rawValuesExtractor.getTimeValues();
-		rawRPMValues = rawValuesExtractor.getRawVelocityValues();
-
-		rpmDS = getDSYValues(timeValues, rawRPMValues, 1);
-
-		start = findIndexOfFirstGreaterThanMean(rpmDS, 0);
-
-		start = Math.min(start, logSize);
-		end = Math.min(end, logSize);
-		return new AccelerationBounds(start, end);
+		if (start < logSize - 1) {
+			int end;
+			for (end = start + 1; end < rawEntries.size(); end++) {
+				if (rawEntries.get(end).get("TPS").getValue() < tpsWotThreshold) {
+					break;
+				}
+			}
+			return new AccelerationBounds(start, Math.min(end, logSize-1));
+		}
+		return null;
 	}
 
-	static AccelerationBounds getAccelerationBoundsBySpeed(List<LogEntry> rawEntries, int offset) {
+	static AccelerationBounds getAccelerationBoundsBySpeed(int decelerationCountThreshold, List<LogEntry> rawEntries, int offset) {
 
 		final int logSize = rawEntries.size();
 
@@ -104,7 +95,7 @@ final class LogValuesUtilities {
 
 		// The nth-negative value(after the start) of the 1st derivative indicates deceleration, so this is the end of the run
 		// FIXME consider adding 1 in the end index here (the end should be non inclusive)
-		int end = findNthNegativeIndex(speedDS, start, DECELERATION_THRESHOLD);
+		int end = findNthNegativeIndex(speedDS, start, decelerationCountThreshold);
 
 		start = Math.min(start, logSize);
 		end = Math.min(end, logSize);
@@ -239,37 +230,6 @@ final class LogValuesUtilities {
 			// no deceleration
 			return values.length - 1;
 		}
-	}
-
-	private static int findIndexOfMin(double[] values, int idxFrom) {
-		double min = values[idxFrom];
-		int minIdx = idxFrom;
-		for (int i = idxFrom + 1; i < values.length; i++) {
-			if (values[i] < min) {
-				min = values[i];
-				minIdx = i;
-			}
-		}
-		return minIdx;
-	}
-
-	private static double[] smooth(double[] values) {
-		final int SAMPLES = 5;
-		final double[] smoothed = new double[values.length];
-
-		double sum = 0;
-		for (int i = 0; i < values.length; i++) {
-			if (i > 0 && i % SAMPLES == 0) {
-				double value = sum / SAMPLES;
-				for (int j = i - SAMPLES; j < i; j++) {
-					smoothed[j] = value;
-				}
-				sum = 0;
-			} else {
-				sum += values[i];
-			}
-		}
-		return smoothed;
 	}
 
 	private static class RawValuesExtractor {

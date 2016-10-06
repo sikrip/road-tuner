@@ -12,14 +12,12 @@ import javax.swing.*;
 import org.jfree.chart.ChartPanel;
 
 import sikrip.roaddyno.engine.DynoSimulator;
-import sikrip.roaddyno.eculogreader.EcuLogReader;
-import sikrip.roaddyno.eculogreader.MegasquirtLogReader;
+import sikrip.roaddyno.logreader.MegasquirtLogReader;
 import sikrip.roaddyno.engine.DynoSimulationResult;
 import sikrip.roaddyno.model.LogEntry;
 
 final class RoadDynoGui extends JFrame implements ActionListener {
 
-	static final int TPS_START_THRESHOLD = 96;
 	static final int MAX_PLOTS = 12;
 
 	private final JPanel mainPanel = new JPanel(new BorderLayout());
@@ -89,8 +87,8 @@ final class RoadDynoGui extends JFrame implements ActionListener {
 	private void addRun() {
 		if (dynoRunAddDialog.showDynoDialog()) {
 			try {
-				EcuLogReader logReader = new MegasquirtLogReader();
-				List<LogEntry> logEntries = logReader.readLog(dynoRunAddDialog.getRunFilePath(), TPS_START_THRESHOLD);
+				MegasquirtLogReader logReader = new MegasquirtLogReader();
+				List<LogEntry> logEntries = logReader.readLog(dynoRunAddDialog.getRunFilePath());
 
 				DynoSimulationResult result = DynoSimulator.runByRPM(
 						logEntries,

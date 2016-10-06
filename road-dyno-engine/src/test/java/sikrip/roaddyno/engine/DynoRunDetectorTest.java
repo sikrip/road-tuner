@@ -1,18 +1,14 @@
 package sikrip.roaddyno.engine;
 
 import static junit.framework.Assert.assertEquals;
-import static junit.framework.TestCase.assertTrue;
 
 import java.net.URL;
 import java.util.List;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
-import sikrip.roaddyno.eculogreader.EcuLogReader;
-import sikrip.roaddyno.eculogreader.MegasquirtLogReader;
-import sikrip.roaddyno.gpslogreader.GPSLogReader;
-import sikrip.roaddyno.gpslogreader.VBOLogReader;
+import sikrip.roaddyno.logreader.MegasquirtLogReader;
+import sikrip.roaddyno.logreader.VBOLogReader;
 import sikrip.roaddyno.model.LogEntry;
 
 /**
@@ -21,29 +17,21 @@ import sikrip.roaddyno.model.LogEntry;
 public class DynoRunDetectorTest {
 
 	@Test
-	@Ignore
 	public void verifySampleMSLFiles() throws Exception {
 
-		EcuLogReader logReader = new MegasquirtLogReader();
+		MegasquirtLogReader logReader = new MegasquirtLogReader();
 
-		List<LogEntry> logEntries = logReader.readLog(getTestResourceUrl("/sample-dyno-run.msl").getPath(), 0);
-		AccelerationBounds accelerationBounds = DynoRunDetector.getAccelerationBoundsByRPM(logEntries).get(0);
+		List<LogEntry> logEntries = logReader.readLog(getTestResourceUrl("/sample-dyno-run.msl").getPath());
+		List<AccelerationBounds> accelerationBounds = DynoRunDetector.getAccelerationBoundsByRPM(logEntries);
 
-		System.out.println("sample-dyno-run.msl " + accelerationBounds);
-		assertTrue(accelerationBounds.getStart() > 470);
-		assertTrue(accelerationBounds.getStart() < 615);
-
-		logEntries = logReader.readLog(getTestResourceUrl("/sample-dyno-run-1.msl").getPath(), 0);
-		accelerationBounds = DynoRunDetector.getAccelerationBoundsByRPM(logEntries).get(0);
-
-		System.out.println("sample-dyno-run-1.msl " + accelerationBounds);
-		assertTrue(accelerationBounds.getStart() > 680);
-		assertTrue(accelerationBounds.getStart() < 800);
+		assertEquals(1, accelerationBounds.size());
+		assertEquals(464, accelerationBounds.get(0).getStart());
+		assertEquals(602, accelerationBounds.get(0).getEnd());
 	}
 
 	@Test
 	public void verifySampleVBOFile_SingleAcceleration() throws Exception {
-		GPSLogReader logReader = new VBOLogReader();
+		VBOLogReader logReader = new VBOLogReader();
 
 		List<LogEntry> logEntries = logReader.readLog(getTestResourceUrl("/sample-vbo.vbo").getPath());
 		AccelerationBounds accelerationBounds = DynoRunDetector.getAccelerationBoundsBySpeed(logEntries).get(0);
@@ -57,7 +45,7 @@ public class DynoRunDetectorTest {
 
 	@Test
 	public void verifySampleVBOFile_MultipleAccelerations() throws Exception {
-		GPSLogReader logReader = new VBOLogReader();
+		VBOLogReader logReader = new VBOLogReader();
 
 		List<LogEntry> logEntries = logReader.readLog(getTestResourceUrl("/sample-vbo-1.vbo").getPath());
 
@@ -71,7 +59,7 @@ public class DynoRunDetectorTest {
 
 	@Test
 	public void verifyVBOWithNoDecelAtTheEnd() throws Exception {
-		GPSLogReader logReader = new VBOLogReader();
+		VBOLogReader logReader = new VBOLogReader();
 
 		List<LogEntry> logEntries = logReader.readLog(getTestResourceUrl("/vbo-no-deceleration-at-the-end.vbo").getPath());
 

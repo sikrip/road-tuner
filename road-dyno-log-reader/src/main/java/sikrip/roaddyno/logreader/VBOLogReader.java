@@ -1,4 +1,4 @@
-package sikrip.roaddyno.gpslogreader;
+package sikrip.roaddyno.logreader;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -16,7 +16,7 @@ import sikrip.roaddyno.model.InvalidLogFileException;
 import sikrip.roaddyno.model.LogEntry;
 import sikrip.roaddyno.model.LogValue;
 
-public class VBOLogReader implements GPSLogReader {
+public class VBOLogReader {
 
 	private static final String TIME_KEY = "time";
 	private static final String VELOCITY_KEY = "velocity kmh";    // FIXME this may be different btw vbo files

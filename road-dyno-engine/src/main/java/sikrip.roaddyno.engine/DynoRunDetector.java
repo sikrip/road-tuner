@@ -13,17 +13,48 @@ public final class DynoRunDetector {
 	/**
 	 * Require at least this amount of speed diff to consider a WOT acceleration valid.
 	 */
-	private static final double VELOCITY_DIFF_THRESHOLD = 10; // km/h
+	private static final double SPEED_WOT_DIFF_THRESHOLD = 40; // km/h
 
-	private DynoRunDetector() {
-	}
+	/**
+	 * Require at least this amount of RPM diff to consider a WOT acceleration valid.
+	 */
+	private static final double RPM_WOT_DIFF_THRESHOLD = 2000;
+
+	/**
+	 * Maximum Number of deceleration log entries in order to decide that deceleration is occurring.
+	 */
+	private static final int DECEL_COUNT_THRESHOLD = 3;
+
+	/**
+	 * Consider WOT is happening when TPS is at this value.
+	 */
+	private static final int TPS_WOT_THRESHOLD = 96;
+
+	private DynoRunDetector() {}
 
 	public static List<AccelerationBounds> getAccelerationBoundsByRPM(List<LogEntry> logEntries) {
-		//TODO find all acceleration runs (currently only the first is found)
-		AccelerationBounds firstAccelerationBounds = LogValuesUtilities.getAccelerationBoundsByRPM(logEntries);
-		List<AccelerationBounds> accelerationBounds = new ArrayList<>();
-		accelerationBounds.add(firstAccelerationBounds);
-		return accelerationBounds;
+		int offset = 0;
+		final List<AccelerationBounds> accelerationBoundsList = new ArrayList<>();
+		while (offset < logEntries.size() - 2) {
+
+			AccelerationBounds accelerationBounds = LogValuesUtilities.getAccelerationBoundsByRPM(TPS_WOT_THRESHOLD, logEntries, offset);
+			if (accelerationBounds == null) {
+				// no more accelerations
+				break;
+			}
+
+			if (accelerationBounds.getEnd() < offset) {
+				throw new IllegalStateException("Error detecting WOT runs on log file.");
+			}
+
+			final double startRPM = logEntries.get(accelerationBounds.getStart()).getVelocity().getValue();
+			final double endRPM = logEntries.get(accelerationBounds.getEnd()).getVelocity().getValue();
+			if (endRPM - startRPM > RPM_WOT_DIFF_THRESHOLD) {
+				accelerationBoundsList.add(accelerationBounds);
+			}
+			offset = accelerationBounds.getEnd();
+		}
+		return accelerationBoundsList;
 	}
 
 	public static List<AccelerationBounds> getAccelerationBoundsBySpeed(List<LogEntry> logEntries) {
@@ -31,7 +62,7 @@ public final class DynoRunDetector {
 		final List<AccelerationBounds> accelerationBoundsList = new ArrayList<>();
 		while (offset < logEntries.size() - 2) {
 
-			AccelerationBounds accelerationBounds = LogValuesUtilities.getAccelerationBoundsBySpeed(logEntries, offset);
+			AccelerationBounds accelerationBounds = LogValuesUtilities.getAccelerationBoundsBySpeed(DECEL_COUNT_THRESHOLD, logEntries, offset);
 			if (accelerationBounds == null) {
 				// no more accelerations
 				break;
@@ -43,12 +74,11 @@ public final class DynoRunDetector {
 
 			final double startVelocity = logEntries.get(accelerationBounds.getStart()).getVelocity().getValue();
 			final double endVelocity = logEntries.get(accelerationBounds.getEnd()).getVelocity().getValue();
-			if (endVelocity - startVelocity > VELOCITY_DIFF_THRESHOLD) {
+			if (endVelocity - startVelocity > SPEED_WOT_DIFF_THRESHOLD) {
 				accelerationBoundsList.add(accelerationBounds);
 			}
 			offset = accelerationBounds.getEnd();
 		}
 		return accelerationBoundsList;
 	}
-
 }
