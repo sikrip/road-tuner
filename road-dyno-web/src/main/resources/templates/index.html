@@ -12,12 +12,28 @@
 
 <div class="container">
     <div class="page-header">
-        <h1>Road dyno <small>For car enthusiasts like you!</small></h1>
+        <h1>Road dyno
+            <small>For car enthusiasts like you!</small>
+        </h1>
     </div>
     <div class="jumbotron">
         <h1>Welcome to road dyno!</h1>
-        <p>The online dyno is here! Wondering how much power and torque your car makes...?</p>
+        <p>A web app that can turn your data logs into real dyno graphs!</p>
+        <p>If you have a data logger, road dyno will let you to truly evaluate your mods!</p>
+
         <p><a class="btn btn-primary btn-lg" th:href="@{/add}" role="button">... load your WOT log now!</a></p>
+
+        <hr/>
+
+        <h4>Key features:</h4>
+        <ul>
+            <li>Real engine dynamometer, torque/hp plots for the entire RPM band</li>
+            <li>No estimates like 1/4 mi or 0-60 HP calculators, road dyno uses real measurements</li>
+            <li>Easily dyno any vehicle including 2WD and AWD vehicles</li>
+            <li>Automatically finds multiple runs in a single data log</li>
+            <li>Compare multiple graphs and save your plots to multiple formats</li>
+        </ul>
+
     </div>
     <div th:include="fragments/fragments :: footer"></div>
 </div>
