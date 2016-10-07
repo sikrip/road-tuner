@@ -198,6 +198,10 @@ public class LoggedRunsEntry implements RunInfo, Comparable<LoggedRunsEntry> {
 		return logFileData.getLogEntries().subList(selectedAcceleration.getStart(), selectedAcceleration.getEnd());
 	}
 
+	public boolean hasWOTRuns(){
+		return !logFileData.getWOTRunBoundses().isEmpty();
+	}
+
 	public void setLogData(LogFileData logFileData) {
 		this.logFileData = logFileData;
 	}

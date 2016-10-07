@@ -40,13 +40,17 @@ final class LoggedRunsManager {
 	void add(LoggedRunsEntry loggedRun, MultipartFile file) throws InvalidLogFileException {
 		final LogFileData logFileData = LogFileReader.readLog(file);
 
-		loggedRun.setIndex(loggedRuns.size());
-		loggedRun.setSelectedAccelerationIdx(0);
-		loggedRun.setLogData(logFileData);
-		loggedRun.setName(file.getOriginalFilename());
-		loggedRun.updateFrom(vehicleData);
+		if(logFileData.getWOTRunBoundses().isEmpty()){
+			throw new InvalidLogFileException("No WOT runs detected in the loaded file.");
+		}else {
+			loggedRun.setIndex(loggedRuns.size());
+			loggedRun.setSelectedAccelerationIdx(0);
+			loggedRun.setLogData(logFileData);
+			loggedRun.setName(file.getOriginalFilename());
+			loggedRun.updateFrom(vehicleData);
 
-		loggedRuns.add(loggedRun);
+			loggedRuns.add(loggedRun);
+		}
 	}
 
 	void update(LoggedRunsEntry updatedEntry) throws SimulationException {
@@ -55,6 +59,8 @@ final class LoggedRunsManager {
 
 		if (existingEntry == null) {
 			throw new RuntimeException(String.format("Run with id %s not found", updatedEntry.getId()));
+		} else if (!existingEntry.hasWOTRuns()) {
+			throw new SimulationException("No WOT runs exist in the loaded file.");
 		} else {
 			existingEntry.setFinalGearRatio(updatedEntry.getFinalGearRatio());
 			existingEntry.setGearRatio(updatedEntry.getGearRatio());
