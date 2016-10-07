@@ -12,8 +12,8 @@
         </div>
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
             <ul class="nav navbar-nav navbar-right">
-                <li th:class="${nav=='onlinedyno'}? 'active' : ''">
-                    <a th:href="@{/online-dyno}">Online dyno <span class="sr-only">(current)</span></a>
+                <li th:class="${nav=='dyno-plots'}? 'active' : ''">
+                    <a th:href="@{/dyno-plots}">Dyno plots<span class="sr-only">(current)</span></a>
                 </li>
 
                 <!--<li th:class="${nav=='tsdyno'}? 'active' : ''">
@@ -27,7 +27,7 @@
                     <a th:href="@{/contact}">Contact <span class="sr-only">(current)</span></a>
                 </li>
             </ul>
-            <div style="color: #74AFAD; margin-top: 30px;"> &#123;beta!&#125; </div>
+            <div style="color: #74AFAD; margin-top: 30px;" title="Road Dyno is still in beta version!"> &#123;beta!&#125; </div>
         </div>
     </div>
 </nav>

@@ -45,14 +45,14 @@ public class RoadDynoController {
 		if (loggedRunsManager.isEmpty()) {
 			return "index";
 		} else {
-			return "redirect:/online-dyno";
+			return "redirect:/dyno-plots";
 		}
 	}
 
 	@RequestMapping("/add")
 	public String add(Model model) {
 		if (loggedRunsManager.canAddRun()) {
-			model.addAttribute("nav", "onlinedyno");
+			model.addAttribute("nav", "dyno-plots");
 			model.addAttribute("runInfo", new LoggedRunsEntry());
 			model.addAttribute("maxFileSize", maxFileSize);
 			return "select-log-file-form";
@@ -69,7 +69,7 @@ public class RoadDynoController {
 
 				// show update run form
 				model.addAttribute("runInfo", runInfo);
-				model.addAttribute("nav", "onlinedyno");
+				model.addAttribute("nav", "dyno-plots");
 
 				return "update-run-form";
 			} catch (InvalidLogFileException e) {
@@ -85,7 +85,7 @@ public class RoadDynoController {
 		LoggedRunsEntry loggedRunsEntry = loggedRunsManager.get(id);
 		if (loggedRunsEntry != null) {
 			model.addAttribute("runInfo", loggedRunsEntry);
-			model.addAttribute("nav", "onlinedyno");
+			model.addAttribute("nav", "dyno-plots");
 			return "update-run-form";
 		}
 		return showErrorPage(model, String.format("Could not edit run with id %s. Run not found.", id));
@@ -95,7 +95,7 @@ public class RoadDynoController {
 	public String edit(LoggedRunsEntry updatedRun, Model model) {
 		try {
 			loggedRunsManager.update(updatedRun);
-			return "redirect:/online-dyno";
+			return "redirect:/dyno-plots";
 		} catch (SimulationException e) {
 			return showErrorPage(model, "Could not update run. " + e.getMessage());
 		}
@@ -104,22 +104,22 @@ public class RoadDynoController {
 	@RequestMapping(value = "/change-status", method = RequestMethod.POST)
 	public String changeStatus(String rid, Boolean active, Model model) {
 		loggedRunsManager.activate(rid, active == null ? false : active);
-		return "redirect:/online-dyno";
+		return "redirect:/dyno-plots";
 	}
 
 	@RequestMapping("remove/{id}")
 	public String remove(@PathVariable String id) {
 		loggedRunsManager.delete(id);
-		return "redirect:/online-dyno";
+		return "redirect:/dyno-plots";
 	}
 
-	@RequestMapping("/online-dyno")
-	public String onlineDyno(Model model) {
+	@RequestMapping("/dyno-plots")
+	public String dynoPlots(Model model) {
 
 		loggedRunsManager.clearRunsWithoutVehicleData();
 
 		if (loggedRunsManager.isEmpty()) {
-			return "redirect:/clear-all";
+			return "redirect:/dyno-plots-empty";
 		}
 		try {
 			final List<LoggedRunsEntry> runsToPlot = loggedRunsManager.getRunsToPlot();
@@ -131,15 +131,15 @@ public class RoadDynoController {
 			return showErrorPage(model, "Could not plot runs. " + e.getMessage());
 		}
 		model.addAttribute("runInfoList", loggedRunsManager.getRuns());
-		model.addAttribute("nav", "onlinedyno");
-		return "online-dyno-plot";
+		model.addAttribute("nav", "dyno-plots");
+		return "dyno-plots";
 	}
 
-	@RequestMapping("/clear-all")
+	@RequestMapping("/dyno-plots-empty")
 	public String clearAll(Model model) {
 		loggedRunsManager.clear();
-		model.addAttribute("nav", "onlinedyno");
-		return "online-dyno-empty";
+		model.addAttribute("nav", "dyno-plots");
+		return "dyno-plots-empty";
 	}
 
 	@RequestMapping("/help")
