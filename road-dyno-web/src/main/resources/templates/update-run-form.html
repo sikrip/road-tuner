@@ -29,9 +29,9 @@
 
             <div class="panel-body">
                 <div class="form-group">
-                    <label class="col-sm-2 control-label" for="selected-file">Selected file</label>
+                    <label class="col-sm-2 control-label" for="runName">Run Name</label>
                     <div class="col-sm-2 control-label">
-                        <input type="text" disabled="disabled" id="selected-file" name="ignored" th:value="${runInfo.name}"/>
+                        <input type="text" id="runName" required="required" th:field="*{runName}"/>
                     </div>
 
                     <label class="col-sm-2 control-label" for="run-list">Select a WOT run</label>

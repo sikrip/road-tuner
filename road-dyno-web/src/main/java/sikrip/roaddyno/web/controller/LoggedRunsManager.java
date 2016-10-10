@@ -46,7 +46,7 @@ final class LoggedRunsManager {
 			loggedRun.setIndex(loggedRuns.size());
 			loggedRun.setSelectedAccelerationIdx(0);
 			loggedRun.setLogData(logFileData);
-			loggedRun.setName(file.getOriginalFilename());
+			loggedRun.setRunName(file.getOriginalFilename());
 			loggedRun.updateFrom(vehicleData);
 
 			loggedRuns.add(loggedRun);
@@ -62,6 +62,7 @@ final class LoggedRunsManager {
 		} else if (!existingEntry.hasWOTRuns()) {
 			throw new SimulationException("No WOT runs exist in the loaded file.");
 		} else {
+			existingEntry.setRunName(updatedEntry.getRunName());
 			existingEntry.setFinalGearRatio(updatedEntry.getFinalGearRatio());
 			existingEntry.setGearRatio(updatedEntry.getGearRatio());
 			existingEntry.setTyreDiameter(updatedEntry.getTyreDiameter());

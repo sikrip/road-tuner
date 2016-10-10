@@ -26,7 +26,7 @@ public class LoggedRunsEntry implements RunInfo, Comparable<LoggedRunsEntry> {
 	/**
 	 * The name of the run.
 	 */
-	private String name;
+	private String runName;
 
 	/**
 	 * The color of the run.
@@ -66,8 +66,12 @@ public class LoggedRunsEntry implements RunInfo, Comparable<LoggedRunsEntry> {
 		this.index = index;
 	}
 
-	public void setName(String name) {
-		this.name = name;
+	public void setRunName(String runName) {
+		this.runName = runName;
+	}
+
+	public String getRunName() {
+		return runName;
 	}
 
 	public void setFinalGearRatio(Double finalGearRatio) {
@@ -132,7 +136,7 @@ public class LoggedRunsEntry implements RunInfo, Comparable<LoggedRunsEntry> {
 
 	@Override
 	public String getName() {
-		return name;
+		return getRunName();
 	}
 
 	@Override
