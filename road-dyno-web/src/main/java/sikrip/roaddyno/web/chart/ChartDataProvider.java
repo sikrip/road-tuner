@@ -32,9 +32,7 @@ public final class ChartDataProvider {
 		root.put("type", "xy");
 		root.put("startDuration", 1);
 
-		Map<String, Object> exportSettings = new HashMap<>();
-		exportSettings.put("enabled", true);
-		root.put("export", exportSettings);
+		createExportDefinition(runs);
 
 		root.put("trendLines", new ArrayList<>());
 
@@ -54,6 +52,59 @@ public final class ChartDataProvider {
 		createDataDefinition(runs);
 
 		return root;
+	}
+
+	private void createExportDefinition(List<LoggedRunsEntry> runs) {
+
+		final StringBuilder graphNameBuilder = new StringBuilder();
+		for (int i = 0; i < runs.size(); i++) {
+			graphNameBuilder.append(runs.get(i).getName());
+			if (i < runs.size() - 1) {
+				graphNameBuilder.append("-VS-");
+			}
+		}
+		final String graphName = graphNameBuilder.toString();
+
+		final List<Map<String, Object>> downloadOptions = new ArrayList<>();
+
+		// PNG
+		Map<String, Object> menuSettings = new HashMap<>();
+		menuSettings.put("format", "PNG");
+		menuSettings.put("label", "Save as PNG");
+		menuSettings.put("title", "Export dyno plots to PNG");
+		menuSettings.put("fileName", graphName);
+		downloadOptions.add(menuSettings);
+
+		// JPG
+		menuSettings = new HashMap<>();
+		menuSettings.put("format", "JPG");
+		menuSettings.put("label", "Save as JPG");
+		menuSettings.put("title", "Export dyno plots to JPG");
+		menuSettings.put("fileName", graphName);
+		downloadOptions.add(menuSettings);
+
+		// PDF
+		menuSettings = new HashMap<>();
+		menuSettings.put("format", "PDF");
+		menuSettings.put("label", "Save as PDF");
+		menuSettings.put("title", "Export dyno plots to PDF");
+		menuSettings.put("fileName", graphName);
+		downloadOptions.add(menuSettings);
+
+		final Map<String, Object> firstLevelMenu = new HashMap<>();
+
+		firstLevelMenu.put("class", "export-main");
+
+		firstLevelMenu.put("menu", downloadOptions);
+
+		final List<Object> firstLeventMenus = new ArrayList<>();
+		firstLeventMenus.add(firstLevelMenu);
+
+		final Map<String, Object> rootMenu = new HashMap<>();
+		rootMenu.put("enabled", true);
+		rootMenu.put("menu", firstLeventMenus);
+
+		root.put("export", rootMenu);
 	}
 
 	public Map<String, Object> createAuxiliaryChartDefinition(List<LoggedRunsEntry> runs, String field) {
@@ -148,8 +199,8 @@ public final class ChartDataProvider {
 				if (simulationEntry != null) {
 					String power = df.format(simulationEntry.getPower());
 					String torque = df.format(simulationEntry.getTorque());
-					dataEntry.put(POWER_FIELD  + iRun, power);
-					dataEntry.put(TORQUE_FIELD  + iRun, torque);
+					dataEntry.put(POWER_FIELD + iRun, power);
+					dataEntry.put(TORQUE_FIELD + iRun, torque);
 				}
 
 			}
@@ -200,7 +251,7 @@ public final class ChartDataProvider {
 			for (int iRun = 0; iRun < runs.size(); iRun++) {
 				LogValue<?> logValue = runs.get(iRun).getResult().getLogEntryAt(rpm, field);
 				if (logValue != null) {
-					dataEntry.put(field  + iRun, df.format(logValue.getValue()));
+					dataEntry.put(field + iRun, df.format(logValue.getValue()));
 				}
 			}
 			dataProvider.add(dataEntry);
@@ -211,7 +262,7 @@ public final class ChartDataProvider {
 	private List<Double> getRpmValuesUnion(List<LoggedRunsEntry> runs) {
 		List<Double> rpmValues = new ArrayList<>();
 		for (LoggedRunsEntry run : runs) {
-			for (int i=0; i< run.getResult().getEntriesSize(); i++) {
+			for (int i = 0; i < run.getResult().getEntriesSize(); i++) {
 				rpmValues.add(run.getResult().getSmoothedRpmAt(i));
 			}
 		}
