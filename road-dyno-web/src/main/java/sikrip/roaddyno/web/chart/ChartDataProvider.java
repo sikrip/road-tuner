@@ -34,15 +34,16 @@ public final class ChartDataProvider {
 
 		createExportDefinition(runs);
 
+		createMaxPowerAndTorqueLabels(runs);
+
 		root.put("trendLines", new ArrayList<>());
 
 		createGraphDefinitions(runs);
 
 		root.put("guides", new ArrayList<>());
 
-		createAxesDefinitions("Hp | lb/ft");
+		createAxesDefinitions("Hp | lb/ft", runs);
 
-		root.put("allLabels", new ArrayList<>());
 		root.put("balloon", new HashMap<>());
 
 		createLegendDefinition();
@@ -52,6 +53,30 @@ public final class ChartDataProvider {
 		createDataDefinition(runs);
 
 		return root;
+	}
+
+	private void createMaxPowerAndTorqueLabels(List<LoggedRunsEntry> runs) {
+		final List<Map<String, Object>> labelDefinitions = new ArrayList<>();
+
+		int y = 70;
+		for (LoggedRunsEntry run : runs) {
+
+			final Map<String, Object> labelDef = new HashMap<>();
+			DynoSimulationEntry maxPower = run.getMaxPower();
+			DynoSimulationEntry maxTorque = run.getMaxTorque();
+			labelDef.put("text", String.format("%s %.1fHP @%.0fRPM, %.1flb/ft @%.0fRPM",
+					run.getName(), maxPower.getPower(), maxPower.getRpm(), maxTorque.getTorque(), maxTorque.getRpm()));
+			labelDef.put("bold", false);
+			labelDef.put("size", 14);
+			labelDef.put("color", run.getColor());
+			labelDef.put("x", 70);
+			labelDef.put("y", y);
+
+			labelDefinitions.add(labelDef);
+
+			y += 15;
+		}
+		root.put("allLabels", labelDefinitions);
 	}
 
 	private void createExportDefinition(List<LoggedRunsEntry> runs) {
@@ -119,7 +144,7 @@ public final class ChartDataProvider {
 
 		root.put("guides", new ArrayList<>());
 
-		createAxesDefinitions(field);
+		createAxesDefinitions(field, null);
 
 		root.put("allLabels", new ArrayList<>());
 		root.put("balloon", new HashMap<>());
@@ -287,13 +312,30 @@ public final class ChartDataProvider {
 		root.put("legend", legend);
 	}
 
-	private void createAxesDefinitions(String yTitle) {
-		List<Map<String, String>> valueAxes = new ArrayList<>();
+	private void createAxesDefinitions(String yTitle, List<LoggedRunsEntry> runs) {
 
-		Map<String, String> valueAxis = new HashMap<>();
+		Double maxYVal = null;
+
+		if (runs != null) {
+			maxYVal = 0.0;
+			for (LoggedRunsEntry run : runs) {
+				DynoSimulationEntry maxPower = run.getMaxPower();
+				DynoSimulationEntry maxTorque = run.getMaxTorque();
+				if (Math.max(maxPower.getPower(), maxTorque.getTorque()) > maxYVal) {
+					maxYVal = Math.max(maxPower.getPower(), maxTorque.getTorque());
+				}
+			}
+		}
+
+		List<Map<String, Object>> valueAxes = new ArrayList<>();
+
+		Map<String, Object> valueAxis = new HashMap<>();
 
 		valueAxis.put("id", "Y-axis");
 		valueAxis.put("position", "left");
+		if (maxYVal != null) {
+			valueAxis.put("maximum", maxYVal + 15 * runs.size());
+		}
 		valueAxis.put("title", yTitle);
 		valueAxes.add(valueAxis);
 
