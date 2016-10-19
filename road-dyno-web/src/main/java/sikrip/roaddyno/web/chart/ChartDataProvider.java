@@ -13,6 +13,9 @@ import sikrip.roaddyno.engine.DynoSimulationResult;
 import sikrip.roaddyno.model.LogValue;
 import sikrip.roaddyno.web.model.LoggedRunsEntry;
 
+/**
+ * Responsible to provide the definitions of the dyno plots.
+ */
 public final class ChartDataProvider {
 
 	public static final String RPM_AXIS = "rpm";
@@ -26,6 +29,13 @@ public final class ChartDataProvider {
 		df.setRoundingMode(RoundingMode.DOWN);
 	}
 
+	/**
+	 * Creates the definition for the main dyno plot(power/torque)
+	 *
+	 * @param runs
+	 * 		the dyno runs
+	 * @return a map with the definitions
+	 */
 	public Map<String, Object> createMainChartDefinition(List<LoggedRunsEntry> runs) {
 		root.clear();
 
@@ -33,24 +43,49 @@ public final class ChartDataProvider {
 		root.put("startDuration", 1);
 
 		createExportDefinition(runs);
-
 		createMaxPowerAndTorqueLabels(runs);
+		createGraphDefinitions(runs);
+		createAxesDefinitions("Hp | lb/ft", runs);
+		createLegendDefinition();
+		createTitlesDefinition("Wheel power / torque");
+		createDataDefinition(runs);
+
+		// TODO add trendLines root.put("trendLines", new ArrayList<>());
+		// TODO add guides root.put("guides", new ArrayList<>());
+		// TODO add balloon root.put("balloon", new HashMap<>());
+
+		return root;
+	}
+
+	/**
+	 * Creates the definition of the plot for the provided field.
+	 *
+	 * @param runs
+	 * 		the dyno runs
+	 * @param field
+	 * 		the field to plot
+	 * @return a map with the definitions
+	 */
+	public Map<String, Object> createAuxiliaryChartDefinition(List<LoggedRunsEntry> runs, String field) {
+		root.clear();
+
+		root.put("type", "xy");
+		root.put("startDuration", 1);
 
 		root.put("trendLines", new ArrayList<>());
 
-		createGraphDefinitions(runs);
+		createGraphDefinitions(runs, field);
 
 		root.put("guides", new ArrayList<>());
 
-		createAxesDefinitions("Hp | lb/ft", runs);
+		createAxesDefinitions(field, null);
 
+		root.put("allLabels", new ArrayList<>());
 		root.put("balloon", new HashMap<>());
 
-		createLegendDefinition();
+		createTitlesDefinition(field);
 
-		createTitlesDefinition("Wheel power / torque");
-
-		createDataDefinition(runs);
+		createDataDefinition(runs, field);
 
 		return root;
 	}
@@ -132,68 +167,35 @@ public final class ChartDataProvider {
 		root.put("export", rootMenu);
 	}
 
-	public Map<String, Object> createAuxiliaryChartDefinition(List<LoggedRunsEntry> runs, String field) {
-		root.clear();
-
-		root.put("type", "xy");
-		root.put("startDuration", 1);
-
-		root.put("trendLines", new ArrayList<>());
-
-		createGraphDefinitions(runs, field);
-
-		root.put("guides", new ArrayList<>());
-
-		createAxesDefinitions(field, null);
-
-		root.put("allLabels", new ArrayList<>());
-		root.put("balloon", new HashMap<>());
-
-		createTitlesDefinition(field);
-
-		createDataDefinition(runs, field);
-
-		return root;
-	}
-
 	private void createGraphDefinitions(List<LoggedRunsEntry> runs) {
 
-		List<Map<String, Object>> graphs = new ArrayList<>();
+		final List<Map<String, Object>> graphs = new ArrayList<>();
 
 		for (int iRun = 0; iRun < runs.size(); iRun++) {
 
 			LoggedRunsEntry run = runs.get(iRun);
 
-			DynoSimulationResult simulationResult = run.getResult();
-
-			String runColor = run.getColor();
-
-			DynoSimulationEntry maxPower = simulationResult.maxPower();
-			DynoSimulationEntry maxTorque = simulationResult.maxTorque();
-
 			Map<String, Object> graph = new HashMap<>();
-			graph.put("balloonText", "[[title]] [[value]] @[[category]]");//FIXME
 
-			//graph.put("bullet", "round");
-			//graph.put("bulletSize", 3);
-
+			// Power graph
 			graph.put("id", "Graph-" + POWER_FIELD + iRun);
-			graph.put("lineColor", runColor);
+			graph.put("lineColor", run.getColor());
 			graph.put("lineThickness", 3);
 			graph.put("title", run.getName() + " power");
 			graph.put("type", "smoothedLine");
 			graph.put("xField", RPM_AXIS);
 			graph.put("yField", POWER_FIELD + iRun);
 			graphs.add(graph);
+			// TODO add bullets?
+			//graph.put("balloonText", "[[title]] [[value]] @[[category]]");//FIXME
+			//graph.put("bullet", "round");
+			//graph.put("bulletSize", 3);
 
+			// Torque graph
 			graph = new HashMap<>();
-			graph.put("balloonText", "[[title]] [[value]] @[[category]]");
-
-			//graph.put("bullet", "square");
-
 			graph.put("id", "Graph-" + TORQUE_FIELD + iRun);
 			graph.put("dashLength", 4);
-			graph.put("lineColor", runColor);
+			graph.put("lineColor", run.getColor());
 			graph.put("lineThickness", 2);
 			graph.put("title", run.getName() + " torque");
 			graph.put("type", "smoothedLine");
@@ -206,13 +208,11 @@ public final class ChartDataProvider {
 	}
 
 	private void createDataDefinition(List<LoggedRunsEntry> runs) {
-		List<Map<String, Object>> dataProvider = new ArrayList<>();
-
-		List<Double> rpmValues = getRpmValuesUnion(runs);
-
+		final List<Map<String, Object>> dataProvider = new ArrayList<>();
+		final List<Double> rpmValues = getRpmValuesUnion(runs);
 		for (Double rpm : rpmValues) {
 
-			Map<String, Object> dataEntry = new HashMap<>();
+			final Map<String, Object> dataEntry = new HashMap<>();
 			dataEntry.put(RPM_AXIS, rpm);
 
 			for (int iRun = 0; iRun < runs.size(); iRun++) {
@@ -227,39 +227,29 @@ public final class ChartDataProvider {
 					dataEntry.put(POWER_FIELD + iRun, power);
 					dataEntry.put(TORQUE_FIELD + iRun, torque);
 				}
-
 			}
 			dataProvider.add(dataEntry);
 		}
-
 		root.put("dataProvider", dataProvider);
 	}
 
 	private void createGraphDefinitions(List<LoggedRunsEntry> runs, String field) {
 
-		List<Map<String, Object>> graphs = new ArrayList<>();
+		final List<Map<String, Object>> graphs = new ArrayList<>();
 
 		for (int iRun = 0; iRun < runs.size(); iRun++) {
 
-			LoggedRunsEntry run = runs.get(iRun);
+			final LoggedRunsEntry run = runs.get(iRun);
 
-			String runColor = run.getColor();
-
-			Map<String, Object> graph = new HashMap<>();
-			graph.put("balloonText", "[[title]] [[value]] @[[category]]");
-
-			//graph.put("bullet", "round");
-			//graph.put("bulletSize", 3);
-
+			final Map<String, Object> graph = new HashMap<>();
 			graph.put("id", "Graph-" + field + iRun);
-			graph.put("lineColor", runColor);
+			graph.put("lineColor", run.getColor());
 			graph.put("lineThickness", 3);
 			graph.put("type", "smoothedLine");
 			graph.put("xField", RPM_AXIS);
 			graph.put("yField", field + iRun);
 			graphs.add(graph);
 		}
-
 		root.put("graphs", graphs);
 	}
 
