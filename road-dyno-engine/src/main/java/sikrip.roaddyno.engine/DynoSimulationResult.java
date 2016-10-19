@@ -10,7 +10,7 @@ import sikrip.roaddyno.model.LogValue;
 /**
  * A dyno simulation result.
  */
-public class DynoSimulationResult {
+public final class DynoSimulationResult {
 
 	/**
 	 * The raw log entries that produced this result.
@@ -147,6 +147,10 @@ public class DynoSimulationResult {
 
 	public List<LogEntry> getLogEntries() {
 		return logEntries;
+	}
+
+	public double getMaxRPM(){
+		return logEntries.get(logEntries.size()-1).getVelocity().getValue();
 	}
 
 }
