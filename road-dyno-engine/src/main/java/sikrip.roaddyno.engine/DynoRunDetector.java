@@ -13,7 +13,7 @@ public final class DynoRunDetector {
 	/**
 	 * Require at least this amount of speed diff to consider a WOT acceleration valid.
 	 */
-	private static final double SPEED_WOT_DIFF_THRESHOLD = 25; // km/h
+	private static final double SPEED_WOT_DIFF_THRESHOLD = 26; // km/h
 
 	/**
 	 * Require at least this amount of RPM diff to consider a WOT acceleration valid.
