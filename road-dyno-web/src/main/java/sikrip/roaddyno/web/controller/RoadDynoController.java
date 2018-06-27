@@ -130,7 +130,7 @@ public class RoadDynoController {
 
 
 			final String[] auxiliaryFieldsArray = auxiliaryPlotFields.toArray(new String[]{});
-			for (int i = 0; i < Math.max(auxiliaryFieldsArray.length, MAX_AUXILIARY_PLOTS); i++) {
+			for (int i = 0; i < Math.min(auxiliaryFieldsArray.length, MAX_AUXILIARY_PLOTS); i++) {
 				final String auxChartDef = objectMapper.writeValueAsString(
 					chartDataProvider.createAuxiliaryChartDefinition(runsToPlot, auxiliaryFieldsArray[i])
 				);

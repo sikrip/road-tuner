@@ -111,7 +111,7 @@ final class LoggedRunsRepository {
 			throw new RuntimeException(String.format("Run with id %s not found", id));
 		} else {
 			colorProvider.push(loggedRunsEntry.getColor());
-			loggedRuns.remove(loggedRunsEntry);
+			loggedRuns.remove(id);
 		}
 	}
 
