@@ -27,12 +27,13 @@
             </div>
 
             <div class="panel-body">
-                <input type="file" required="required" name="file" accept=".msl, .vbo"/>
+                <input type="file" required="required" name="file" accept=".msl, .vbo, .txt"/>
                 <hr/>
                 <p>Max file size is <strong th:text="${maxFileSize}"></strong>.</p>
                 <p>For the time being, supported log formats are:</p>
                 <ul>
                     <li>Megasquirt (<strong>.msl</strong>) logs</li>
+                    <li>Apexi/PFC datalogit (<strong>.txt</strong>) logs</li>
                     <li>VBox (<strong>.vbo</strong>) logs (drfitbox <strong>.dbn</strong> files can be converted to .vbo files with Driftbox tools [open and save as .vbo])</li>
                 </ul>
                 <p>For <strong>GPS logs</strong> make sure you are logging with <strong>at least 5hz refresh rate</strong>.</p>

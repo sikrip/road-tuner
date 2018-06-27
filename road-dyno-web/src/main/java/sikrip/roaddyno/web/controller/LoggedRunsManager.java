@@ -1,14 +1,6 @@
 package sikrip.roaddyno.web.controller;
 
-import java.util.Iterator;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-import java.util.TreeSet;
-import java.util.stream.Collectors;
-
 import org.springframework.web.multipart.MultipartFile;
-
 import sikrip.roaddyno.engine.DynoSimulationResult;
 import sikrip.roaddyno.engine.DynoSimulator;
 import sikrip.roaddyno.engine.SimulationException;
@@ -18,6 +10,12 @@ import sikrip.roaddyno.web.logger.LogFileReader;
 import sikrip.roaddyno.web.model.LogFileData;
 import sikrip.roaddyno.web.model.LoggedRunsEntry;
 import sikrip.roaddyno.web.model.VehicleData;
+
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+import java.util.TreeSet;
+import java.util.stream.Collectors;
 
 final class LoggedRunsManager {
 
@@ -117,10 +115,7 @@ final class LoggedRunsManager {
 
 	LoggedRunsEntry get(String id) {
 		final Optional<LoggedRunsEntry> runInfo = loggedRuns.stream().filter(r -> id.equals(r.getId())).findFirst();
-		if (runInfo.isPresent()) {
-			return runInfo.get();
-		}
-		return null;
+		return runInfo.orElse(null);
 	}
 
 	List<LoggedRunsEntry> getRunsToPlot() {
@@ -147,12 +142,7 @@ final class LoggedRunsManager {
 	}
 
 	void clearRunsWithoutVehicleData() {
-		final Iterator<LoggedRunsEntry> loggedRunsEntryIterator = loggedRuns.iterator();
-		while (loggedRunsEntryIterator.hasNext()) {
-			if (loggedRunsEntryIterator.next().getColor() == null) {
-				loggedRunsEntryIterator.remove();
-			}
-		}
+		loggedRuns.removeIf(loggedRunsEntry -> loggedRunsEntry.getColor() == null);
 	}
 
 }

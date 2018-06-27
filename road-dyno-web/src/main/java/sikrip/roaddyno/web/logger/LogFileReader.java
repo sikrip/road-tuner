@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import org.springframework.web.multipart.MultipartFile;
 
+import sikrip.roaddyno.logreader.DatalogitLogReader;
 import sikrip.roaddyno.logreader.MegasquirtLogReader;
 import sikrip.roaddyno.logreader.VBOLogReader;
 import sikrip.roaddyno.model.InvalidLogFileException;
@@ -29,6 +30,9 @@ public final class LogFileReader {
 				} else if (originalFileName.endsWith("vbo")) {
 					// vbo file
 					return new LogFileData(false, new VBOLogReader().readLog(file.getInputStream()));
+				} else if (originalFileName.endsWith("txt")) {
+					// PFC/Datalogit file
+					return new LogFileData(true, new DatalogitLogReader().readLog(file.getInputStream()));
 				}
 				throw new InvalidLogFileException("Unknown or not supported log file");
 			} catch (IOException e) {

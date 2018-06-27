@@ -9,8 +9,8 @@ public class VehicleData {
     private Double tyreDiameter;
     private Double carWeight;
     private Double occupantsWeight;
-    private Double frontalArea;
-    private Double coefficientOfDrag;
+    private Double frontalArea = 1.7; // sqm
+    private Double coefficientOfDrag = 0.31;
 
     public void updateFromRunInfo(RunInfo runInfo){
         setFinalGearRatio(runInfo.getFinalGearRatio());

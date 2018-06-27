@@ -55,7 +55,7 @@ public class LoggedRunsEntry implements RunInfo, Comparable<LoggedRunsEntry> {
 	private Double tyreDiameter;
 	private Double carWeight;
 	private Double occupantsWeight;
-	private Double frontalArea;
+	private Double frontalArea; // sqm
 	private Double coefficientOfDrag;
 
 	public LoggedRunsEntry() {
@@ -186,7 +186,7 @@ public class LoggedRunsEntry implements RunInfo, Comparable<LoggedRunsEntry> {
 		return logFileData.getWOTRunBoundses();
 	}
 
-	public LoggedRunsEntry updateFrom(VehicleData vehicleData) {
+	public void updateFrom(VehicleData vehicleData) {
 		setFinalGearRatio(vehicleData.getFinalGearRatio());
 		setGearRatio(vehicleData.getGearRatio());
 		setTyreDiameter(vehicleData.getTyreDiameter());
@@ -194,7 +194,6 @@ public class LoggedRunsEntry implements RunInfo, Comparable<LoggedRunsEntry> {
 		setOccupantsWeight(vehicleData.getOccupantsWeight());
 		setFrontalArea(vehicleData.getFrontalArea());
 		setCoefficientOfDrag(vehicleData.getCoefficientOfDrag());
-		return this;
 	}
 
 	public List<LogEntry> getSelectedLogEntries() {
@@ -244,6 +243,6 @@ public class LoggedRunsEntry implements RunInfo, Comparable<LoggedRunsEntry> {
 
 	@Override
 	public int compareTo(LoggedRunsEntry o) {
-		return Integer.valueOf(this.index).compareTo(o.index);
+		return Integer.compare(this.index, o.index);
 	}
 }
