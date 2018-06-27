@@ -209,6 +209,10 @@ public class LoggedRunsEntry implements RunInfo, Comparable<LoggedRunsEntry> {
 		this.logFileData = logFileData;
 	}
 
+	public LogFileData getLogFileData() {
+		return logFileData;
+	}
+
 	public boolean isRpmBased() {
 		return logFileData.isRpmBased();
 	}

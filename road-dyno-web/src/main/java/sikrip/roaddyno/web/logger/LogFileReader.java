@@ -26,13 +26,24 @@ public final class LogFileReader {
 				final String originalFileName = file.getOriginalFilename().toLowerCase();
 				if (originalFileName.endsWith("msl")) {
 					// megasquirt file
-					return new LogFileData(true, new MegasquirtLogReader().readLog(file.getInputStream()));
+					return new LogFileData(
+						true,
+						new MegasquirtLogReader().readLog(file.getInputStream()),
+						"AFR"
+					);
 				} else if (originalFileName.endsWith("vbo")) {
 					// vbo file
-					return new LogFileData(false, new VBOLogReader().readLog(file.getInputStream()));
+					return new LogFileData(
+						false,
+						new VBOLogReader().readLog(file.getInputStream())
+					);
 				} else if (originalFileName.endsWith("txt")) {
 					// PFC/Datalogit file
-					return new LogFileData(true, new DatalogitLogReader().readLog(file.getInputStream()));
+					return new LogFileData(
+						true,
+						new DatalogitLogReader().readLog(file.getInputStream()),
+						"AN3-AN4 wide-band", "AFL V"
+					);
 				}
 				throw new InvalidLogFileException("Unknown or not supported log file");
 			} catch (IOException e) {

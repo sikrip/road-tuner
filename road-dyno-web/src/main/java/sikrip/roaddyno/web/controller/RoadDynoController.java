@@ -1,6 +1,7 @@
 package sikrip.roaddyno.web.controller;
 
 import java.util.List;
+import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,12 +29,13 @@ import sikrip.roaddyno.web.model.LoggedRunsEntry;
 @Scope("session")
 public class RoadDynoController {
 
+	private static final int MAX_AUXILIARY_PLOTS = 2;
 	private final Logger LOGGER = LoggerFactory.getLogger(RoadDynoController.class);
 
 	@Autowired
 	private ObjectMapper objectMapper;
 
-	private final LoggedRunsManager loggedRunsManager = new LoggedRunsManager();
+	private final LoggedRunsRepository loggedRunsRepository = new LoggedRunsRepository();
 
 	private final ChartDataProvider chartDataProvider = new ChartDataProvider();
 
@@ -42,7 +44,7 @@ public class RoadDynoController {
 
 	@RequestMapping("/")
 	public String index() {
-		if (loggedRunsManager.isEmpty()) {
+		if (loggedRunsRepository.isEmpty()) {
 			return "index";
 		} else {
 			return "redirect:/dyno-plots";
@@ -51,7 +53,7 @@ public class RoadDynoController {
 
 	@RequestMapping("/add")
 	public String add(Model model) {
-		if (loggedRunsManager.canAddRun()) {
+		if (loggedRunsRepository.canAddRun()) {
 			model.addAttribute("nav", "dyno-plots");
 			model.addAttribute("runInfo", new LoggedRunsEntry());
 			model.addAttribute("maxFileSize", maxFileSize);
@@ -65,7 +67,7 @@ public class RoadDynoController {
 	public String add(LoggedRunsEntry runInfo, @RequestParam("file") MultipartFile file, Model model) {
 		if (!file.isEmpty()) {
 			try {
-				loggedRunsManager.add(runInfo, file);
+				loggedRunsRepository.add(runInfo, file);
 
 				// show update run form
 				model.addAttribute("runInfo", runInfo);
@@ -82,7 +84,7 @@ public class RoadDynoController {
 
 	@RequestMapping("edit/{id}")
 	public String edit(@PathVariable String id, Model model) {
-		LoggedRunsEntry loggedRunsEntry = loggedRunsManager.get(id);
+		LoggedRunsEntry loggedRunsEntry = loggedRunsRepository.get(id);
 		if (loggedRunsEntry != null) {
 			model.addAttribute("runInfo", loggedRunsEntry);
 			model.addAttribute("nav", "dyno-plots");
@@ -94,7 +96,7 @@ public class RoadDynoController {
 	@RequestMapping(value = "/edit", method = RequestMethod.POST)
 	public String edit(LoggedRunsEntry updatedRun, Model model) {
 		try {
-			loggedRunsManager.update(updatedRun);
+			loggedRunsRepository.update(updatedRun);
 			return "redirect:/dyno-plots";
 		} catch (SimulationException e) {
 			return showErrorPage(model, "Could not update run. " + e.getMessage());
@@ -103,41 +105,48 @@ public class RoadDynoController {
 
 	@RequestMapping(value = "/change-status", method = RequestMethod.POST)
 	public String changeStatus(String rid, Boolean active, Model model) {
-		loggedRunsManager.activate(rid, active == null ? false : active);
+		loggedRunsRepository.activate(rid, active == null ? false : active);
 		return "redirect:/dyno-plots";
 	}
 
 	@RequestMapping("remove/{id}")
 	public String remove(@PathVariable String id) {
-		loggedRunsManager.delete(id);
+		loggedRunsRepository.delete(id);
 		return "redirect:/dyno-plots";
 	}
 
 	@RequestMapping("/dyno-plots")
 	public String dynoPlots(Model model) {
-
-		loggedRunsManager.clearRunsWithoutVehicleData();
-
-		if (loggedRunsManager.isEmpty()) {
+		if (loggedRunsRepository.isEmpty()) {
 			return "redirect:/dyno-plots-empty";
 		}
 		try {
-			final List<LoggedRunsEntry> runsToPlot = loggedRunsManager.getRunsToPlot();
+			final List<LoggedRunsEntry> runsToPlot = loggedRunsRepository.getRunsToPlot();
+			final Set<String> auxiliaryPlotFields = loggedRunsRepository.getAuxiliaryPlotFields();
+
+			// Main chart
 			final String chartDef = objectMapper.writeValueAsString(chartDataProvider.createMainChartDefinition(runsToPlot));
-			final String auxChartDef = objectMapper.writeValueAsString(chartDataProvider.createAuxiliaryChartDefinition(runsToPlot, "AFR"));
 			model.addAttribute("chartDef", chartDef);
-			model.addAttribute("auxChartDef", auxChartDef);
+
+
+			final String[] auxiliaryFieldsArray = auxiliaryPlotFields.toArray(new String[]{});
+			for (int i = 0; i < Math.max(auxiliaryFieldsArray.length, MAX_AUXILIARY_PLOTS); i++) {
+				final String auxChartDef = objectMapper.writeValueAsString(
+					chartDataProvider.createAuxiliaryChartDefinition(runsToPlot, auxiliaryFieldsArray[i])
+				);
+				model.addAttribute("auxChartDef" + i, auxChartDef);
+			}
 		} catch (JsonProcessingException e) {
 			return showErrorPage(model, "Could not plot runs. " + e.getMessage());
 		}
-		model.addAttribute("runInfoList", loggedRunsManager.getRuns());
+		model.addAttribute("runInfoList", loggedRunsRepository.getRuns());
 		model.addAttribute("nav", "dyno-plots");
 		return "dyno-plots";
 	}
 
 	@RequestMapping("/dyno-plots-empty")
 	public String clearAll(Model model) {
-		loggedRunsManager.clear();
+		loggedRunsRepository.clear();
 		model.addAttribute("nav", "dyno-plots");
 		return "dyno-plots-empty";
 	}

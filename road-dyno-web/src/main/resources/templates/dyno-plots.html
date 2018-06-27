@@ -118,7 +118,8 @@
         <div class="panel panel-default">
             <div class="panel-body">
                 <div id="chartdiv" style="min-height: 600px;"></div>
-                <div id="auxChart" style="min-height: 200px;"></div>
+                <div id="auxChart0" style="min-height: 400px;"></div>
+                <div id="auxChart1" style="min-height: 400px;"></div>
             </div>
         </div>
     </div>
@@ -132,9 +133,15 @@
     var chartDef = JSON.parse(chartText);
     AmCharts.makeChart("chartdiv", chartDef);
 
-    var auxChartText = /*[[${auxChartDef}]]*/ '{}';
-    var auxChartDef = JSON.parse(auxChartText);
-    AmCharts.makeChart("auxChart", auxChartDef);
+    var auxChartText0 = /*[[${auxChartDef0}]]*/ '{}';
+    var auxChartDef0 = JSON.parse(auxChartText0);
+    AmCharts.makeChart("auxChart0", auxChartDef0);
+
+    var auxChartText1 = /*[[${auxChartDef1}]]*/ '{}';
+    var auxChartDef1 = JSON.parse(auxChartText1);
+    if (auxChartDef1) {
+      AmCharts.makeChart("auxChart1", auxChartDef1);
+    }
     /*]]>*/
 
     $(document).ready(function () {

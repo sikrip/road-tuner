@@ -11,17 +11,19 @@ import sikrip.roaddyno.web.model.LogFileData;
 import sikrip.roaddyno.web.model.LoggedRunsEntry;
 import sikrip.roaddyno.web.model.VehicleData;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
-import java.util.Optional;
+import java.util.Map;
 import java.util.Set;
-import java.util.TreeSet;
 import java.util.stream.Collectors;
 
-final class LoggedRunsManager {
+final class LoggedRunsRepository {
 
 	private static final int MAX_RUNS = 5;
 
-	private final Set<LoggedRunsEntry> loggedRuns = new TreeSet<>();
+	private final Map<String, LoggedRunsEntry> loggedRuns = new HashMap<>();
 
 	private final PlotColorProvider colorProvider = new PlotColorProvider();
 
@@ -47,7 +49,7 @@ final class LoggedRunsManager {
 			loggedRun.setRunName(file.getOriginalFilename());
 			loggedRun.updateFrom(vehicleData);
 
-			loggedRuns.add(loggedRun);
+			loggedRuns.put(loggedRun.getId(), loggedRun);
 		}
 	}
 
@@ -114,16 +116,24 @@ final class LoggedRunsManager {
 	}
 
 	LoggedRunsEntry get(String id) {
-		final Optional<LoggedRunsEntry> runInfo = loggedRuns.stream().filter(r -> id.equals(r.getId())).findFirst();
-		return runInfo.orElse(null);
+		return loggedRuns.get(id);
 	}
 
 	List<LoggedRunsEntry> getRunsToPlot() {
-		return loggedRuns.stream().filter(LoggedRunsEntry::isActive).collect(Collectors.toList());
+		return loggedRuns.values().stream().filter(LoggedRunsEntry::isActive).collect(Collectors.toList());
 	}
 
-	Set<LoggedRunsEntry> getRuns() {
-		return loggedRuns;
+	Set<String> getAuxiliaryPlotFields() {
+		return loggedRuns.values().stream().map(r -> r.getLogFileData().getAuxiliaryPlotFields())
+				  .reduce(new HashSet<>(), (s1, s2) -> {
+				   	 Set<String> sum = new HashSet<>(s1);
+					 sum.addAll(s2);
+					 return sum;
+				  });
+	}
+
+	List<LoggedRunsEntry> getRuns() {
+		return new ArrayList<>(loggedRuns.values());
 	}
 
 	void activate(String id, boolean active) {
@@ -140,9 +150,4 @@ final class LoggedRunsManager {
 		colorProvider.reset();
 		//TODO clear vehicleData?
 	}
-
-	void clearRunsWithoutVehicleData() {
-		loggedRuns.removeIf(loggedRunsEntry -> loggedRunsEntry.getColor() == null);
-	}
-
 }

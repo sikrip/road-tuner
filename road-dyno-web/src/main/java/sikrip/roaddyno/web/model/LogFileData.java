@@ -1,12 +1,14 @@
 package sikrip.roaddyno.web.model;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
-
 import sikrip.roaddyno.engine.AccelerationBounds;
 import sikrip.roaddyno.engine.DynoRunDetector;
 import sikrip.roaddyno.model.LogEntry;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * Contains the read log file data along with possible WOT runs within these data.
@@ -29,10 +31,17 @@ public final class LogFileData {
 	 */
 	private final List<WOTRunBounds> WOTRunBoundses = new ArrayList<>();
 
-	public LogFileData(boolean rpmBased, List<LogEntry> logEntries) {
+	private final Set<String> auxiliaryPlotFields;
+
+	public LogFileData(boolean rpmBased, List<LogEntry> logEntries, String... auxiliaryPlotFields) {
 		this.rpmBased = rpmBased;
 		this.logEntries = logEntries;
 		this.WOTRunBoundses.addAll(findAccelerationRuns(rpmBased, logEntries));
+		if (auxiliaryPlotFields != null) {
+			this.auxiliaryPlotFields = Arrays.stream(auxiliaryPlotFields).collect(Collectors.toSet());
+		} else {
+			this.auxiliaryPlotFields = null;
+		}
 	}
 
 	/**
@@ -79,5 +88,9 @@ public final class LogFileData {
 
 	public List<WOTRunBounds> getWOTRunBoundses() {
 		return WOTRunBoundses;
+	}
+
+	public Set<String> getAuxiliaryPlotFields() {
+		return auxiliaryPlotFields;
 	}
 }
