@@ -1,0 +1,2 @@
+[2ZZ-GE v2.71A]
+Time(S)	InjDuty	IgnTmng	AirFlow	EngRev	Speed	Boost	Knock	WtrTemp	AirTemp	BatVolt	AN1 raw	AN2 raw	AN3 raw	AN4 raw	AN1 oil-press-psi	AN2 oil-temp-c	AN3-AN4 Wide Band	AN4 raw	MAPN	MAPP	RPM	PIM	AFL V	VTA V	Inj ms	Inj +/-	IGN	Dwell	Boost	Duty	WtrT	AirT	Knock	BatV	Speed	???(2)	O2S1	O2S2	???	???	

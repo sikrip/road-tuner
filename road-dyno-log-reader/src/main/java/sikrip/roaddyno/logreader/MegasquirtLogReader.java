@@ -25,8 +25,6 @@ public final class MegasquirtLogReader {
 		final File logFile = new File(filePath);
 		try (InputStream fileStream = new FileInputStream(logFile);) {
 			return readLog(fileStream);
-		} catch (IOException e) {
-			throw e;
 		}
 	}
 
