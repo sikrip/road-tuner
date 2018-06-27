@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Set;
 
 import org.apache.commons.math3.analysis.UnivariateFunction;
@@ -49,14 +50,15 @@ final class LogValuesUtilities {
 		return smoothedEntries;
 	}
 
-	static AccelerationBounds getAccelerationBoundsByRPM(int tpsWotThreshold, List<LogEntry> rawEntries, int offset) {
+	static AccelerationBounds getAccelerationBoundsByRPM(double tpsWotThreshold, List<LogEntry> rawEntries, int offset) {
 
 		final int logSize = rawEntries.size();
+		final double maxTps = getMaxTps(rawEntries);
 
 		int start;
 
 		for (start = offset; start < rawEntries.size(); start++) {
-			if (rawEntries.get(start).get("TPS").getValue() >= tpsWotThreshold) {
+			if (rawEntries.get(start).getTps().getValue() >= tpsWotThreshold * maxTps) {
 				break;
 			}
 		}
@@ -64,7 +66,7 @@ final class LogValuesUtilities {
 		if (start < logSize - 1) {
 			int end;
 			for (end = start + 1; end < rawEntries.size(); end++) {
-				if (rawEntries.get(end).get("TPS").getValue() < tpsWotThreshold) {
+				if (rawEntries.get(end).getTps().getValue() < tpsWotThreshold * maxTps) {
 					break;
 				}
 			}
@@ -100,6 +102,10 @@ final class LogValuesUtilities {
 		start = Math.min(start, logSize);
 		end = Math.min(end, logSize);
 		return new AccelerationBounds(start, end);
+	}
+
+	private static double getMaxTps(List<LogEntry> logEntries) {
+		return logEntries.stream().mapToDouble(e -> e.getTps().getValue()).max().orElseThrow(NoSuchElementException::new);
 	}
 
 	/**

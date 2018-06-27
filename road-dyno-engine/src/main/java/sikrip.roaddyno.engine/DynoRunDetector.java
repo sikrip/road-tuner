@@ -26,9 +26,9 @@ public final class DynoRunDetector {
 	private static final int DECEL_COUNT_THRESHOLD = 3;
 
 	/**
-	 * Consider WOT is happening when TPS is at this value.
+	 * Consider WOT is happening when TPS is at this percentage at least.
 	 */
-	private static final int TPS_WOT_THRESHOLD = 96;
+	private static final double TPS_WOT_THRESHOLD = 0.96;
 
 	private DynoRunDetector() {}
 
