@@ -1,7 +1,5 @@
 package sikrip.roaddyno.engine;
 
-import sikrip.roaddyno.model.LogEntry;
-
 /**
  * Holds the start and end index of an acceleration run.
  */
@@ -11,7 +9,7 @@ public final class AccelerationBounds {
 	private final int end;
 
 
-	public AccelerationBounds(int start, int end) {
+	AccelerationBounds(int start, int end) {
 		this.start = start;
 		this.end = end;
 	}

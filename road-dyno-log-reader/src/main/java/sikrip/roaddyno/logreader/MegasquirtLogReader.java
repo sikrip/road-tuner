@@ -21,6 +21,10 @@ import sikrip.roaddyno.model.LogValue;
  */
 public final class MegasquirtLogReader {
 
+	private final static String TIME_HEADER_KEY = "Time";
+	private final static String RPM_HEADER_KEY = "RPM";
+	private final static String TPS_HEADER_KEY = "TPS";
+
 	public final List<LogEntry> readLog(String filePath) throws IOException, InvalidLogFileException {
 		final File logFile = new File(filePath);
 		try (InputStream fileStream = new FileInputStream(logFile);) {
@@ -46,9 +50,9 @@ public final class MegasquirtLogReader {
 				if (headers.size() == 0) {
 					// headers line
 					headers.addAll(rawValues);
-					timeColumnKey = headers.indexOf("Time") != -1 ? "Time" : null;
-					rpmColumnKey = headers.indexOf("RPM") != -1 ? "RPM" : null;
-					tpsColumnKey = headers.indexOf("TPS") != -1 ? "TPS" : null;
+					timeColumnKey = headers.indexOf(TIME_HEADER_KEY) != -1 ? TIME_HEADER_KEY : null;
+					rpmColumnKey = headers.indexOf(RPM_HEADER_KEY) != -1 ? RPM_HEADER_KEY : null;
+					tpsColumnKey = headers.indexOf(TPS_HEADER_KEY) != -1 ? TPS_HEADER_KEY : null;
 
 					if (timeColumnKey == null || rpmColumnKey == null || tpsColumnKey == null) {
 						throw new InvalidLogFileException("Invalid log file format. Cannot find Time, RPM or TPS data.");
@@ -82,7 +86,7 @@ public final class MegasquirtLogReader {
 			valuesMap.put(i < headers.size() ? headers.get(i) : "Unknown",
 					new LogValue<>(value, i < units.size() ? units.get(i) : "Unknown unit"));
 		}
-		return new LogEntry(valuesMap, timeColumnKey, rpmColumnKey);
+		return new LogEntry(valuesMap, timeColumnKey, rpmColumnKey, tpsColumnKey);
 	}
 
 }

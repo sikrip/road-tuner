@@ -77,8 +77,8 @@ public class DatalogitLogReaderTest {
 			LogEntry logEntry = logEntries.get(0);
 
 			assertNotNull(logEntry.getTime());
-			assertNotNull(logEntry.getTime().getUnit());
-			assertNotNull(logEntry.getTime().getValue());
+			assertNotNull(logEntry.getVelocity());
+			assertNotNull(logEntry.getTps());
 		} catch (IOException | InvalidLogFileException e) {
 			fail("This should not fail");
 		}

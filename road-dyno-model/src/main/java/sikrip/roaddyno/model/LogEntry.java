@@ -9,11 +9,20 @@ public class LogEntry {
 	private final Map<String, LogValue<Double>> values;
 	private final String timeKey;
 	private final String velocityKey;
+	private final String tpsKey;
 
 	public LogEntry(Map<String, LogValue<Double>> values, String timeKey, String velocityKey) {
 		this.values = new HashMap<>(values);
 		this.timeKey = timeKey;
 		this.velocityKey = velocityKey;
+		this.tpsKey = null;
+	}
+
+	public LogEntry(Map<String, LogValue<Double>> values, String timeKey, String velocityKey, String tpsKey) {
+		this.values = new HashMap<>(values);
+		this.timeKey = timeKey;
+		this.velocityKey = velocityKey;
+		this.tpsKey = tpsKey;
 	}
 
 	public LogValue<Double> getTime() {
@@ -22,6 +31,10 @@ public class LogEntry {
 
 	public LogValue<Double> getVelocity() {
 		return values.get(velocityKey);
+	}
+
+	public LogValue<Double> getTps() {
+		return tpsKey !=null ? values.get(tpsKey) : null;
 	}
 
 	public LogValue<Double> get(String valueKey) {

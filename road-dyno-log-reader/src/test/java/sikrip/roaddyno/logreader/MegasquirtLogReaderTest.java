@@ -83,9 +83,9 @@ public class MegasquirtLogReaderTest {
 			assertEquals("RPM", logEntry.getVelocity().getUnit());
 			assertNotNull(logEntry.getVelocity().getValue());
 
-			assertNotNull(logEntry.get("TPS"));
-			assertEquals("%", logEntry.get("TPS").getUnit());
-			assertNotNull(logEntry.get("TPS").getValue());
+			assertNotNull(logEntry.getTps());
+			assertEquals("%", logEntry.getTps().getUnit());
+			assertNotNull(logEntry.getTps().getValue());
 
 			logEntries = reader.readLog(getTestResourceUrl("/valid-log-without-comment-lines.msl").getPath());
 

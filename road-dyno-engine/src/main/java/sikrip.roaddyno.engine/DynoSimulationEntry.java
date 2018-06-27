@@ -17,7 +17,7 @@ public class DynoSimulationEntry {
 	 */
 	private final double power;
 
-	public DynoSimulationEntry(double rpm, double power) {
+	DynoSimulationEntry(double rpm, double power) {
 		this.rpm = rpm;
 		this.power = power;
 	}

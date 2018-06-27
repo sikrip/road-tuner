@@ -24,6 +24,7 @@ public class DatalogitLogReader {
 	private static final String SEPARATOR = "\t";
 	private static final String TIME_HEADER_KEY = "Time(S)";
 	private static final String RPM_HEADER_KEY = "RPM";
+	private static final String TPS_HEADER_KEY = "VTA V";
 
 	public final List<LogEntry> readLog(String filePath) throws IOException, InvalidLogFileException {
 		final File logFile = new File(filePath);
@@ -60,6 +61,7 @@ public class DatalogitLogReader {
 		final List<LogEntry> logEntries = new ArrayList<>();
 		final String timeColumnKey = headers.indexOf(TIME_HEADER_KEY) != -1 ? TIME_HEADER_KEY : null;
 		final String rpmColumnKey = headers.indexOf(RPM_HEADER_KEY) != -1 ? RPM_HEADER_KEY : null;
+		final String tpsColumnKey = headers.indexOf(TPS_HEADER_KEY) != -1 ? TPS_HEADER_KEY : null;
 		if (timeColumnKey == null || rpmColumnKey == null) {
 			throw new InvalidLogFileException("Invalid log file format. Cannot find Time, RPM or TPS data.");
 		}
@@ -67,7 +69,7 @@ public class DatalogitLogReader {
 		while ((logLine = logReader.readLine()) != null) {
 			final List<String> lineValues = Arrays.asList((logLine.split(SEPARATOR)));
 			if (!lineValues.isEmpty()) {
-				logEntries.add(createLogEntry(headers, lineValues, timeColumnKey, rpmColumnKey));
+				logEntries.add(createLogEntry(headers, lineValues, timeColumnKey, rpmColumnKey, tpsColumnKey));
 			}
 		}
 		return logEntries;
@@ -76,7 +78,8 @@ public class DatalogitLogReader {
 	private static LogEntry createLogEntry(List<String> headers,
 										   List<String> values,
 										   String timeColumnKey,
-										   String rpmColumnKey) {
+										   String rpmColumnKey,
+										   String tpsColumnKey) {
 		final Map<String, LogValue<Double>> valuesMap = new HashMap<>();
 		for (int i = 0; i < values.size(); i++) {
 			Double value = null;
@@ -89,6 +92,6 @@ public class DatalogitLogReader {
 				i < headers.size() ? headers.get(i) : "Unknown", new LogValue<>(value, "Unknown unit")
 			);
 		}
-		return new LogEntry(valuesMap, timeColumnKey, rpmColumnKey);
+		return new LogEntry(valuesMap, timeColumnKey, rpmColumnKey, tpsColumnKey);
 	}
 }
