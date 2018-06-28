@@ -23,7 +23,7 @@ import sikrip.roaddyno.engine.SimulationException;
 import sikrip.roaddyno.model.InvalidLogFileException;
 import sikrip.roaddyno.web.RoadDynoWebApplication;
 import sikrip.roaddyno.web.chart.ChartDataProvider;
-import sikrip.roaddyno.web.model.LoggedRunsEntry;
+import sikrip.roaddyno.web.model.RunPlot;
 
 @Controller
 @Scope("session")
@@ -35,7 +35,7 @@ public class RoadDynoController {
 	@Autowired
 	private ObjectMapper objectMapper;
 
-	private final LoggedRunsRepository loggedRunsRepository = new LoggedRunsRepository();
+	private final RunPlotCollection runPlotCollection = new RunPlotCollection();
 
 	private final ChartDataProvider chartDataProvider = new ChartDataProvider();
 
@@ -44,7 +44,7 @@ public class RoadDynoController {
 
 	@RequestMapping("/")
 	public String index() {
-		if (loggedRunsRepository.isEmpty()) {
+		if (runPlotCollection.isEmpty()) {
 			return "index";
 		} else {
 			return "redirect:/dyno-plots";
@@ -53,9 +53,9 @@ public class RoadDynoController {
 
 	@RequestMapping("/add")
 	public String add(Model model) {
-		if (loggedRunsRepository.canAddRun()) {
+		if (runPlotCollection.canAddRun()) {
 			model.addAttribute("nav", "dyno-plots");
-			model.addAttribute("runInfo", new LoggedRunsEntry());
+			model.addAttribute("runInfo", new RunPlot());
 			model.addAttribute("maxFileSize", maxFileSize);
 			return "select-log-file-form";
 		} else {
@@ -64,10 +64,10 @@ public class RoadDynoController {
 	}
 
 	@RequestMapping(value = "/add", method = RequestMethod.POST)
-	public String add(LoggedRunsEntry runInfo, @RequestParam("file") MultipartFile file, Model model) {
+	public String add(RunPlot runInfo, @RequestParam("file") MultipartFile file, Model model) {
 		if (!file.isEmpty()) {
 			try {
-				loggedRunsRepository.add(runInfo, file);
+				runPlotCollection.add(runInfo, file);
 
 				// show update run form
 				model.addAttribute("runInfo", runInfo);
@@ -84,9 +84,9 @@ public class RoadDynoController {
 
 	@RequestMapping("edit/{id}")
 	public String edit(@PathVariable String id, Model model) {
-		LoggedRunsEntry loggedRunsEntry = loggedRunsRepository.get(id);
-		if (loggedRunsEntry != null) {
-			model.addAttribute("runInfo", loggedRunsEntry);
+		RunPlot runPlot = runPlotCollection.get(id);
+		if (runPlot != null) {
+			model.addAttribute("runInfo", runPlot);
 			model.addAttribute("nav", "dyno-plots");
 			return "update-run-form";
 		}
@@ -94,9 +94,9 @@ public class RoadDynoController {
 	}
 
 	@RequestMapping(value = "/edit", method = RequestMethod.POST)
-	public String edit(LoggedRunsEntry updatedRun, Model model) {
+	public String edit(RunPlot updatedRun, Model model) {
 		try {
-			loggedRunsRepository.update(updatedRun);
+			runPlotCollection.update(updatedRun);
 			return "redirect:/dyno-plots";
 		} catch (SimulationException e) {
 			return showErrorPage(model, "Could not update run. " + e.getMessage());
@@ -105,24 +105,24 @@ public class RoadDynoController {
 
 	@RequestMapping(value = "/change-status", method = RequestMethod.POST)
 	public String changeStatus(String rid, Boolean active, Model model) {
-		loggedRunsRepository.activate(rid, active == null ? false : active);
+		runPlotCollection.activate(rid, active == null ? false : active);
 		return "redirect:/dyno-plots";
 	}
 
 	@RequestMapping("remove/{id}")
 	public String remove(@PathVariable String id) {
-		loggedRunsRepository.delete(id);
+		runPlotCollection.delete(id);
 		return "redirect:/dyno-plots";
 	}
 
 	@RequestMapping("/dyno-plots")
 	public String dynoPlots(Model model) {
-		if (loggedRunsRepository.isEmpty()) {
+		if (runPlotCollection.isEmpty()) {
 			return "redirect:/dyno-plots-empty";
 		}
 		try {
-			final List<LoggedRunsEntry> runsToPlot = loggedRunsRepository.getRunsToPlot();
-			final Set<String> auxiliaryPlotFields = loggedRunsRepository.getAuxiliaryPlotFields();
+			final List<RunPlot> runsToPlot = runPlotCollection.getRunsToPlot();
+			final Set<String> auxiliaryPlotFields = runPlotCollection.getAllAuxiliaryPlotFields();
 
 			// Main chart
 			final String chartDef = objectMapper.writeValueAsString(chartDataProvider.createMainChartDefinition(runsToPlot));
@@ -139,14 +139,14 @@ public class RoadDynoController {
 		} catch (JsonProcessingException e) {
 			return showErrorPage(model, "Could not plot runs. " + e.getMessage());
 		}
-		model.addAttribute("runInfoList", loggedRunsRepository.getRuns());
+		model.addAttribute("runInfoList", runPlotCollection.getRuns());
 		model.addAttribute("nav", "dyno-plots");
 		return "dyno-plots";
 	}
 
 	@RequestMapping("/dyno-plots-empty")
 	public String clearAll(Model model) {
-		loggedRunsRepository.clear();
+		runPlotCollection.clear();
 		model.addAttribute("nav", "dyno-plots");
 		return "dyno-plots-empty";
 	}

@@ -11,16 +11,16 @@ import java.util.Map;
 import sikrip.roaddyno.engine.DynoSimulationEntry;
 import sikrip.roaddyno.engine.DynoSimulationResult;
 import sikrip.roaddyno.model.LogValue;
-import sikrip.roaddyno.web.model.LoggedRunsEntry;
+import sikrip.roaddyno.web.model.RunPlot;
 
 /**
  * Responsible to provide the definitions of the dyno plots.
  */
 public final class ChartDataProvider {
 
-	public static final String RPM_AXIS = "rpm";
-	public static final String POWER_FIELD = "power_";
-	public static final String TORQUE_FIELD = "torque_";
+	private static final String RPM_AXIS = "rpm";
+	private static final String POWER_FIELD = "power_";
+	private static final String TORQUE_FIELD = "torque_";
 
 	private final Map<String, Object> root = new HashMap<>();
 	private final DecimalFormat df = new DecimalFormat("#.0");
@@ -36,7 +36,7 @@ public final class ChartDataProvider {
 	 * 		the dyno runs
 	 * @return a map with the definitions
 	 */
-	public Map<String, Object> createMainChartDefinition(List<LoggedRunsEntry> runs) {
+	public Map<String, Object> createMainChartDefinition(List<RunPlot> runs) {
 		root.clear();
 
 		root.put("type", "xy");
@@ -66,7 +66,7 @@ public final class ChartDataProvider {
 	 * 		the field to plot
 	 * @return a map with the definitions
 	 */
-	public Map<String, Object> createAuxiliaryChartDefinition(List<LoggedRunsEntry> runs, String field) {
+	public Map<String, Object> createAuxiliaryChartDefinition(List<RunPlot> runs, String field) {
 		root.clear();
 
 		root.put("type", "xy");
@@ -90,11 +90,11 @@ public final class ChartDataProvider {
 		return root;
 	}
 
-	private void createMaxPowerAndTorqueLabels(List<LoggedRunsEntry> runs) {
+	private void createMaxPowerAndTorqueLabels(List<RunPlot> runs) {
 		final List<Map<String, Object>> labelDefinitions = new ArrayList<>();
 
 		int y = 70;
-		for (LoggedRunsEntry run : runs) {
+		for (RunPlot run : runs) {
 
 			final Map<String, Object> labelDef = new HashMap<>();
 			DynoSimulationEntry maxPower = run.getMaxPower();
@@ -114,7 +114,7 @@ public final class ChartDataProvider {
 		root.put("allLabels", labelDefinitions);
 	}
 
-	private void createExportDefinition(List<LoggedRunsEntry> runs) {
+	private void createExportDefinition(List<RunPlot> runs) {
 
 		final StringBuilder graphNameBuilder = new StringBuilder();
 		for (int i = 0; i < runs.size(); i++) {
@@ -167,13 +167,13 @@ public final class ChartDataProvider {
 		root.put("export", rootMenu);
 	}
 
-	private void createGraphDefinitions(List<LoggedRunsEntry> runs) {
+	private void createGraphDefinitions(List<RunPlot> runs) {
 
 		final List<Map<String, Object>> graphs = new ArrayList<>();
 
 		for (int iRun = 0; iRun < runs.size(); iRun++) {
 
-			LoggedRunsEntry run = runs.get(iRun);
+			RunPlot run = runs.get(iRun);
 
 			Map<String, Object> graph = new HashMap<>();
 
@@ -207,7 +207,7 @@ public final class ChartDataProvider {
 		root.put("graphs", graphs);
 	}
 
-	private void createDataDefinition(List<LoggedRunsEntry> runs) {
+	private void createDataDefinition(List<RunPlot> runs) {
 		final List<Map<String, Object>> dataProvider = new ArrayList<>();
 		final List<Double> rpmValues = getRpmValuesUnion(runs);
 		for (Double rpm : rpmValues) {
@@ -233,13 +233,13 @@ public final class ChartDataProvider {
 		root.put("dataProvider", dataProvider);
 	}
 
-	private void createGraphDefinitions(List<LoggedRunsEntry> runs, String field) {
+	private void createGraphDefinitions(List<RunPlot> runs, String field) {
 
 		final List<Map<String, Object>> graphs = new ArrayList<>();
 
 		for (int iRun = 0; iRun < runs.size(); iRun++) {
 
-			final LoggedRunsEntry run = runs.get(iRun);
+			final RunPlot run = runs.get(iRun);
 
 			final Map<String, Object> graph = new HashMap<>();
 			graph.put("id", "Graph-" + field + iRun);
@@ -253,7 +253,7 @@ public final class ChartDataProvider {
 		root.put("graphs", graphs);
 	}
 
-	private void createDataDefinition(List<LoggedRunsEntry> runs, String field) {
+	private void createDataDefinition(List<RunPlot> runs, String field) {
 
 		List<Map<String, Object>> dataProvider = new ArrayList<>();
 
@@ -274,9 +274,9 @@ public final class ChartDataProvider {
 		root.put("dataProvider", dataProvider);
 	}
 
-	private List<Double> getRpmValuesUnion(List<LoggedRunsEntry> runs) {
+	private List<Double> getRpmValuesUnion(List<RunPlot> runs) {
 		List<Double> rpmValues = new ArrayList<>();
-		for (LoggedRunsEntry run : runs) {
+		for (RunPlot run : runs) {
 			for (int i = 0; i < run.getResult().getEntriesSize(); i++) {
 				rpmValues.add(run.getResult().getSmoothedRpmAt(i));
 			}
@@ -302,13 +302,13 @@ public final class ChartDataProvider {
 		root.put("legend", legend);
 	}
 
-	private void createAxesDefinitions(String yTitle, List<LoggedRunsEntry> runs) {
+	private void createAxesDefinitions(String yTitle, List<RunPlot> runs) {
 
 		Double maxYVal = null;
 
 		if (runs != null) {
 			maxYVal = 0.0;
-			for (LoggedRunsEntry run : runs) {
+			for (RunPlot run : runs) {
 				DynoSimulationEntry maxPower = run.getMaxPower();
 				DynoSimulationEntry maxTorque = run.getMaxTorque();
 				if (Math.max(maxPower.getPower(), maxTorque.getTorque()) > maxYVal) {

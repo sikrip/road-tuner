@@ -1,6 +1,7 @@
 package sikrip.roaddyno.web.model;
 
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 import sikrip.roaddyno.engine.DynoSimulationEntry;
@@ -9,12 +10,13 @@ import sikrip.roaddyno.engine.RunInfo;
 import sikrip.roaddyno.model.LogEntry;
 
 /**
- * Wraps the info of a logged run, including the simulation result, name identifier and color.
+ * Wraps all related info for a run plot.
+ * Includes the raw log entries, the simulation result, the name the identifier and color.
  */
-public class LoggedRunsEntry implements RunInfo, Comparable<LoggedRunsEntry> {
+public final class RunPlot implements RunInfo, Comparable<RunPlot> {
 
 	/**
-	 * The index of this entry.
+	 * The index of this run.
 	 */
 	private int index;
 
@@ -33,6 +35,9 @@ public class LoggedRunsEntry implements RunInfo, Comparable<LoggedRunsEntry> {
 	 */
 	private String color;
 
+	/**
+	 * Flag indicating if this run is active or not.
+	 */
 	private boolean active = true;
 
 	/**
@@ -43,12 +48,17 @@ public class LoggedRunsEntry implements RunInfo, Comparable<LoggedRunsEntry> {
 	/**
 	 * Contains the read log file data along with possible WOT runs within these data.
 	 */
-	private LogFileData logFileData;
+	private RunData runData;
 
 	/**
 	 * The selected WOT run to be used for the dyno simulation.
 	 */
 	private int selectedAccelerationIdx;
+
+	/**
+	 * A collection of fields to plot in auxiliary charts.
+	 */
+	private Set<String> auxiliaryPlotFields;
 
 	private Double finalGearRatio;
 	private Double gearRatio;
@@ -58,8 +68,16 @@ public class LoggedRunsEntry implements RunInfo, Comparable<LoggedRunsEntry> {
 	private Double frontalArea; // sqm
 	private Double coefficientOfDrag;
 
-	public LoggedRunsEntry() {
+	public RunPlot() {
 		id = UUID.randomUUID().toString();
+	}
+
+	public Set<String> getAuxiliaryPlotFields() {
+		return auxiliaryPlotFields;
+	}
+
+	public void setAuxiliaryPlotFields(Set<String> auxiliaryPlotFields) {
+		this.auxiliaryPlotFields = auxiliaryPlotFields;
 	}
 
 	public void setIndex(int index) {
@@ -183,7 +201,7 @@ public class LoggedRunsEntry implements RunInfo, Comparable<LoggedRunsEntry> {
 	}
 
 	public List<WOTRunBounds> getAccelerations() {
-		return logFileData.getWOTRunBoundses();
+		return runData.getWotRunBounds();
 	}
 
 	public void updateFrom(VehicleData vehicleData) {
@@ -197,24 +215,24 @@ public class LoggedRunsEntry implements RunInfo, Comparable<LoggedRunsEntry> {
 	}
 
 	public List<LogEntry> getSelectedLogEntries() {
-		WOTRunBounds selectedAcceleration = logFileData.getWOTRunBoundses().get(selectedAccelerationIdx);
-		return logFileData.getLogEntries().subList(selectedAcceleration.getStart(), selectedAcceleration.getEnd());
+		WOTRunBounds selectedAcceleration = runData.getWotRunBounds().get(selectedAccelerationIdx);
+		return runData.getLogEntries().subList(selectedAcceleration.getStart(), selectedAcceleration.getEnd());
 	}
 
 	public boolean hasWOTRuns(){
-		return !logFileData.getWOTRunBoundses().isEmpty();
+		return !runData.getWotRunBounds().isEmpty();
 	}
 
-	public void setLogData(LogFileData logFileData) {
-		this.logFileData = logFileData;
+	public void setLogData(RunData runData) {
+		this.runData = runData;
 	}
 
-	public LogFileData getLogFileData() {
-		return logFileData;
+	public RunData getRunData() {
+		return runData;
 	}
 
 	public boolean isRpmBased() {
-		return logFileData.isRpmBased();
+		return runData.isRpmBased();
 	}
 
 	public int getSelectedAccelerationIdx() {
@@ -234,7 +252,7 @@ public class LoggedRunsEntry implements RunInfo, Comparable<LoggedRunsEntry> {
 			return false;
 		}
 
-		LoggedRunsEntry run = (LoggedRunsEntry) o;
+		RunPlot run = (RunPlot) o;
 
 		return id.equals(run.id);
 
@@ -246,7 +264,7 @@ public class LoggedRunsEntry implements RunInfo, Comparable<LoggedRunsEntry> {
 	}
 
 	@Override
-	public int compareTo(LoggedRunsEntry o) {
+	public int compareTo(RunPlot o) {
 		return Integer.compare(this.index, o.index);
 	}
 }

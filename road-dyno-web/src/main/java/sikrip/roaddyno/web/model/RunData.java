@@ -11,9 +11,9 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
- * Contains the read log file data along with possible WOT runs within these data.
+ * Contains the log file data along with possible WOT runs within the log data.
  */
-public final class LogFileData {
+public final class RunData {
 
 	/**
 	 * True for log files that are RPM based (usually ECU logs)
@@ -27,21 +27,14 @@ public final class LogFileData {
 	private final List<LogEntry> logEntries;
 
 	/**
-	 * The bounds(indeces within the {@link #logEntries}) of the possible WOT runs.
+	 * The bounds(indices within the {@link #logEntries}) of the possible WOT runs.
 	 */
-	private final List<WOTRunBounds> WOTRunBoundses = new ArrayList<>();
+	private final List<WOTRunBounds> wotRunBounds = new ArrayList<>();
 
-	private final Set<String> auxiliaryPlotFields;
-
-	public LogFileData(boolean rpmBased, List<LogEntry> logEntries, String... auxiliaryPlotFields) {
+	public RunData(boolean rpmBased, List<LogEntry> logEntries) {
 		this.rpmBased = rpmBased;
 		this.logEntries = logEntries;
-		this.WOTRunBoundses.addAll(findAccelerationRuns(rpmBased, logEntries));
-		if (auxiliaryPlotFields != null) {
-			this.auxiliaryPlotFields = Arrays.stream(auxiliaryPlotFields).collect(Collectors.toSet());
-		} else {
-			this.auxiliaryPlotFields = null;
-		}
+		this.wotRunBounds.addAll(findAccelerationRuns(rpmBased, logEntries));
 	}
 
 	/**
@@ -86,11 +79,7 @@ public final class LogFileData {
 		return logEntries;
 	}
 
-	public List<WOTRunBounds> getWOTRunBoundses() {
-		return WOTRunBoundses;
-	}
-
-	public Set<String> getAuxiliaryPlotFields() {
-		return auxiliaryPlotFields;
+	public List<WOTRunBounds> getWotRunBounds() {
+		return wotRunBounds;
 	}
 }

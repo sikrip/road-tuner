@@ -7,8 +7,8 @@ import sikrip.roaddyno.engine.SimulationException;
 import sikrip.roaddyno.model.InvalidLogFileException;
 import sikrip.roaddyno.web.chart.PlotColorProvider;
 import sikrip.roaddyno.web.logger.LogFileReader;
-import sikrip.roaddyno.web.model.LogFileData;
-import sikrip.roaddyno.web.model.LoggedRunsEntry;
+import sikrip.roaddyno.web.model.RunData;
+import sikrip.roaddyno.web.model.RunPlot;
 import sikrip.roaddyno.web.model.VehicleData;
 
 import java.util.ArrayList;
@@ -19,15 +19,20 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-final class LoggedRunsRepository {
+/**
+ * Holds a collection of {@link RunPlot}s.
+ */
+final class RunPlotCollection {
 
 	private static final int MAX_RUNS = 5;
 
-	private final Map<String, LoggedRunsEntry> loggedRuns = new HashMap<>();
+	private final Map<String, RunPlot> loggedRuns = new HashMap<>();
 
 	private final PlotColorProvider colorProvider = new PlotColorProvider();
 
-	private final VehicleData vehicleData = new VehicleData();
+	private final VehicleData commonVehicleData = new VehicleData();
+
+	private int nextRunIndex = 0;
 
 	boolean isEmpty() {
 		return loggedRuns.isEmpty();
@@ -37,25 +42,25 @@ final class LoggedRunsRepository {
 		return loggedRuns.size() < MAX_RUNS;
 	}
 
-	void add(LoggedRunsEntry loggedRun, MultipartFile file) throws InvalidLogFileException {
-		final LogFileData logFileData = LogFileReader.readLog(file);
+	void add(RunPlot runPlot, MultipartFile file) throws InvalidLogFileException {
+		final RunData runData = LogFileReader.readLog(file);
 
-		if(logFileData.getWOTRunBoundses().isEmpty()){
+		if(runData.getWotRunBounds().isEmpty()){
 			throw new InvalidLogFileException("No WOT runs detected in the loaded file.");
 		}else {
-			loggedRun.setIndex(loggedRuns.size());
-			loggedRun.setSelectedAccelerationIdx(0);
-			loggedRun.setLogData(logFileData);
-			loggedRun.setRunName(file.getOriginalFilename());
-			loggedRun.updateFrom(vehicleData);
-
-			loggedRuns.put(loggedRun.getId(), loggedRun);
+			runPlot.setIndex(nextRunIndex++);
+			runPlot.setSelectedAccelerationIdx(0);
+			runPlot.setLogData(runData);
+			runPlot.setRunName(file.getOriginalFilename());
+			runPlot.updateFrom(commonVehicleData);
+			runPlot.setColor(colorProvider.pop());
+			loggedRuns.put(runPlot.getId(), runPlot);
 		}
 	}
 
-	void update(LoggedRunsEntry updatedEntry) throws SimulationException {
+	void update(RunPlot updatedEntry) throws SimulationException {
 
-		final LoggedRunsEntry existingEntry = get(updatedEntry.getId());
+		final RunPlot existingEntry = get(updatedEntry.getId());
 
 		if (existingEntry == null) {
 			throw new RuntimeException(String.format("Run with id %s not found", updatedEntry.getId()));
@@ -72,12 +77,7 @@ final class LoggedRunsRepository {
 			existingEntry.setCoefficientOfDrag(updatedEntry.getCoefficientOfDrag());
 			existingEntry.setSelectedAccelerationIdx(updatedEntry.getSelectedAccelerationIdx());
 
-			if (existingEntry.getColor() == null) {
-				// set color only the first time
-				existingEntry.setColor(colorProvider.pop());
-			}
-
-			vehicleData.updateFromRunInfo(updatedEntry);
+			commonVehicleData.updateFromRunInfo(updatedEntry);
 
 			// (re)run the dyno
 			final DynoSimulationResult dynoResult;
@@ -106,25 +106,25 @@ final class LoggedRunsRepository {
 	}
 
 	void delete(String id) {
-		final LoggedRunsEntry loggedRunsEntry = get(id);
-		if (loggedRunsEntry == null) {
+		final RunPlot runPlot = get(id);
+		if (runPlot == null) {
 			throw new RuntimeException(String.format("Run with id %s not found", id));
 		} else {
-			colorProvider.push(loggedRunsEntry.getColor());
+			colorProvider.push(runPlot.getColor());
 			loggedRuns.remove(id);
 		}
 	}
 
-	LoggedRunsEntry get(String id) {
+	RunPlot get(String id) {
 		return loggedRuns.get(id);
 	}
 
-	List<LoggedRunsEntry> getRunsToPlot() {
-		return loggedRuns.values().stream().filter(LoggedRunsEntry::isActive).collect(Collectors.toList());
+	List<RunPlot> getRunsToPlot() {
+		return loggedRuns.values().stream().filter(RunPlot::isActive).collect(Collectors.toList());
 	}
 
-	Set<String> getAuxiliaryPlotFields() {
-		return loggedRuns.values().stream().map(r -> r.getLogFileData().getAuxiliaryPlotFields())
+	Set<String> getAllAuxiliaryPlotFields() {
+		return loggedRuns.values().stream().map(RunPlot::getAuxiliaryPlotFields)
 				  .reduce(new HashSet<>(), (s1, s2) -> {
 				   	 Set<String> sum = new HashSet<>(s1);
 					 sum.addAll(s2);
@@ -132,22 +132,21 @@ final class LoggedRunsRepository {
 				  });
 	}
 
-	List<LoggedRunsEntry> getRuns() {
+	List<RunPlot> getRuns() {
 		return new ArrayList<>(loggedRuns.values());
 	}
 
 	void activate(String id, boolean active) {
-		final LoggedRunsEntry loggedRunsEntry = get(id);
-		if (loggedRunsEntry == null) {
+		final RunPlot runPlot = get(id);
+		if (runPlot == null) {
 			throw new RuntimeException(String.format("Run with id %s not found.", id));
 		} else {
-			loggedRunsEntry.setActive(active);
+			runPlot.setActive(active);
 		}
 	}
 
 	void clear() {
 		loggedRuns.clear();
 		colorProvider.reset();
-		//TODO clear vehicleData?
 	}
 }
