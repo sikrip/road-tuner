@@ -35,9 +35,14 @@ public final class RunPlot implements RunInfo, Comparable<RunPlot> {
 	private String color;
 
 	/**
-	 * Flag indicating if this run is active or not.
+	 * Flag indicating if the plot for this run is active or not.
 	 */
 	private boolean active = true;
+
+	/**
+	 * Flag indicating the user input data is filled or not.
+	 */
+	private boolean dataFilled = false;
 
 	/**
 	 * The simulation result of the run.
@@ -74,6 +79,14 @@ public final class RunPlot implements RunInfo, Comparable<RunPlot> {
 
 	public RunPlot() {
 		id = UUID.randomUUID().toString();
+	}
+
+	public boolean isDataFilled() {
+		return dataFilled;
+	}
+
+	public void setDataFilled(boolean dataFilled) {
+		this.dataFilled = dataFilled;
 	}
 
 	public String getAuxiliaryPlotFieldA() {

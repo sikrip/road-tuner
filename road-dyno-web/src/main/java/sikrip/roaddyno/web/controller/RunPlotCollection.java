@@ -35,7 +35,7 @@ final class RunPlotCollection {
 	private int nextRunIndex = 0;
 
 	boolean isEmpty() {
-		return loggedRuns.isEmpty();
+		return loggedRuns.values().stream().noneMatch(RunPlot::isDataFilled);
 	}
 
 	boolean canAddRun() {
@@ -104,6 +104,9 @@ final class RunPlotCollection {
 						existingEntry.getCoefficientOfDrag());
 			}
 			existingEntry.setResult(dynoResult);
+
+			// Mark user input as filled.
+			existingEntry.setDataFilled(true);
 		}
 	}
 
@@ -122,7 +125,7 @@ final class RunPlotCollection {
 	}
 
 	List<RunPlot> getRunsToPlot() {
-		return loggedRuns.values().stream().filter(RunPlot::isActive).collect(Collectors.toList());
+		return loggedRuns.values().stream().filter(r -> r.isDataFilled() && r.isActive()).collect(Collectors.toList());
 	}
 
 	Set<String> getAdditionalFields() {
@@ -157,7 +160,7 @@ final class RunPlotCollection {
 	}
 
 	List<RunPlot> getRuns() {
-		return new ArrayList<>(loggedRuns.values());
+		return loggedRuns.values().stream().filter(RunPlot::isDataFilled).collect(Collectors.toList());
 	}
 
 	void activate(String id, boolean active) {
