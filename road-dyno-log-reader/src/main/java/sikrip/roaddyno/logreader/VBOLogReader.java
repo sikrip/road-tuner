@@ -19,7 +19,7 @@ import sikrip.roaddyno.model.LogValue;
 public class VBOLogReader {
 
 	private static final String TIME_KEY = "time";
-	private static final String VELOCITY_KEY = "velocity kmh";    // FIXME this may be different btw vbo files
+	private static final String VELOCITY_KEY = "velocity kmh";
 	private static final String HEIGHT_KEY = "height";
 
 	public List<LogEntry> readLog(String filePath) throws IOException, InvalidLogFileException {
@@ -85,7 +85,7 @@ public class VBOLogReader {
 					final String header = headers.get(i);
 					switch (header) {
 					case TIME_KEY:
-						logEntryValues.put(TIME_KEY, new LogValue<>(Double.valueOf(rawValues.get(i)), "sec"));
+						logEntryValues.put(TIME_KEY, new LogValue<>(vboTimeToSeconds(rawValues.get(i)), "sec"));
 						break;
 					case VELOCITY_KEY:
 						logEntryValues.put(VELOCITY_KEY, new LogValue<>(Double.valueOf(rawValues.get(i)), "km/h"));
@@ -109,6 +109,26 @@ public class VBOLogReader {
 			}
 		}
 		return data;
+	}
+
+	/**
+	 * Converts the vbo format of time (UTC time since midnight in the form HH:MM:SS.SS) to seconds.milliseconds.
+	 *
+	 * @param time the time in the format used by the vbo files
+	 * @return the equivalent time in milliseconds
+	 */
+	private static double vboTimeToSeconds(String time) {
+		// Time: This is UTC time since midnight in the form HH:MM:SS.SS,
+		if (time.length() != 9) {
+			throw new IllegalArgumentException(String.format("Unexpected VBO time value %s", time));
+		}
+		final long hh = Long.valueOf(time.substring(0, 2));
+		final long mm = Long.valueOf(time.substring(2, 4));
+		final long ss = Long.valueOf(time.substring(4, 6));
+		final long millis = Long.valueOf(time.substring(7, 9)) * 10;
+		final long timeMillis = millis + ss * 1000 + mm * 60 * 1000 + hh * 60 * 60 * 1000;
+
+		return timeMillis / 1000.0;
 	}
 
 	private List<String> getRawValues(String logLine, int expectedNumberOfValues) throws InvalidLogFileException {

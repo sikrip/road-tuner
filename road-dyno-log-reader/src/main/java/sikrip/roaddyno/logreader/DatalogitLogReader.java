@@ -26,6 +26,17 @@ public class DatalogitLogReader {
 	private static final String RPM_HEADER_KEY = "RPM";
 	private static final String TPS_HEADER_KEY = "VTA V";
 
+	/**
+	 * A mapping between known headers -> units.
+	 */
+	private static final Map<String, String> KNOWN_UNITS = new HashMap<>();
+	static
+	{
+		KNOWN_UNITS.put(TIME_HEADER_KEY, "sec");
+		KNOWN_UNITS.put(RPM_HEADER_KEY, "rpm");
+		KNOWN_UNITS.put(TPS_HEADER_KEY, "mv");
+	}
+
 	public final List<LogEntry> readLog(String filePath) throws IOException, InvalidLogFileException {
 		final File logFile = new File(filePath);
 		try (InputStream fileStream = new FileInputStream(logFile);) {
@@ -88,8 +99,9 @@ public class DatalogitLogReader {
 			} catch (NumberFormatException e) {
 				/*no op*/
 			}
-			valuesMap.put(
-				i < headers.size() ? headers.get(i) : "Unknown", new LogValue<>(value, "Unknown unit")
+			final String header = i < headers.size() ? headers.get(i) : "Unknown";
+			final String unit = KNOWN_UNITS.getOrDefault(header, "");
+			valuesMap.put(header, new LogValue<>(value, unit)
 			);
 		}
 		return new LogEntry(valuesMap, timeColumnKey, rpmColumnKey, tpsColumnKey);

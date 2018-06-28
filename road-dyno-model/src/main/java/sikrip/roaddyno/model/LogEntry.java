@@ -4,6 +4,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+/**
+ * Represents a single log data line.
+ */
 public class LogEntry {
 
 	private final Map<String, LogValue<Double>> values;

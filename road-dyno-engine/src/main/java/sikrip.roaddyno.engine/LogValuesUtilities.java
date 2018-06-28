@@ -18,11 +18,13 @@ import org.apache.commons.math3.analysis.interpolation.UnivariateInterpolator;
 import sikrip.roaddyno.model.LogEntry;
 
 /**
- * Smooths the RPM values of the given log entries using the Local Regression Algorithm (Loess, Lowess).
+ * Utility functions for {@link LogEntry}.
  */
 final class LogValuesUtilities {
 
-	private LogValuesUtilities(){}
+	private LogValuesUtilities(){
+		// no instantiation
+	}
 
 	/**
 	 * Smooths the velocity values of the given log entries using the Local Regression Algorithm (Loess, Lowess).
@@ -50,7 +52,18 @@ final class LogValuesUtilities {
 		return smoothedEntries;
 	}
 
-	static AccelerationBounds getAccelerationBoundsByRPM(double tpsWotThreshold, List<LogEntry> rawEntries, int offset) {
+	/**
+	 * Finds the start/finish indices of the first acceleration run contained in the provided log entries from the given
+	 * offset onwards.
+	 *
+	 * This method calculates the bounds based on TPS values.
+	 *
+	 * @param tpsWotPercent the TPS percentage that will signify a WOT situation
+	 * @param rawEntries the log entries
+	 * @param offset the off from which to start searching
+	 * @return the start/finish indices of the first acceleration run
+	 */
+	static AccelerationBounds getAccelerationBoundsByRPM(double tpsWotPercent, List<LogEntry> rawEntries, int offset) {
 
 		final int logSize = rawEntries.size();
 		final double maxTps = getMaxTps(rawEntries);
@@ -58,7 +71,7 @@ final class LogValuesUtilities {
 		int start;
 
 		for (start = offset; start < rawEntries.size(); start++) {
-			if (rawEntries.get(start).getTps().getValue() >= tpsWotThreshold * maxTps) {
+			if (rawEntries.get(start).getTps().getValue() >= tpsWotPercent * maxTps) {
 				break;
 			}
 		}
@@ -66,7 +79,7 @@ final class LogValuesUtilities {
 		if (start < logSize - 1) {
 			int end;
 			for (end = start + 1; end < rawEntries.size(); end++) {
-				if (rawEntries.get(end).getTps().getValue() < tpsWotThreshold * maxTps) {
+				if (rawEntries.get(end).getTps().getValue() < tpsWotPercent * maxTps) {
 					break;
 				}
 			}
@@ -75,6 +88,17 @@ final class LogValuesUtilities {
 		return null;
 	}
 
+	/**
+	 * Finds the start/finish indices of the first acceleration run contained in the provided log entries from the given
+	 * offset onwards.
+	 *
+	 * This method calculates the bounds based on speed/acceleration.
+	 *
+	 * @param decelerationCountThreshold how many decelerations will signify the end of the acceleration
+	 * @param rawEntries the log entries
+	 * @param offset the off from which to start searching
+	 * @return the start/finish indices of the first acceleration run
+	 */
 	static AccelerationBounds getAccelerationBoundsBySpeed(int decelerationCountThreshold, List<LogEntry> rawEntries, int offset) {
 
 		final int logSize = rawEntries.size();
@@ -104,6 +128,12 @@ final class LogValuesUtilities {
 		return new AccelerationBounds(start, end);
 	}
 
+	/**
+	 * Gets the maximum TPS value from the provided list of log entries.
+	 *
+	 * @param logEntries the log entries
+	 * @return the maximum TPS value
+	 */
 	private static double getMaxTps(List<LogEntry> logEntries) {
 		return logEntries.stream().mapToDouble(e -> e.getTps().getValue()).max().orElseThrow(NoSuchElementException::new);
 	}
@@ -244,15 +274,15 @@ final class LogValuesUtilities {
 		private double[] timeValues;
 		private double[] rawVelocityValues;
 
-		public RawValuesExtractor(List<LogEntry> rawEntries) {
+		RawValuesExtractor(List<LogEntry> rawEntries) {
 			this.rawEntries = rawEntries;
 		}
 
-		public double[] getTimeValues() {
+		double[] getTimeValues() {
 			return timeValues;
 		}
 
-		public double[] getRawVelocityValues() {
+		double[] getRawVelocityValues() {
 			return rawVelocityValues;
 		}
 

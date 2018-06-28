@@ -1,5 +1,9 @@
 package sikrip.roaddyno.logreader;
 
+import sikrip.roaddyno.model.InvalidLogFileException;
+import sikrip.roaddyno.model.LogEntry;
+import sikrip.roaddyno.model.LogValue;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -11,10 +15,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import sikrip.roaddyno.model.InvalidLogFileException;
-import sikrip.roaddyno.model.LogEntry;
-import sikrip.roaddyno.model.LogValue;
 
 /**
  * Read log of mls format (megasquirt).

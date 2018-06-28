@@ -11,7 +11,7 @@ import sikrip.roaddyno.model.LogEntry;
  */
 public final class DynoSimulator {
 
-	public static final int MIN_LOG_ENTRIES_COUNT = 10;
+	private static final int MIN_LOG_ENTRIES_COUNT = 10;
 
 	private DynoSimulator() {
 	}
@@ -43,7 +43,7 @@ public final class DynoSimulator {
 
 		validateParameters(rpmLogEntries, fgr, gr, tyreDiameter, carWeight, occupantsWeight, fa, cd);
 
-		Iterator<LogEntry> logEntryIterator = null;
+		Iterator<LogEntry> logEntryIterator;
 		try {
 			logEntryIterator = LogValuesUtilities.smoothVelocity(rpmLogEntries).iterator();
 		} catch (Exception e) {
@@ -53,7 +53,7 @@ public final class DynoSimulator {
 		LogEntry to = null;
 		List<DynoSimulationEntry> dynoRunEntries = new ArrayList<>();
 
-		double totalWeight = carWeight + occupantsWeight;
+		final double totalWeight = carWeight + occupantsWeight;
 
 		while (logEntryIterator.hasNext()) {
 			if (from == null) {
