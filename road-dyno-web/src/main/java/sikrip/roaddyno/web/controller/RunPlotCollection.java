@@ -11,7 +11,6 @@ import sikrip.roaddyno.web.model.RunData;
 import sikrip.roaddyno.web.model.RunPlot;
 import sikrip.roaddyno.web.model.VehicleData;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
