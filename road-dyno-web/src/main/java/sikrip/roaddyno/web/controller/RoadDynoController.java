@@ -70,6 +70,7 @@ public class RoadDynoController {
 				runPlotCollection.add(runInfo, file);
 
 				// show update run form
+				model.addAttribute("additionalPlotFields", runPlotCollection.getAdditionalFields());
 				model.addAttribute("runInfo", runInfo);
 				model.addAttribute("nav", "dyno-plots");
 
@@ -87,6 +88,7 @@ public class RoadDynoController {
 		RunPlot runPlot = runPlotCollection.get(id);
 		if (runPlot != null) {
 			model.addAttribute("runInfo", runPlot);
+			model.addAttribute("additionalPlotFields", runPlotCollection.getAdditionalFields());
 			model.addAttribute("nav", "dyno-plots");
 			return "update-run-form";
 		}

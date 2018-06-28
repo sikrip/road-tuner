@@ -1,13 +1,12 @@
 package sikrip.roaddyno.web.model;
 
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
-
 import sikrip.roaddyno.engine.DynoSimulationEntry;
 import sikrip.roaddyno.engine.DynoSimulationResult;
 import sikrip.roaddyno.engine.RunInfo;
 import sikrip.roaddyno.model.LogEntry;
+
+import java.util.List;
+import java.util.UUID;
 
 /**
  * Wraps all related info for a run plot.
@@ -56,9 +55,14 @@ public final class RunPlot implements RunInfo, Comparable<RunPlot> {
 	private int selectedAccelerationIdx;
 
 	/**
-	 * A collection of fields to plot in auxiliary charts.
+	 * Field for the first auxiliary chart.
 	 */
-	private Set<String> auxiliaryPlotFields;
+	private String auxiliaryPlotFieldA;
+
+	/**
+	 * Field for the second auxiliary chart.
+	 */
+	private String auxiliaryPlotFieldB;
 
 	private Double finalGearRatio;
 	private Double gearRatio;
@@ -72,12 +76,20 @@ public final class RunPlot implements RunInfo, Comparable<RunPlot> {
 		id = UUID.randomUUID().toString();
 	}
 
-	public Set<String> getAuxiliaryPlotFields() {
-		return auxiliaryPlotFields;
+	public String getAuxiliaryPlotFieldA() {
+		return auxiliaryPlotFieldA;
 	}
 
-	public void setAuxiliaryPlotFields(Set<String> auxiliaryPlotFields) {
-		this.auxiliaryPlotFields = auxiliaryPlotFields;
+	public void setAuxiliaryPlotFieldA(String auxiliaryPlotFieldA) {
+		this.auxiliaryPlotFieldA = auxiliaryPlotFieldA;
+	}
+
+	public String getAuxiliaryPlotFieldB() {
+		return auxiliaryPlotFieldB;
+	}
+
+	public void setAuxiliaryPlotFieldB(String auxiliaryPlotFieldB) {
+		this.auxiliaryPlotFieldB = auxiliaryPlotFieldB;
 	}
 
 	public void setIndex(int index) {

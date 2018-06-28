@@ -76,6 +76,8 @@ final class RunPlotCollection {
 			existingEntry.setFrontalArea(updatedEntry.getFrontalArea());
 			existingEntry.setCoefficientOfDrag(updatedEntry.getCoefficientOfDrag());
 			existingEntry.setSelectedAccelerationIdx(updatedEntry.getSelectedAccelerationIdx());
+			existingEntry.setAuxiliaryPlotFieldA(updatedEntry.getAuxiliaryPlotFieldA());
+			existingEntry.setAuxiliaryPlotFieldB(updatedEntry.getAuxiliaryPlotFieldB());
 
 			commonVehicleData.updateFromRunInfo(updatedEntry);
 
@@ -123,13 +125,35 @@ final class RunPlotCollection {
 		return loggedRuns.values().stream().filter(RunPlot::isActive).collect(Collectors.toList());
 	}
 
+	Set<String> getAdditionalFields() {
+		return loggedRuns.values()
+				.stream()
+				.map(r -> r.getRunData().getLogEntries().get(0).getDataKeys())
+				.reduce(new HashSet<>(), (s1, s2) -> {
+					Set<String> sum = new HashSet<>(s1);
+					sum.addAll(s2);
+					return sum;
+				});
+	}
+
 	Set<String> getAllAuxiliaryPlotFields() {
-		return loggedRuns.values().stream().map(RunPlot::getAuxiliaryPlotFields)
-				  .reduce(new HashSet<>(), (s1, s2) -> {
-				   	 Set<String> sum = new HashSet<>(s1);
-					 sum.addAll(s2);
-					 return sum;
-				  });
+		return loggedRuns.values()
+		  	.stream()
+			.map(r -> {
+				Set<String> auxiliaryRuns = new HashSet<>();
+				if (r.getAuxiliaryPlotFieldA() != null && !"".equals(r.getAuxiliaryPlotFieldA())) {
+					auxiliaryRuns.add(r.getAuxiliaryPlotFieldA());
+				}
+				if (r.getAuxiliaryPlotFieldB() != null && !"".equals(r.getAuxiliaryPlotFieldB())) {
+					auxiliaryRuns.add(r.getAuxiliaryPlotFieldB());
+				}
+				return auxiliaryRuns;
+			})
+		  	.reduce(new HashSet<>(), (s1, s2) -> {
+			 	Set<String> sum = new HashSet<>(s1);
+			 	sum.addAll(s2);
+			 	return sum;
+		  	});
 	}
 
 	List<RunPlot> getRuns() {

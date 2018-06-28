@@ -77,6 +77,24 @@
         </div>
     </fieldset>
 
+    <fieldset>
+        <legend>Additional fields to plot</legend>
+        <label class="col-sm-2 control-label" for="cd">Field A</label>
+        <div class="col-sm-3">
+            <select class="form-control" th:field="*{auxiliaryPlotFieldA}"  id="auxiliaryPlotFieldA">
+                <option value=""> </option>
+                <option th:each="plotField : ${additionalPlotFields}" th:value="${plotField}" th:text="${plotField}"/>
+            </select>
+        </div>
+        <label class="col-sm-2 control-label" for="cd">Field B</label>
+        <div class="col-sm-3">
+            <select class="form-control" th:field="*{auxiliaryPlotFieldB}"  id="auxiliaryPlotFieldB">
+                <option value=""> </option>
+                <option th:each="plotField : ${additionalPlotFields}" th:value="${plotField}" th:text="${plotField}"/>
+            </select>
+        </div>
+    </fieldset>
+
     <script>
         $(document).ready(function () {
 
