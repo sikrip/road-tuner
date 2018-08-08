@@ -1,16 +1,17 @@
 package sikrip.roaddyno.web.model;
 
-import sikrip.roaddyno.engine.DynoSimulationEntry;
-import sikrip.roaddyno.engine.DynoSimulationResult;
-import sikrip.roaddyno.engine.RunInfo;
+import sikrip.roaddyno.model.DynoSimulationEntry;
+import sikrip.roaddyno.model.DynoSimulationResult;
 import sikrip.roaddyno.model.LogEntry;
+import sikrip.roaddyno.model.RunInfo;
+import sikrip.roaddyno.model.WotRunBounds;
 
 import java.util.List;
 import java.util.UUID;
 
 /**
  * Wraps all related info for a run plot.
- * Includes the raw log entries, the simulation result, the name the identifier and color.
+ * Includes the raw log entries, the dyno simulation result, the name, the identifier and color.
  */
 public final class RunPlot implements RunInfo, Comparable<RunPlot> {
 
@@ -225,7 +226,7 @@ public final class RunPlot implements RunInfo, Comparable<RunPlot> {
 		return result != null ? result.maxTorque() : null;
 	}
 
-	public List<WOTRunBounds> getAccelerations() {
+	public List<WotRunBounds> getAccelerations() {
 		return runData.getWotRunBounds();
 	}
 
@@ -240,7 +241,7 @@ public final class RunPlot implements RunInfo, Comparable<RunPlot> {
 	}
 
 	public List<LogEntry> getSelectedLogEntries() {
-		WOTRunBounds selectedAcceleration = runData.getWotRunBounds().get(selectedAccelerationIdx);
+		WotRunBounds selectedAcceleration = runData.getWotRunBounds().get(selectedAccelerationIdx);
 		return runData.getLogEntries().subList(selectedAcceleration.getStart(), selectedAcceleration.getEnd());
 	}
 

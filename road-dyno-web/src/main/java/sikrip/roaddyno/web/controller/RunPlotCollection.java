@@ -1,9 +1,9 @@
 package sikrip.roaddyno.web.controller;
 
 import org.springframework.web.multipart.MultipartFile;
-import sikrip.roaddyno.engine.DynoSimulationResult;
+import sikrip.roaddyno.model.DynoSimulationResult;
 import sikrip.roaddyno.engine.DynoSimulator;
-import sikrip.roaddyno.engine.SimulationException;
+import sikrip.roaddyno.model.SimulationException;
 import sikrip.roaddyno.model.InvalidLogFileException;
 import sikrip.roaddyno.web.chart.PlotColorProvider;
 import sikrip.roaddyno.web.logger.LogFileReader;
@@ -123,6 +123,10 @@ final class RunPlotCollection {
 		return loggedRuns.get(id);
 	}
 
+	List<RunPlot> getRuns() {
+		return loggedRuns.values().stream().filter(RunPlot::isDataFilled).collect(Collectors.toList());
+	}
+
 	List<RunPlot> getRunsToPlot() {
 		return loggedRuns.values().stream().filter(r -> r.isDataFilled() && r.isActive()).collect(Collectors.toList());
 	}
@@ -156,10 +160,6 @@ final class RunPlotCollection {
 			 	sum.addAll(s2);
 			 	return sum;
 		  	});
-	}
-
-	List<RunPlot> getRuns() {
-		return loggedRuns.values().stream().filter(RunPlot::isDataFilled).collect(Collectors.toList());
 	}
 
 	void activate(String id, boolean active) {

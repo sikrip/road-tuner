@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.junit.Test;
 
+import sikrip.roaddyno.model.DynoSimulationResult;
 import sikrip.roaddyno.model.LogEntry;
 import sikrip.roaddyno.logreader.VBOLogReader;
 

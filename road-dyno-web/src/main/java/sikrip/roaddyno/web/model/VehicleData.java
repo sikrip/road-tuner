@@ -1,6 +1,6 @@
 package sikrip.roaddyno.web.model;
 
-import sikrip.roaddyno.engine.RunInfo;
+import sikrip.roaddyno.model.RunInfo;
 
 public class VehicleData {
 

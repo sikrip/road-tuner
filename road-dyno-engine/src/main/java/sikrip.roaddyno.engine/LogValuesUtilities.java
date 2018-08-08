@@ -16,6 +16,7 @@ import org.apache.commons.math3.analysis.interpolation.SplineInterpolator;
 import org.apache.commons.math3.analysis.interpolation.UnivariateInterpolator;
 
 import sikrip.roaddyno.model.LogEntry;
+import sikrip.roaddyno.model.WotRunBounds;
 
 /**
  * Utility functions for {@link LogEntry}.
@@ -63,7 +64,7 @@ final class LogValuesUtilities {
 	 * @param offset the off from which to start searching
 	 * @return the start/finish indices of the first acceleration run
 	 */
-	static AccelerationBounds getAccelerationBoundsByRPM(double tpsWotPercent, List<LogEntry> rawEntries, int offset) {
+	static WotRunBounds getWotBoundsByRPM(double tpsWotPercent, List<LogEntry> rawEntries, int offset) {
 
 		final int logSize = rawEntries.size();
 		final double maxTps = getMaxTps(rawEntries);
@@ -83,7 +84,8 @@ final class LogValuesUtilities {
 					break;
 				}
 			}
-			return new AccelerationBounds(start, Math.min(end, logSize-1));
+            final int realEnd = Math.min(end, logSize - 1);
+            return new WotRunBounds(start, realEnd, rawEntries.get(start), rawEntries.get(realEnd));
 		}
 		return null;
 	}
@@ -99,7 +101,7 @@ final class LogValuesUtilities {
 	 * @param offset the off from which to start searching
 	 * @return the start/finish indices of the first acceleration run
 	 */
-	static AccelerationBounds getAccelerationBoundsBySpeed(int decelerationCountThreshold, List<LogEntry> rawEntries, int offset) {
+	static WotRunBounds getWotBoundsBySpeed(int decelerationCountThreshold, List<LogEntry> rawEntries, int offset) {
 
 		final int logSize = rawEntries.size();
 
@@ -125,7 +127,7 @@ final class LogValuesUtilities {
 
 		start = Math.min(start, logSize);
 		end = Math.min(end, logSize);
-		return new AccelerationBounds(start, end);
+		return new WotRunBounds(start, end, rawEntries.get(start), rawEntries.get(end));
 	}
 
 	/**

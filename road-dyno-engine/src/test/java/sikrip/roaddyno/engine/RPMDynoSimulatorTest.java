@@ -10,8 +10,10 @@ import java.util.Map;
 import org.junit.Test;
 import org.mockito.Mockito;
 
+import sikrip.roaddyno.model.DynoSimulationResult;
 import sikrip.roaddyno.model.LogEntry;
 import sikrip.roaddyno.model.LogValue;
+import sikrip.roaddyno.model.SimulationException;
 
 /**
  * Unit tests for {@link DynoSimulator}

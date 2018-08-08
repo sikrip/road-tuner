@@ -1,5 +1,12 @@
 package sikrip.roaddyno.model;
 
+import java.util.Objects;
+
+/**
+ * A single log value along with it's unit.
+ *
+ * @param <V> the value data type
+ */
 public class LogValue<V> {
 
 	private V value;
@@ -27,4 +34,21 @@ public class LogValue<V> {
 		return value + "(" + unit + ')';
 	}
 
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) {
+			return true;
+		}
+		if (!(o instanceof LogValue)) {
+			return false;
+		}
+		LogValue<?> logValue = (LogValue<?>) o;
+		return Objects.equals(value, logValue.value) &&
+				Objects.equals(unit, logValue.unit);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(value, unit);
+	}
 }

@@ -4,6 +4,7 @@ package sikrip.roaddyno.engine;
 import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
+import sikrip.roaddyno.model.DynoSimulationEntry;
 
 /**
  * Tests for {@link DynoSimulationEntry}.

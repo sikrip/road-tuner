@@ -2,6 +2,7 @@ package sikrip.roaddyno.model;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -15,6 +16,8 @@ public class LogEntry {
 	private final String tpsKey;
 
 	public LogEntry(Map<String, LogValue<Double>> values, String timeKey, String velocityKey) {
+		assert timeKey != null;
+		assert velocityKey != null;
 		this.values = new HashMap<>(values);
 		this.timeKey = timeKey;
 		this.velocityKey = velocityKey;
@@ -68,5 +71,22 @@ public class LogEntry {
 		}
 
 		return stringBuilder.toString();
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) {
+			return true;
+		}
+		if (!(o instanceof LogEntry)) {
+			return false;
+		}
+		LogEntry logEntry = (LogEntry) o;
+		return Objects.equals(getTime(), logEntry.getTime());
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(getTime());
 	}
 }

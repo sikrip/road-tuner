@@ -1,4 +1,4 @@
-package sikrip.roaddyno.engine;
+package sikrip.roaddyno.model;
 
 import java.text.NumberFormat;
 
@@ -17,7 +17,7 @@ public class DynoSimulationEntry {
 	 */
 	private final double power;
 
-	DynoSimulationEntry(double rpm, double power) {
+	public DynoSimulationEntry(double rpm, double power) {
 		this.rpm = rpm;
 		this.power = power;
 	}
@@ -32,7 +32,7 @@ public class DynoSimulationEntry {
 
 	public double getTorque() {
 		// http://www.epi-eng.com/piston_engine_technology/power_and_torque.htm
-		//HP = Torque x RPM ÷ 5252
+		// HP = Torque x RPM ÷ 5252
 		return power * 5252 / rpm;
 	}
 

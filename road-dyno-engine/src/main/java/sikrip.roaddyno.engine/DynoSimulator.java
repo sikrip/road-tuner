@@ -4,7 +4,10 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import sikrip.roaddyno.model.DynoSimulationEntry;
+import sikrip.roaddyno.model.DynoSimulationResult;
 import sikrip.roaddyno.model.LogEntry;
+import sikrip.roaddyno.model.SimulationException;
 
 /**
  * Simulates a dyno for a given run based on the log values, gearing weight and aerodynamic attributes of the car.
@@ -39,7 +42,7 @@ public final class DynoSimulator {
 	 * @return a dyno run that holds the result of the dyno simulation
 	 */
 	public static DynoSimulationResult runByRPM(List<LogEntry> rpmLogEntries, double fgr, double gr, double tyreDiameter,
-			double carWeight, double occupantsWeight, double fa, double cd) throws SimulationException {
+												double carWeight, double occupantsWeight, double fa, double cd) throws SimulationException {
 
 		validateParameters(rpmLogEntries, fgr, gr, tyreDiameter, carWeight, occupantsWeight, fa, cd);
 
@@ -47,7 +50,7 @@ public final class DynoSimulator {
 		try {
 			logEntryIterator = LogValuesUtilities.smoothVelocity(rpmLogEntries).iterator();
 		} catch (Exception e) {
-			throw new SimulationException(e.getMessage());
+			throw new SimulationException("Could not smooth rpm values.", e);
 		}
 		LogEntry from = null;
 		LogEntry to = null;
@@ -119,7 +122,7 @@ public final class DynoSimulator {
 		try {
 			logEntryIterator = LogValuesUtilities.smoothVelocity(speedLogEntries).iterator();
 		} catch (Exception e) {
-			throw new SimulationException(e.getMessage());
+			throw new SimulationException("Could not smooth speed values.", e);
 		}
 
 		final double totalWeight = carWeight + occupantsWeight;

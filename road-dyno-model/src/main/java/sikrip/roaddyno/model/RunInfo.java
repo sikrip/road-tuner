@@ -1,6 +1,4 @@
-package sikrip.roaddyno.engine;
-
-import java.util.List;
+package sikrip.roaddyno.model;
 
 /**
  * API for classes representing a run.

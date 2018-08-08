@@ -8,8 +8,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import sikrip.roaddyno.engine.DynoSimulationEntry;
-import sikrip.roaddyno.engine.DynoSimulationResult;
+import sikrip.roaddyno.model.DynoSimulationEntry;
+import sikrip.roaddyno.model.DynoSimulationResult;
 import sikrip.roaddyno.model.LogValue;
 import sikrip.roaddyno.web.model.RunPlot;
 

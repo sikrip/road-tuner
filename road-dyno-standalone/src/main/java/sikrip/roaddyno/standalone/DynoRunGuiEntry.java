@@ -7,8 +7,8 @@ import java.util.List;
 
 import javax.swing.*;
 
-import sikrip.roaddyno.engine.RunInfo;
-import sikrip.roaddyno.engine.DynoSimulationResult;
+import sikrip.roaddyno.model.RunInfo;
+import sikrip.roaddyno.model.DynoSimulationResult;
 import sikrip.roaddyno.model.LogEntry;
 import sikrip.roaddyno.standalone.util.FontUtil;
 
@@ -77,7 +77,7 @@ final class DynoRunGuiEntry implements ActionListener {
 	}
 
 	List<LogEntry> getLogEntries() {
-		return dynoSimulationResult.getLogEntries();
+		return null;
 	}
 
 	Color getColor() {

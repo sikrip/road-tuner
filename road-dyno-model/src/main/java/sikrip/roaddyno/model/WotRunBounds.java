@@ -1,14 +1,12 @@
-package sikrip.roaddyno.web.model;
+package sikrip.roaddyno.model;
 
 import java.text.DecimalFormat;
-
-import sikrip.roaddyno.model.LogEntry;
-import sikrip.roaddyno.model.LogValue;
+import java.util.Objects;
 
 /**
- * Contains the indices of a possible WOT run within a collection of {@link LogEntry} data.
+ * Holds the start and end index of a WOT run.
  */
-public class WOTRunBounds {
+public final class WotRunBounds implements Comparable<WotRunBounds> {
 
 	/**
 	 * Start index of the WOT.
@@ -30,7 +28,7 @@ public class WOTRunBounds {
 	 */
 	private final LogEntry endEntry;
 
-	public WOTRunBounds(int start, int end, LogEntry startEntry, LogEntry endEntry) {
+	public WotRunBounds(int start, int end, LogEntry startEntry, LogEntry endEntry) {
 		this.start = start;
 		this.end = end;
 		this.startEntry = startEntry;
@@ -83,5 +81,28 @@ public class WOTRunBounds {
 			}
 		}
 		return builder.toString();
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) {
+			return true;
+		}
+		if (!(o instanceof WotRunBounds)) {
+			return false;
+		}
+		WotRunBounds that = (WotRunBounds) o;
+		return start == that.start &&
+				end == that.end;
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(start, end);
+	}
+
+	@Override
+	public int compareTo(WotRunBounds o) {
+		return Double.compare(o.getVelocityDiff(), getVelocityDiff());
 	}
 }

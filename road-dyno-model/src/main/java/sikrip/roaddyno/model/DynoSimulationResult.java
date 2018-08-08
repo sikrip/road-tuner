@@ -1,11 +1,8 @@
-package sikrip.roaddyno.engine;
+package sikrip.roaddyno.model;
 
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
-import sikrip.roaddyno.model.LogEntry;
-import sikrip.roaddyno.model.LogValue;
 
 /**
  * A dyno simulation result.
@@ -14,8 +11,6 @@ public class DynoSimulationResult {
 
 	/**
 	 * The raw log entries that produced this result.
-	 *
-	 * FIXME remove this list
 	 */
 	private final List<LogEntry> logEntries;
 
@@ -144,9 +139,4 @@ public class DynoSimulationResult {
 	public int getEntriesSize() {
 		return entries.size();
 	}
-
-	public List<LogEntry> getLogEntries() {
-		return logEntries;
-	}
-
 }

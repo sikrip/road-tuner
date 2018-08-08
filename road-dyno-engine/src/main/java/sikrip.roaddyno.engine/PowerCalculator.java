@@ -60,11 +60,6 @@ final class PowerCalculator {
 	}
 
 	/**
-	 * FIXME check if this formula is valid
-	 *
-	 * @return
-	 */
-	/**
 	 * Calculates the power in HP needed to overcome the rolling resistance of the tyres.
 	 *
 	 * @param weight the weight of the car in kg

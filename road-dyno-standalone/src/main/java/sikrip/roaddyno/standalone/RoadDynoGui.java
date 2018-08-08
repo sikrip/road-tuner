@@ -13,7 +13,7 @@ import org.jfree.chart.ChartPanel;
 
 import sikrip.roaddyno.engine.DynoSimulator;
 import sikrip.roaddyno.logreader.MegasquirtLogReader;
-import sikrip.roaddyno.engine.DynoSimulationResult;
+import sikrip.roaddyno.model.DynoSimulationResult;
 import sikrip.roaddyno.model.LogEntry;
 
 final class RoadDynoGui extends JFrame implements ActionListener {
