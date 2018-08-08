@@ -13,9 +13,9 @@ import sikrip.roaddyno.model.LogEntry;
 import sikrip.roaddyno.model.WotRunBounds;
 
 /**
- * Tests for {@link DynoRunDetector}.
+ * Tests for {@link WotRunDetector}.
  */
-public class DynoRunDetectorTest {
+public class WotRunDetectorTest {
 
 	@Test
 	public void verifySampleMSLFiles() throws Exception {
@@ -23,7 +23,7 @@ public class DynoRunDetectorTest {
 		MegasquirtLogReader logReader = new MegasquirtLogReader();
 
 		List<LogEntry> logEntries = logReader.readLog(getTestResourceUrl("/sample-dyno-run.msl").getPath());
-		List<WotRunBounds> wotRunBounds = DynoRunDetector.getWotRunBoundsByRPM(logEntries);
+		List<WotRunBounds> wotRunBounds = WotRunDetector.getWotRunBounds(true, logEntries);
 
 		assertEquals(1, wotRunBounds.size());
 		assertEquals(464, wotRunBounds.get(0).getStart());
@@ -35,7 +35,7 @@ public class DynoRunDetectorTest {
 		VBOLogReader logReader = new VBOLogReader();
 
 		List<LogEntry> logEntries = logReader.readLog(getTestResourceUrl("/sample-vbo.vbo").getPath());
-		WotRunBounds wotRunBounds = DynoRunDetector.getWotRunBoundsBySpeed(logEntries).get(0);
+		WotRunBounds wotRunBounds = WotRunDetector.getWotRunBounds(false, logEntries).get(0);
 
 		System.out.println("sample-vbo.vbo " + wotRunBounds);
 		System.out.println(logEntries.get(wotRunBounds.getStart()) + " => " + logEntries.get(wotRunBounds.getEnd()));
@@ -51,7 +51,7 @@ public class DynoRunDetectorTest {
 		List<LogEntry> logEntries = logReader.readLog(getTestResourceUrl("/sample-vbo-1.vbo").getPath());
 
 		System.out.println("sample-vbo.vbo");
-		for (WotRunBounds wotRunBounds : DynoRunDetector.getWotRunBoundsBySpeed(logEntries)) {
+		for (WotRunBounds wotRunBounds : WotRunDetector.getWotRunBounds(false, logEntries)) {
 			System.out.println("" + wotRunBounds.getStart() + ": " + logEntries.get(wotRunBounds.getStart()).getVelocity()
 					+ " => " + wotRunBounds.getEnd()+": "+ logEntries.get(wotRunBounds.getEnd()).getVelocity());
 
@@ -65,7 +65,7 @@ public class DynoRunDetectorTest {
 		List<LogEntry> logEntries = logReader.readLog(getTestResourceUrl("/vbo-no-deceleration-at-the-end.vbo").getPath());
 
 		System.out.println("vbo-no-deceleration-at-the-end.vbo");
-		for (WotRunBounds wotRunBounds : DynoRunDetector.getWotRunBoundsBySpeed(logEntries)) {
+		for (WotRunBounds wotRunBounds : WotRunDetector.getWotRunBounds(false, logEntries)) {
 			System.out.println("" + wotRunBounds.getStart() + ": " + logEntries.get(wotRunBounds.getStart()).getVelocity()
 					+ " => " + wotRunBounds.getEnd()+": "+ logEntries.get(wotRunBounds.getEnd()).getVelocity());
 
@@ -73,7 +73,7 @@ public class DynoRunDetectorTest {
 	}
 
 	public static URL getTestResourceUrl(String filename) {
-		URL resource = DynoRunDetectorTest.class.getResource(filename);
+		URL resource = WotRunDetectorTest.class.getResource(filename);
 		if (resource == null) {
 			throw new RuntimeException("Cannot find resource:" + filename);
 		}

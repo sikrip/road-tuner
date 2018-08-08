@@ -1,4 +1,4 @@
-package sikrip.roaddyno.engine;
+package sikrip.roaddyno.model;
 
 
 import static org.junit.Assert.assertEquals;

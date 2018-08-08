@@ -1,4 +1,4 @@
-package sikrip.roaddyno.engine;
+package sikrip.roaddyno.engine.dynosim;
 
 import static junit.framework.TestCase.assertEquals;
 
@@ -7,6 +7,7 @@ import java.text.DecimalFormat;
 
 import org.junit.Before;
 import org.junit.Test;
+import sikrip.roaddyno.engine.dynosim.PowerCalculator;
 
 public class PowerCalculatorTest {
 

@@ -1,9 +1,10 @@
-package sikrip.roaddyno.engine;
+package sikrip.roaddyno.engine.dynosim;
 
 import java.util.List;
 
 import org.junit.Test;
 
+import sikrip.roaddyno.engine.WotRunDetectorTest;
 import sikrip.roaddyno.model.DynoSimulationResult;
 import sikrip.roaddyno.model.LogEntry;
 import sikrip.roaddyno.logreader.VBOLogReader;
@@ -22,7 +23,7 @@ public class SpeedDynoSimulatorTests {
 
 		VBOLogReader logReader = new VBOLogReader();
 
-		List<LogEntry> logEntries = logReader.readLog(DynoRunDetectorTest.getTestResourceUrl("/sample-vbo-1.vbo").getPath());
+		List<LogEntry> logEntries = logReader.readLog(WotRunDetectorTest.getTestResourceUrl("/sample-vbo-1.vbo").getPath());
 
 		List<LogEntry> runLogEntries = logEntries.subList(3479, 3536);
 

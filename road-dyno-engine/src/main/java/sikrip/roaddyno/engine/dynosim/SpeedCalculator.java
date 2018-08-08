@@ -1,4 +1,4 @@
-package sikrip.roaddyno.engine;
+package sikrip.roaddyno.engine.dynosim;
 
 /**
  * Calculates the speed based on RPM, Gearing and Tyre.

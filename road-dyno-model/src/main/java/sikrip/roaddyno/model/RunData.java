@@ -1,13 +1,10 @@
-package sikrip.roaddyno.web.model;
-
-import sikrip.roaddyno.model.LogValue;
-import sikrip.roaddyno.model.WotRunBounds;
-import sikrip.roaddyno.engine.DynoRunDetector;
-import sikrip.roaddyno.model.LogEntry;
+package sikrip.roaddyno.model;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.DoubleStream;
+import java.util.stream.IntStream;
 
 /**
  * Contains the log file data along with possible WOT runs within the log data.
@@ -33,22 +30,6 @@ public final class RunData {
     public RunData(boolean rpmBased, List<LogEntry> logEntries) {
         this.rpmBased = rpmBased;
         this.logEntries = logEntries;
-        this.wotRunBounds.addAll(findAccelerationRuns(rpmBased, logEntries));
-    }
-
-    /**
-     * Finds the possible WOT runs on the provided log entries.
-     *
-     * @param rpmBased   true if the log entries are RPM based, false otherwise
-     * @param logEntries the raw data
-     *
-     * @return a list of possible WOT runs
-     */
-    private List<WotRunBounds> findAccelerationRuns(boolean rpmBased, List<LogEntry> logEntries) {
-        if (rpmBased) {
-            return DynoRunDetector.getWotRunBoundsByRPM(logEntries);
-        }
-        return DynoRunDetector.getWotRunBoundsBySpeed(logEntries);
     }
 
     public boolean isRpmBased() {
@@ -61,5 +42,10 @@ public final class RunData {
 
     public List<WotRunBounds> getWotRunBounds() {
         return wotRunBounds;
+    }
+
+    public void setWotRunBounds(List<WotRunBounds> wotRunBounds) {
+        this.wotRunBounds.clear();
+        this.wotRunBounds.addAll(wotRunBounds);
     }
 }

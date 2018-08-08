@@ -21,10 +21,14 @@ import sikrip.roaddyno.model.WotRunBounds;
 /**
  * Utility functions for {@link LogEntry}.
  */
-final class LogValuesUtilities {
+public final class LogValuesUtilities {
 
 	private LogValuesUtilities(){
 		// no instantiation
+	}
+
+	public static LogEntry getByVelocity(List<LogEntry> rawEntries, double velocity) {
+		return rawEntries.stream().filter(e -> e.getVelocity().getValue().equals(velocity)).findFirst().orElse(null);
 	}
 
 	/**
@@ -34,22 +38,39 @@ final class LogValuesUtilities {
 	 * 		the raw log entries
 	 * @return the log entries with the velocity values smoothed
 	 */
-	static List<LogEntry> smoothVelocity(List<LogEntry> rawEntries) {
+	public static List<LogEntry> smoothVelocity(List<LogEntry> rawEntries) {
 
 		List<LogEntry> smoothedEntries = new ArrayList<>();
 
-		RawValuesExtractor rawValuesExtractor = new RawValuesExtractor(rawEntries).invoke();
+		RawValuesExtractor rawValuesExtractor = new RawValuesExtractor(rawEntries).invoke(null);
 		double[] timeValues = rawValuesExtractor.getTimeValues();
-		double[] rawVelocityValues = rawValuesExtractor.getRawVelocityValues();
+		double[] rawVelocityValues = rawValuesExtractor.getRawFieldValues();
 
 		double[] smoothedRPMValues = new LoessInterpolator().smooth(timeValues, rawVelocityValues);
 
 		for (int i = 0; i < rawEntries.size(); i++) {
 			LogEntry logEntryCopy = rawEntries.get(i).getCopy();
+			System.out.println(String.format("%s -> %s", logEntryCopy.getVelocity().getValue(), smoothedRPMValues[i]));
 			logEntryCopy.getVelocity().setValue(smoothedRPMValues[i]);
 			smoothedEntries.add(logEntryCopy);
 		}
 
+		return smoothedEntries;
+	}
+
+	public static List<LogEntry> smoothValues(List<LogEntry> rawEntries, String fieldName) {
+
+		RawValuesExtractor rawValuesExtractor = new RawValuesExtractor(rawEntries).invoke(fieldName);
+		double[] timeValues = rawValuesExtractor.getTimeValues();
+		double[] fieldValues = rawValuesExtractor.getRawFieldValues();
+		final double[] smoothedFieldValues = new LoessInterpolator().smooth(timeValues, fieldValues);
+
+		final List<LogEntry> smoothedEntries = new ArrayList<>();
+		for (int i = 0; i < rawEntries.size(); i++) {
+			final LogEntry logEntryCopy = rawEntries.get(i).getCopy();
+			logEntryCopy.get(fieldName).setValue(smoothedFieldValues[i]);
+			smoothedEntries.add(logEntryCopy);
+		}
 		return smoothedEntries;
 	}
 
@@ -105,9 +126,9 @@ final class LogValuesUtilities {
 
 		final int logSize = rawEntries.size();
 
-		RawValuesExtractor rawValuesExtractor = new RawValuesExtractor(rawEntries).invoke();
+		RawValuesExtractor rawValuesExtractor = new RawValuesExtractor(rawEntries).invoke(null);
 		double[] timeValues = rawValuesExtractor.getTimeValues();
-		double[] rawSpeedValues = rawValuesExtractor.getRawVelocityValues();
+		double[] rawSpeedValues = rawValuesExtractor.getRawFieldValues();
 
 		// Find the first derivative of the the time/speed function
 		// Positive number in this array indicate acceleration; negative numbers deceleration
@@ -274,7 +295,7 @@ final class LogValuesUtilities {
 
 		private List<LogEntry> rawEntries;
 		private double[] timeValues;
-		private double[] rawVelocityValues;
+		private double[] rawFieldValues;
 
 		RawValuesExtractor(List<LogEntry> rawEntries) {
 			this.rawEntries = rawEntries;
@@ -284,18 +305,22 @@ final class LogValuesUtilities {
 			return timeValues;
 		}
 
-		double[] getRawVelocityValues() {
-			return rawVelocityValues;
+		double[] getRawFieldValues() {
+			return rawFieldValues;
 		}
 
-		public RawValuesExtractor invoke() {
+		public RawValuesExtractor invoke(String fieldName) {
 			timeValues = new double[rawEntries.size()];
-			rawVelocityValues = new double[rawEntries.size()];
+			rawFieldValues = new double[rawEntries.size()];
 
 			for (int i = 0; i < rawEntries.size(); i++) {
 				LogEntry logEntry = rawEntries.get(i);
 				timeValues[i] = logEntry.getTime().getValue();
-				rawVelocityValues[i] = logEntry.getVelocity().getValue();
+				if (fieldName == null) {
+					rawFieldValues[i] = logEntry.getVelocity().getValue();
+				} else {
+					rawFieldValues[i] = logEntry.get(fieldName).getValue();
+				}
 			}
 			return this;
 		}

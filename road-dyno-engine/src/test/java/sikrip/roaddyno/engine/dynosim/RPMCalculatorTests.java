@@ -1,8 +1,9 @@
-package sikrip.roaddyno.engine;
+package sikrip.roaddyno.engine.dynosim;
 
 import static junit.framework.TestCase.assertEquals;
 
 import org.junit.Test;
+import sikrip.roaddyno.engine.dynosim.RPMCaclulator;
 
 /**
  * Tests for {@link RPMCaclulator}.

@@ -2,12 +2,12 @@ package sikrip.roaddyno.web.controller;
 
 import org.springframework.web.multipart.MultipartFile;
 import sikrip.roaddyno.model.DynoSimulationResult;
-import sikrip.roaddyno.engine.DynoSimulator;
+import sikrip.roaddyno.engine.dynosim.DynoSimulator;
 import sikrip.roaddyno.model.SimulationException;
 import sikrip.roaddyno.model.InvalidLogFileException;
 import sikrip.roaddyno.web.chart.PlotColorProvider;
 import sikrip.roaddyno.web.logger.LogFileReader;
-import sikrip.roaddyno.web.model.RunData;
+import sikrip.roaddyno.model.RunData;
 import sikrip.roaddyno.web.model.RunPlot;
 import sikrip.roaddyno.web.model.VehicleData;
 

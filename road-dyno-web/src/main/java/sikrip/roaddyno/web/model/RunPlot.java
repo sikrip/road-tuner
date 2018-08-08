@@ -3,6 +3,7 @@ package sikrip.roaddyno.web.model;
 import sikrip.roaddyno.model.DynoSimulationEntry;
 import sikrip.roaddyno.model.DynoSimulationResult;
 import sikrip.roaddyno.model.LogEntry;
+import sikrip.roaddyno.model.RunData;
 import sikrip.roaddyno.model.RunInfo;
 import sikrip.roaddyno.model.WotRunBounds;
 

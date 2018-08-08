@@ -9,7 +9,7 @@ import sikrip.roaddyno.model.WotRunBounds;
 /**
  * Responsible to detect the start and the finish of a dyno run.
  */
-public final class DynoRunDetector {
+public final class WotRunDetector {
 
 	/**
 	 * Require at least this amount of speed diff to consider a WOT acceleration valid.
@@ -35,8 +35,23 @@ public final class DynoRunDetector {
 	 */
 	private static final double TPS_WOT_THRESHOLD = 0.96;
 
-	private DynoRunDetector() {
+	private WotRunDetector() {
 		// prevent instantiation
+	}
+
+	/**
+	 * Finds the possible WOT runs on the provided log entries.
+	 *
+	 * @param rpmBased   true if the log entries are RPM based, false otherwise
+	 * @param logEntries the raw data
+	 *
+	 * @return a list of possible WOT runs
+	 */
+	public static List<WotRunBounds> getWotRunBounds(boolean rpmBased, List<LogEntry> logEntries) {
+		if (rpmBased) {
+			return getWotRunBoundsByRPM(logEntries);
+		}
+		return getWotRunBoundsBySpeed(logEntries);
 	}
 
 	/**
@@ -46,7 +61,7 @@ public final class DynoRunDetector {
 	 * @param logEntries the log entries to check
 	 * @return a collection of WOT bounds (start / end indices)
 	 */
-	public static List<WotRunBounds> getWotRunBoundsByRPM(List<LogEntry> logEntries) {
+	private static List<WotRunBounds> getWotRunBoundsByRPM(List<LogEntry> logEntries) {
 		int offset = 0;
 		final List<WotRunBounds> wotRunBoundsList = new ArrayList<>();
 		while (offset < logEntries.size() - 2) {
@@ -78,7 +93,7 @@ public final class DynoRunDetector {
 	 * @param logEntries the log entries to check
 	 * @return a collection of WOT bounds (start / end indices)
 	 */
-	public static List<WotRunBounds> getWotRunBoundsBySpeed(List<LogEntry> logEntries) {
+	private static List<WotRunBounds> getWotRunBoundsBySpeed(List<LogEntry> logEntries) {
 		int offset = 0;
 		final List<WotRunBounds> wotRunBoundsList = new ArrayList<>();
 		while (offset < logEntries.size() - 2) {

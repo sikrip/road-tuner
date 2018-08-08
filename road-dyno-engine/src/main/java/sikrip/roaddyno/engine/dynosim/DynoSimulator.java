@@ -1,9 +1,10 @@
-package sikrip.roaddyno.engine;
+package sikrip.roaddyno.engine.dynosim;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import sikrip.roaddyno.engine.LogValuesUtilities;
 import sikrip.roaddyno.model.DynoSimulationEntry;
 import sikrip.roaddyno.model.DynoSimulationResult;
 import sikrip.roaddyno.model.LogEntry;

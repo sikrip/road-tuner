@@ -11,7 +11,7 @@ import javax.swing.*;
 
 import org.jfree.chart.ChartPanel;
 
-import sikrip.roaddyno.engine.DynoSimulator;
+import sikrip.roaddyno.engine.dynosim.DynoSimulator;
 import sikrip.roaddyno.logreader.MegasquirtLogReader;
 import sikrip.roaddyno.model.DynoSimulationResult;
 import sikrip.roaddyno.model.LogEntry;
