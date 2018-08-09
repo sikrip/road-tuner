@@ -1,25 +1,18 @@
-package sikrip.roaddyno.engine.vvttuner;
+package sikrip.roaddyno.engine.vvttuner
 
-import org.junit.Test;
-import sikrip.roaddyno.logreader.DatalogitLogReader;
-import sikrip.roaddyno.model.InvalidLogFileException;
-import sikrip.roaddyno.model.RunData;
+import sikrip.roaddyno.logreader.DatalogitLogReader
+import sikrip.roaddyno.model.RunData
+import spock.lang.Specification
+import spock.lang.Unroll
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import static sikrip.roaddyno.engine.WotRunDetectorTest.getTestResourceUrl
+import static sikrip.roaddyno.engine.vvttuner.VVTTuner.tuneVVT
 
-import static sikrip.roaddyno.engine.WotRunDetectorTest.getTestResourceUrl;
-import static sikrip.roaddyno.engine.vvttuner.VVTTuner.tuneVVT;
+class VVTTunerTest extends Specification {
 
-public class VVTTunerTest {
-
-
-
-    @Test
-    public void verifyTuneVVT() throws IOException, InvalidLogFileException {
-
+    @Unroll
+    def "Best VVT for #rpm should be #runName"(double rpm, String runName) {
+        given: "all the runs evaluation"
         final DatalogitLogReader logReader = new DatalogitLogReader();
         final List<RunData> runDataList = new ArrayList<>();
 
@@ -77,10 +70,39 @@ public class VVTTunerTest {
                 logReader.readLog(getTestResourceUrl("/vvt-logs/hc-40.txt").getPath())
         ));
 
-        final Map<Double, RunData> doubleRunDataMap = tuneVVT(runDataList);
+        final Map<Double, RunData> doubleRunDataMap = tuneVVT(runDataList, 3000, 8000, 200);
 
-        doubleRunDataMap.keySet().stream().sorted().forEachOrdered(rpm -> {
-            System.out.println(String.format("%s\t%s", rpm.intValue(), doubleRunDataMap.get(rpm)));
-        });
+        expect: "the best run for $rpm is $runName"
+        doubleRunDataMap.get(rpm).getName() == runName
+
+        where:
+        rpm     |   runName
+        3000	|	"lc-20"
+        3200	|	"hc-20"
+        3400	|	"hc-40"
+        3600	|	"hc-20"
+        3800	|	"lc-30"
+        4000	|	"lc-20"
+        4200	|	"lc-40"
+        4400	|	"lc-40"
+        4600	|	"lc-40"
+        4800	|	"lc-40"
+        5000	|	"lc-40"
+        5200	|	"lc-40"
+        5400	|	"lc-40"
+        5600	|	"lc-40"
+        5800	|	"hc-10"
+        6000	|	"hc-10"
+        6200	|	"hc-10"
+        6400	|	"hc-10"
+        6600	|	"hc-10"
+        6800	|	"hc-10"
+        7000	|	"hc-10"
+        7200	|	"hc-20"
+        7400	|	"hc-20"
+        7600	|	"hc-30"
+        7800	|	"hc-30"
+        8000	|	"hc-30"
     }
+
 }

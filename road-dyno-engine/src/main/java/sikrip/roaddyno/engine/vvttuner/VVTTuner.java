@@ -20,34 +20,23 @@ import static sikrip.roaddyno.engine.WotRunDetector.getWotRunBounds;
 public final class VVTTuner {
 
     private static final String AIRFLOW_FIELD_NAME = "AirFlow";
-    private static final double RPM_STEP = 200;
     private static final long MIN_SAMPLES_FOR_MEAN_AIRFLOW = 2;
 
     private VVTTuner() {
         // no instantiation
     }
 
-    public static Map<Double, RunData> tuneVVT(List<RunData> runDataList) {
+    public static Map<Double, RunData> tuneVVT(List<RunData> runDataList, double startRPM, double endRPM, double rpmStep) {
 
         final List<RunData> finalRunDataList = smoothRunData(trimRunData(runDataList));
 
-        final Double minRPM = finalRunDataList.stream()
-                .flatMap(r -> r.getLogEntries().stream().map(e -> e.getVelocity().getValue()))
-                .min(Double::compareTo).orElse(null);
-        final Double maxRPM = finalRunDataList.stream()
-                .flatMap(r -> r.getLogEntries().stream().map(e -> e.getVelocity().getValue()))
-                .max(Double::compareTo).orElse(null);
-
-        final List<Double> rpmValuesUnion = getRpmValuesUnion(finalRunDataList)
-                .stream().filter(rpm -> rpm >= minRPM && rpm <= maxRPM).collect(Collectors.toList());
-
         final Map<Double, RunData> bestRunPerRpm = new HashMap<>();
 
-        for (double rpm = 3000; rpm <= 8000; rpm += RPM_STEP) {
+        for (double rpm = startRPM; rpm <= endRPM; rpm += rpmStep) {
             Double maxAirflow = null;
             RunData maxAirflowRun = null;
             for (RunData runData : finalRunDataList) {
-                final Double meanAirfow = meanAirfow(runData, rpm, rpm + RPM_STEP);
+                final Double meanAirfow = meanAirfow(runData, rpm, rpm + rpmStep);
                 if (meanAirfow != null) {
                     if (maxAirflow == null) {
                         maxAirflow = meanAirfow;
