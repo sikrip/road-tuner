@@ -1,4 +1,4 @@
-package sikrip.roaddyno.web.controller;
+package sikrip.roadtuner.web.controller;
 
 import java.util.List;
 import java.util.Set;
@@ -21,9 +21,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import sikrip.roaddyno.model.SimulationException;
 import sikrip.roaddyno.model.InvalidLogFileException;
-import sikrip.roaddyno.web.RoadDynoWebApplication;
-import sikrip.roaddyno.web.chart.ChartDataProvider;
-import sikrip.roaddyno.web.model.RunPlot;
+import sikrip.roadtuner.web.RoadTunerWebApplication;
+import sikrip.roadtuner.web.chart.ChartDataProvider;
+import sikrip.roadtuner.web.model.RunPlot;
 
 @Controller
 @Scope("session")
@@ -173,7 +173,7 @@ public class RoadDynoController {
 
 	private String showErrorPage(Model model, String error) {
 		LOGGER.error(error);
-		model.addAttribute(RoadDynoWebApplication.ERROR_TEXT_KEY, error);
+		model.addAttribute(RoadTunerWebApplication.ERROR_TEXT_KEY, error);
 		return "error";
 	}
 

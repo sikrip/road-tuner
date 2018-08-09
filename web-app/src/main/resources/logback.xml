@@ -10,7 +10,7 @@
     <logger name="org.springframework.boot.context.config.ConfigFileApplicationListener" level="debug"/>
     <logger name="org.springframework.boot.autoconfigure.logging.AutoConfigurationReportLoggingInitializer" level="debug"/>
 
-    <logger name="sikrip.roaddyno" level="trace"/>
+    <logger name="sikrip.roadtuner" level="trace"/>
     <logger name="p6spy" level="error"/>
     -->
     <root level="info">

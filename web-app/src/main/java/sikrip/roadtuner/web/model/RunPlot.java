@@ -1,4 +1,4 @@
-package sikrip.roaddyno.web.model;
+package sikrip.roadtuner.web.model;
 
 import sikrip.roaddyno.model.DynoSimulationEntry;
 import sikrip.roaddyno.model.DynoSimulationResult;

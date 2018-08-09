@@ -1,4 +1,4 @@
-package sikrip.roaddyno.web.configuration;
+package sikrip.roadtuner.web.configuration;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;

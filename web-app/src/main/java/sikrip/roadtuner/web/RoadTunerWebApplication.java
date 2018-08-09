@@ -1,4 +1,4 @@
-package sikrip.roaddyno.web;
+package sikrip.roadtuner.web;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -16,9 +16,9 @@ import org.springframework.web.servlet.HandlerExceptionResolver;
 import org.springframework.web.servlet.ModelAndView;
 
 @SpringBootApplication
-public class RoadDynoWebApplication implements HandlerExceptionResolver {
+public class RoadTunerWebApplication implements HandlerExceptionResolver {
 
-	private final Logger LOGGER = LoggerFactory.getLogger(RoadDynoWebApplication.class);
+	private final Logger LOGGER = LoggerFactory.getLogger(RoadTunerWebApplication.class);
 
 	public static final String ERROR_TEXT_KEY = "errorTxt";
 
@@ -27,8 +27,8 @@ public class RoadDynoWebApplication implements HandlerExceptionResolver {
 
 	public static void main(String[] args) {
 		final Map<String, Object> appProperties = new HashMap<>();
-		appProperties.put("spring.config.name", "road.dyno.application");
-		new SpringApplicationBuilder(RoadDynoWebApplication.class).properties(appProperties)
+		appProperties.put("spring.config.name", "road.tuner.application");
+		new SpringApplicationBuilder(RoadTunerWebApplication.class).properties(appProperties)
 				.build()
 				.run(args);
 	}

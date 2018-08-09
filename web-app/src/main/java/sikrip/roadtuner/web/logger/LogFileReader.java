@@ -1,4 +1,4 @@
-package sikrip.roaddyno.web.logger;
+package sikrip.roadtuner.web.logger;
 
 import java.io.IOException;
 import java.util.List;

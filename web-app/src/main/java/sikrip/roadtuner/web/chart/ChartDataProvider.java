@@ -1,4 +1,4 @@
-package sikrip.roaddyno.web.chart;
+package sikrip.roadtuner.web.chart;
 
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
@@ -11,7 +11,7 @@ import java.util.Map;
 import sikrip.roaddyno.model.DynoSimulationEntry;
 import sikrip.roaddyno.model.DynoSimulationResult;
 import sikrip.roaddyno.model.LogValue;
-import sikrip.roaddyno.web.model.RunPlot;
+import sikrip.roadtuner.web.model.RunPlot;
 
 /**
  * Responsible to provide the definitions of the dyno plots.
