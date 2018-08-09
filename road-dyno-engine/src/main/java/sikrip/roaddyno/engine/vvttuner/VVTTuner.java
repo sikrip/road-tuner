@@ -40,11 +40,9 @@ public final class VVTTuner {
                     if (maxAirflow == null) {
                         maxAirflow = meanAirfow;
                         maxAirflowRun = runData;
-                    } else {
-                        if (maxAirflow < meanAirfow) {
-                            maxAirflow = meanAirfow;
-                            maxAirflowRun = runData;
-                        }
+                    } else if (maxAirflow < meanAirfow) {
+                        maxAirflow = meanAirfow;
+                        maxAirflowRun = runData;
                     }
                 }
             }
