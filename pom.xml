@@ -13,7 +13,7 @@
         <module>model</module>
         <module>engine</module>
         <module>log-reader</module>
-        <module>standalone</module>
+        <!--<module>standalone</module>-->
         <module>web-app</module>
     </modules>
 

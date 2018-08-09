@@ -58,7 +58,7 @@
 			<version>2.1.4</version>
 		</dependency>
 
-		<!-- Road Dyno -->
+		<!-- Road Tuner -->
 		<dependency>
 			<groupId>sikrip-road-tuner</groupId>
 			<artifactId>model</artifactId>

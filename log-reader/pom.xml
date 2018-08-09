@@ -17,8 +17,8 @@
 
     <dependencies>
         <dependency>
-            <groupId>sikrip-road-dyno</groupId>
-            <artifactId>road-dyno-model</artifactId>
+            <groupId>sikrip-road-tuner</groupId>
+            <artifactId>model</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
     </dependencies>
