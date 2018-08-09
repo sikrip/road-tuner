@@ -12,7 +12,6 @@ import java.util.List;
 import static org.junit.Assert.assertTrue;
 import static sikrip.roaddyno.engine.LogValuesUtilities.smoothVelocity;
 import static sikrip.roaddyno.engine.WotRunDetector.getWotRunBounds;
-import static sikrip.roaddyno.engine.WotRunDetectorTest.getTestResourceUrl;
 
 public class LogValuesUtilitiesTest {
 
@@ -20,7 +19,7 @@ public class LogValuesUtilitiesTest {
     public void verifySmoothVelocity() throws IOException, InvalidLogFileException {
 
         final DatalogitLogReader logReader = new DatalogitLogReader();
-        final List<LogEntry> rawEntries = logReader.readLog(getTestResourceUrl("/vvt-logs/lc-20.txt").getPath());
+        final List<LogEntry> rawEntries = logReader.readLog(getClass().getResource("/vvt-logs/lc-20.txt").getPath());
         final List<WotRunBounds> wotRunBounds = getWotRunBounds(true, rawEntries);
         final List<LogEntry> wotRawEntries = rawEntries.subList(wotRunBounds.get(0).getStart(), wotRunBounds.get(0).getEnd());
         final List<LogEntry> wotSmoothedEntries = smoothVelocity(wotRawEntries);

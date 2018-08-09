@@ -5,7 +5,6 @@ import sikrip.roaddyno.model.RunData
 import spock.lang.Specification
 import spock.lang.Unroll
 
-import static sikrip.roaddyno.engine.WotRunDetectorTest.getTestResourceUrl
 import static sikrip.roaddyno.engine.vvttuner.VVTTuner.tuneVVT
 
 class VVTTunerTest extends Specification {
@@ -19,55 +18,55 @@ class VVTTunerTest extends Specification {
         runDataList.add(new RunData(
                 true,
                 "lc-10",
-                logReader.readLog(getTestResourceUrl("/vvt-logs/lc-10.txt").getPath())
+                logReader.readLog(getClass().getResource("/vvt-logs/lc-10.txt").getPath())
         ));
 
         runDataList.add(new RunData(
                 true,
                 "lc-20",
-                logReader.readLog(getTestResourceUrl("/vvt-logs/lc-20.txt").getPath())
+                logReader.readLog(getClass().getResource("/vvt-logs/lc-20.txt").getPath())
         ));
 
         runDataList.add(new RunData(
                 true,
                 "lc-30",
-                logReader.readLog(getTestResourceUrl("/vvt-logs/lc-30.txt").getPath())
+                logReader.readLog(getClass().getResource("/vvt-logs/lc-30.txt").getPath())
         ));
 
         runDataList.add(new RunData(
                 true,
                 "lc-40",
-                logReader.readLog(getTestResourceUrl("/vvt-logs/lc-40.txt").getPath())
+                logReader.readLog(getClass().getResource("/vvt-logs/lc-40.txt").getPath())
         ));
 
         runDataList.add(new RunData(
                 true,
                 "lc-50",
-                logReader.readLog(getTestResourceUrl("/vvt-logs/lc-50.txt").getPath())
+                logReader.readLog(getClass().getResource("/vvt-logs/lc-50.txt").getPath())
         ));
 
         runDataList.add(new RunData(
                 true,
                 "hc-10",
-                logReader.readLog(getTestResourceUrl("/vvt-logs/hc-10.txt").getPath())
+                logReader.readLog(getClass().getResource("/vvt-logs/hc-10.txt").getPath())
         ));
 
         runDataList.add(new RunData(
                 true,
                 "hc-20",
-                logReader.readLog(getTestResourceUrl("/vvt-logs/hc-20.txt").getPath())
+                logReader.readLog(getClass().getResource("/vvt-logs/hc-20.txt").getPath())
         ));
 
         runDataList.add(new RunData(
                 true,
                 "hc-30",
-                logReader.readLog(getTestResourceUrl("/vvt-logs/hc-30.txt").getPath())
+                logReader.readLog(getClass().getResource("/vvt-logs/hc-30.txt").getPath())
         ));
 
         runDataList.add(new RunData(
                 true,
                 "hc-40",
-                logReader.readLog(getTestResourceUrl("/vvt-logs/hc-40.txt").getPath())
+                logReader.readLog(getClass().getResource("/vvt-logs/hc-40.txt").getPath())
         ));
 
         final Map<Double, RunData> doubleRunDataMap = tuneVVT(runDataList, 3000, 8000, 200);
