@@ -50,7 +50,6 @@ public final class LogValuesUtilities {
 
 		for (int i = 0; i < rawEntries.size(); i++) {
 			LogEntry logEntryCopy = rawEntries.get(i).getCopy();
-			System.out.println(String.format("%s -> %s", logEntryCopy.getVelocity().getValue(), smoothedRPMValues[i]));
 			logEntryCopy.getVelocity().setValue(smoothedRPMValues[i]);
 			smoothedEntries.add(logEntryCopy);
 		}

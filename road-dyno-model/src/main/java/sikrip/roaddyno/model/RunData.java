@@ -22,13 +22,16 @@ public final class RunData {
      */
     private final List<LogEntry> logEntries;
 
+    private final String name;
+
     /**
      * The bounds(indices within the {@link #logEntries}) of the possible WOT runs.
      */
     private final List<WotRunBounds> wotRunBounds = new ArrayList<>();
 
-    public RunData(boolean rpmBased, List<LogEntry> logEntries) {
+    public RunData(boolean rpmBased, String name, List<LogEntry> logEntries) {
         this.rpmBased = rpmBased;
+        this.name = name;
         this.logEntries = logEntries;
     }
 
@@ -47,5 +50,16 @@ public final class RunData {
     public void setWotRunBounds(List<WotRunBounds> wotRunBounds) {
         this.wotRunBounds.clear();
         this.wotRunBounds.addAll(wotRunBounds);
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    @Override
+    public String toString() {
+        return "RunData{" +
+                "name='" + name + '\'' +
+                '}';
     }
 }
