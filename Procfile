@@ -1,1 +1,1 @@
-web: java $JAVA_OPTS -Dserver.port=$PORT -jar road-dyno-web/target/*.jar
+web: java $JAVA_OPTS -Dserver.port=$PORT -jar web-app/target/*.jar
