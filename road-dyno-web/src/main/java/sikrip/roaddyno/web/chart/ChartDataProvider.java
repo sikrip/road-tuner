@@ -244,7 +244,7 @@ public final class ChartDataProvider {
 			final Map<String, Object> graph = new HashMap<>();
 			graph.put("id", "Graph-" + field + iRun);
 			graph.put("lineColor", run.getColor());
-			graph.put("lineThickness", 3);
+			graph.put("lineThickness", 1);
 			graph.put("type", "smoothedLine");
 			graph.put("xField", RPM_AXIS);
 			graph.put("yField", field + iRun);
