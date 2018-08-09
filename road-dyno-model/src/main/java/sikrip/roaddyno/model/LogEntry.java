@@ -62,6 +62,10 @@ public class LogEntry {
 		return values.keySet();
 	}
 
+	public String getVelocityKey() {
+		return velocityKey;
+	}
+
 	@Override
 	public String toString() {
 		final StringBuilder stringBuilder = new StringBuilder("LogEntry ");

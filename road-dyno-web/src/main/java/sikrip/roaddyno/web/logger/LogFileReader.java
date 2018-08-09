@@ -44,7 +44,7 @@ public final class LogFileReader {
 				} else {
 					throw new InvalidLogFileException("Unknown or not supported log file");
 				}
-				final RunData runData = new RunData(rpmBased, logEntries);
+				final RunData runData = new RunData(rpmBased, file.getName(), logEntries);
 				runData.setWotRunBounds(getWotRunBounds(rpmBased, logEntries));
 
 				return runData;

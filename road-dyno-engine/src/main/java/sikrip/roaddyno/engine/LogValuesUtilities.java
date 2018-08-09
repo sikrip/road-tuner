@@ -27,6 +27,13 @@ public final class LogValuesUtilities {
 		// no instantiation
 	}
 
+	/**
+	 * Given a collection of entries, gets the log entry that corresponds to the provided velocity value.
+	 *
+	 * @param rawEntries the entries
+	 * @param velocity the target velocity
+	 * @return the log entry that corresponds to the provided velocity value
+	 */
 	public static LogEntry getByVelocity(List<LogEntry> rawEntries, double velocity) {
 		return rawEntries.stream().filter(e -> e.getVelocity().getValue().equals(velocity)).findFirst().orElse(null);
 	}
@@ -39,29 +46,12 @@ public final class LogValuesUtilities {
 	 * @return the log entries with the velocity values smoothed
 	 */
 	public static List<LogEntry> smoothVelocity(List<LogEntry> rawEntries) {
-
-		List<LogEntry> smoothedEntries = new ArrayList<>();
-
-		RawValuesExtractor rawValuesExtractor = new RawValuesExtractor(rawEntries).invoke(null);
-		double[] timeValues = rawValuesExtractor.getTimeValues();
-		double[] rawVelocityValues = rawValuesExtractor.getRawFieldValues();
-
-		double[] smoothedRPMValues = new LoessInterpolator().smooth(timeValues, rawVelocityValues);
-
-		for (int i = 0; i < rawEntries.size(); i++) {
-			LogEntry logEntryCopy = rawEntries.get(i).getCopy();
-			logEntryCopy.getVelocity().setValue(smoothedRPMValues[i]);
-			smoothedEntries.add(logEntryCopy);
-		}
-
-		return smoothedEntries;
+		return smoothValues(rawEntries, rawEntries.get(0).getVelocityKey());
 	}
 
 	public static List<LogEntry> smoothValues(List<LogEntry> rawEntries, String fieldName) {
-
-		RawValuesExtractor rawValuesExtractor = new RawValuesExtractor(rawEntries).invoke(fieldName);
-		double[] timeValues = rawValuesExtractor.getTimeValues();
-		double[] fieldValues = rawValuesExtractor.getRawFieldValues();
+		final double[] timeValues = rawEntries.stream().mapToDouble(r -> r.getTime().getValue()).toArray();
+		final double[] fieldValues = rawEntries.stream().mapToDouble(r -> r.get(fieldName).getValue()).toArray();
 		final double[] smoothedFieldValues = new LoessInterpolator().smooth(timeValues, fieldValues);
 
 		final List<LogEntry> smoothedEntries = new ArrayList<>();
@@ -122,12 +112,10 @@ public final class LogValuesUtilities {
 	 * @return the start/finish indices of the first acceleration run
 	 */
 	static WotRunBounds getWotBoundsBySpeed(int decelerationCountThreshold, List<LogEntry> rawEntries, int offset) {
-
 		final int logSize = rawEntries.size();
 
-		RawValuesExtractor rawValuesExtractor = new RawValuesExtractor(rawEntries).invoke(null);
-		double[] timeValues = rawValuesExtractor.getTimeValues();
-		double[] rawSpeedValues = rawValuesExtractor.getRawFieldValues();
+		double[] timeValues = rawEntries.stream().mapToDouble(r -> r.getTime().getValue()).toArray();
+		double[] rawSpeedValues = rawEntries.stream().mapToDouble(r -> r.getVelocity().getValue()).toArray();
 
 		// Find the first derivative of the the time/speed function
 		// Positive number in this array indicate acceleration; negative numbers deceleration
@@ -287,41 +275,6 @@ public final class LogValuesUtilities {
 		} else {
 			// no deceleration
 			return values.length - 1;
-		}
-	}
-
-	private static class RawValuesExtractor {
-
-		private List<LogEntry> rawEntries;
-		private double[] timeValues;
-		private double[] rawFieldValues;
-
-		RawValuesExtractor(List<LogEntry> rawEntries) {
-			this.rawEntries = rawEntries;
-		}
-
-		double[] getTimeValues() {
-			return timeValues;
-		}
-
-		double[] getRawFieldValues() {
-			return rawFieldValues;
-		}
-
-		public RawValuesExtractor invoke(String fieldName) {
-			timeValues = new double[rawEntries.size()];
-			rawFieldValues = new double[rawEntries.size()];
-
-			for (int i = 0; i < rawEntries.size(); i++) {
-				LogEntry logEntry = rawEntries.get(i);
-				timeValues[i] = logEntry.getTime().getValue();
-				if (fieldName == null) {
-					rawFieldValues[i] = logEntry.getVelocity().getValue();
-				} else {
-					rawFieldValues[i] = logEntry.get(fieldName).getValue();
-				}
-			}
-			return this;
 		}
 	}
 }
