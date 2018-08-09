@@ -49,6 +49,13 @@ public final class LogValuesUtilities {
 		return smoothValues(rawEntries, rawEntries.get(0).getVelocityKey());
 	}
 
+	/**
+	 * Smooths the values of the provided field for the given log entries using the Local Regression Algorithm (Loess, Lowess).
+	 *
+	 * @param rawEntries
+	 * 		the raw log entries
+	 * @return the log entries with the field values smoothed
+	 */
 	public static List<LogEntry> smoothValues(List<LogEntry> rawEntries, String fieldName) {
 		final double[] timeValues = rawEntries.stream().mapToDouble(r -> r.getTime().getValue()).toArray();
 		final double[] fieldValues = rawEntries.stream().mapToDouble(r -> r.get(fieldName).getValue()).toArray();

@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import static sikrip.roaddyno.engine.LogValuesUtilities.smoothValues;
 import static sikrip.roaddyno.engine.LogValuesUtilities.smoothVelocity;
@@ -87,19 +86,12 @@ public final class VVTTuner {
         return trimmedRunDataList;
     }
 
-    private static List<Double> getRpmValuesUnion(List<RunData> runs) {
-        return runs.stream()
-                .flatMap(r -> r.getLogEntries().stream().map(e -> e.getVelocity().getValue()))
-                .sorted()
-                .collect(Collectors.toList());
-    }
-
     private static List<RunData> smoothRunData(List<RunData> runDataList) {
         final List<RunData> smoothedRunDataList = new ArrayList<>();
         runDataList.forEach(r -> {
             final List<LogEntry> smoothedLogEntries = smoothValues(
-                    smoothVelocity(r.getLogEntries()),
-                    AIRFLOW_FIELD_NAME
+                smoothVelocity(r.getLogEntries()),
+                AIRFLOW_FIELD_NAME
             );
             final RunData smoothedRunData = new RunData(r.isRpmBased(), r.getName(), smoothedLogEntries);
             smoothedRunDataList.add(smoothedRunData);
