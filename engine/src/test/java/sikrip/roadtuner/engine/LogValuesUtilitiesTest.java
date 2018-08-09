@@ -1,17 +1,17 @@
-package sikrip.roaddyno.engine;
+package sikrip.roadtuner.engine;
 
 import org.junit.Test;
-import sikrip.roaddyno.logreader.DatalogitLogReader;
-import sikrip.roaddyno.model.InvalidLogFileException;
-import sikrip.roaddyno.model.LogEntry;
-import sikrip.roaddyno.model.WotRunBounds;
+import sikrip.roadtuner.logreader.DatalogitLogReader;
+import sikrip.roadtuner.model.InvalidLogFileException;
+import sikrip.roadtuner.model.LogEntry;
+import sikrip.roadtuner.model.WotRunBounds;
 
 import java.io.IOException;
 import java.util.List;
 
 import static org.junit.Assert.assertTrue;
-import static sikrip.roaddyno.engine.LogValuesUtilities.smoothVelocity;
-import static sikrip.roaddyno.engine.WotRunDetector.getWotRunBounds;
+import static sikrip.roadtuner.engine.LogValuesUtilities.smoothVelocity;
+import static sikrip.roadtuner.engine.WotRunDetector.getWotRunBounds;
 
 public class LogValuesUtilitiesTest {
 

@@ -1,11 +1,11 @@
-package sikrip.roaddyno.engine.vvttuner
+package sikrip.roadtuner.engine.vvttuner
 
-import sikrip.roaddyno.logreader.DatalogitLogReader
-import sikrip.roaddyno.model.RunData
+import sikrip.roadtuner.logreader.DatalogitLogReader
+import sikrip.roadtuner.model.RunData
 import spock.lang.Specification
 import spock.lang.Unroll
 
-import static sikrip.roaddyno.engine.vvttuner.VVTTuner.tuneVVT
+import static sikrip.roadtuner.engine.vvttuner.VVTTuner.tuneVVT
 
 class VVTTunerTest extends Specification {
 

@@ -1,4 +1,4 @@
-package sikrip.roaddyno.model;
+package sikrip.roadtuner.model;
 
 import java.text.DecimalFormat;
 import java.util.Objects;

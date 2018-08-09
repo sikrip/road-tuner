@@ -1,4 +1,4 @@
-package sikrip.roaddyno.logreader;
+package sikrip.roadtuner.logreader;
 
 import static junit.framework.TestCase.assertEquals;
 
@@ -7,7 +7,7 @@ import java.util.List;
 
 import org.junit.Test;
 
-import sikrip.roaddyno.model.LogEntry;
+import sikrip.roadtuner.model.LogEntry;
 
 public class VBOLogReaderTest {
 

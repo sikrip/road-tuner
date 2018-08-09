@@ -1,4 +1,4 @@
-package sikrip.roaddyno.model;
+package sikrip.roadtuner.model;
 
 
 
@@ -12,10 +12,10 @@ import java.util.Map;
 
 import org.junit.Test;
 
-import sikrip.roaddyno.model.DynoSimulationEntry;
-import sikrip.roaddyno.model.DynoSimulationResult;
-import sikrip.roaddyno.model.LogEntry;
-import sikrip.roaddyno.model.LogValue;
+import sikrip.roadtuner.model.DynoSimulationEntry;
+import sikrip.roadtuner.model.DynoSimulationResult;
+import sikrip.roadtuner.model.LogEntry;
+import sikrip.roadtuner.model.LogValue;
 
 /**
  * Tests for {@link DynoSimulationResult}.

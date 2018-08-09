@@ -1,8 +1,8 @@
-package sikrip.roaddyno.logreader;
+package sikrip.roadtuner.logreader;
 
-import sikrip.roaddyno.model.InvalidLogFileException;
-import sikrip.roaddyno.model.LogEntry;
-import sikrip.roaddyno.model.LogValue;
+import sikrip.roadtuner.model.InvalidLogFileException;
+import sikrip.roadtuner.model.LogEntry;
+import sikrip.roadtuner.model.LogValue;
 
 import java.io.BufferedReader;
 import java.io.File;

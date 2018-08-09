@@ -1,10 +1,10 @@
-package sikrip.roaddyno.engine;
+package sikrip.roadtuner.engine;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import sikrip.roaddyno.model.LogEntry;
-import sikrip.roaddyno.model.WotRunBounds;
+import sikrip.roadtuner.model.LogEntry;
+import sikrip.roadtuner.model.WotRunBounds;
 
 /**
  * Responsible to detect the start and the finish of a dyno run.

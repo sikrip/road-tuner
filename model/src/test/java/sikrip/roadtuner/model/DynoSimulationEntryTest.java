@@ -1,10 +1,10 @@
-package sikrip.roaddyno.model;
+package sikrip.roadtuner.model;
 
 
 import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
-import sikrip.roaddyno.model.DynoSimulationEntry;
+import sikrip.roadtuner.model.DynoSimulationEntry;
 
 /**
  * Tests for {@link DynoSimulationEntry}.

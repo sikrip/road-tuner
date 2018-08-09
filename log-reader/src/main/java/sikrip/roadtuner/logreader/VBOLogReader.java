@@ -1,4 +1,4 @@
-package sikrip.roaddyno.logreader;
+package sikrip.roadtuner.logreader;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -12,9 +12,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import sikrip.roaddyno.model.InvalidLogFileException;
-import sikrip.roaddyno.model.LogEntry;
-import sikrip.roaddyno.model.LogValue;
+import sikrip.roadtuner.model.InvalidLogFileException;
+import sikrip.roadtuner.model.LogEntry;
+import sikrip.roadtuner.model.LogValue;
 
 public class VBOLogReader {
 

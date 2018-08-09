@@ -1,4 +1,4 @@
-package sikrip.roaddyno.engine.dynosim;
+package sikrip.roadtuner.engine.dynosim;
 
 final class PowerCalculator {
 

@@ -5,14 +5,14 @@ import java.util.List;
 
 import org.springframework.web.multipart.MultipartFile;
 
-import sikrip.roaddyno.logreader.DatalogitLogReader;
-import sikrip.roaddyno.logreader.MegasquirtLogReader;
-import sikrip.roaddyno.logreader.VBOLogReader;
-import sikrip.roaddyno.model.InvalidLogFileException;
-import sikrip.roaddyno.model.LogEntry;
-import sikrip.roaddyno.model.RunData;
+import sikrip.roadtuner.logreader.DatalogitLogReader;
+import sikrip.roadtuner.logreader.MegasquirtLogReader;
+import sikrip.roadtuner.logreader.VBOLogReader;
+import sikrip.roadtuner.model.InvalidLogFileException;
+import sikrip.roadtuner.model.LogEntry;
+import sikrip.roadtuner.model.RunData;
 
-import static sikrip.roaddyno.engine.WotRunDetector.getWotRunBounds;
+import static sikrip.roadtuner.engine.WotRunDetector.getWotRunBounds;
 
 /**
  * Responsible to read a log file and create the collection of {@link LogEntry} raw data.

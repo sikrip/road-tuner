@@ -1,4 +1,4 @@
-package sikrip.roaddyno.model;
+package sikrip.roadtuner.model;
 
 
 public class InvalidLogFileException extends Exception {

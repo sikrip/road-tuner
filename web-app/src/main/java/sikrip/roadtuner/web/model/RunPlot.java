@@ -1,11 +1,11 @@
 package sikrip.roadtuner.web.model;
 
-import sikrip.roaddyno.model.DynoSimulationEntry;
-import sikrip.roaddyno.model.DynoSimulationResult;
-import sikrip.roaddyno.model.LogEntry;
-import sikrip.roaddyno.model.RunData;
-import sikrip.roaddyno.model.RunInfo;
-import sikrip.roaddyno.model.WotRunBounds;
+import sikrip.roadtuner.model.DynoSimulationEntry;
+import sikrip.roadtuner.model.DynoSimulationResult;
+import sikrip.roadtuner.model.LogEntry;
+import sikrip.roadtuner.model.RunData;
+import sikrip.roadtuner.model.RunInfo;
+import sikrip.roadtuner.model.WotRunBounds;
 
 import java.util.List;
 import java.util.UUID;

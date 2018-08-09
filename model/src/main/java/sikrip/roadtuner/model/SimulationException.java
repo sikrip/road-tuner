@@ -1,4 +1,4 @@
-package sikrip.roaddyno.model;
+package sikrip.roadtuner.model;
 
 /**
  * Thrown when the simulator cannot be completed.

@@ -1,4 +1,4 @@
-package sikrip.roaddyno.logreader;
+package sikrip.roadtuner.logreader;
 
 import static org.junit.Assert.*;
 
@@ -8,8 +8,8 @@ import java.util.List;
 
 import org.junit.Test;
 
-import sikrip.roaddyno.model.InvalidLogFileException;
-import sikrip.roaddyno.model.LogEntry;
+import sikrip.roadtuner.model.InvalidLogFileException;
+import sikrip.roadtuner.model.LogEntry;
 
 /**
  * Unit tests for {@link MegasquirtLogReader}.

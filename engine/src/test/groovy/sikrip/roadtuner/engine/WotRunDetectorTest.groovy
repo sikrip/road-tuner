@@ -1,9 +1,9 @@
-package sikrip.roaddyno.engine
+package sikrip.roadtuner.engine
 
-import sikrip.roaddyno.logreader.MegasquirtLogReader
-import sikrip.roaddyno.logreader.VBOLogReader
-import sikrip.roaddyno.model.LogEntry
-import sikrip.roaddyno.model.WotRunBounds
+import sikrip.roadtuner.logreader.MegasquirtLogReader
+import sikrip.roadtuner.logreader.VBOLogReader
+import sikrip.roadtuner.model.LogEntry
+import sikrip.roadtuner.model.WotRunBounds
 import spock.lang.Specification
 import spock.lang.Unroll
 

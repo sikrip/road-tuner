@@ -1,4 +1,4 @@
-package sikrip.roaddyno.engine;
+package sikrip.roadtuner.engine;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -15,8 +15,8 @@ import org.apache.commons.math3.analysis.interpolation.LoessInterpolator;
 import org.apache.commons.math3.analysis.interpolation.SplineInterpolator;
 import org.apache.commons.math3.analysis.interpolation.UnivariateInterpolator;
 
-import sikrip.roaddyno.model.LogEntry;
-import sikrip.roaddyno.model.WotRunBounds;
+import sikrip.roadtuner.model.LogEntry;
+import sikrip.roadtuner.model.WotRunBounds;
 
 /**
  * Utility functions for {@link LogEntry}.

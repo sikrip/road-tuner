@@ -1,4 +1,4 @@
-package sikrip.roaddyno.model;
+package sikrip.roadtuner.model;
 
 import java.util.HashSet;
 import java.util.List;

@@ -1,4 +1,4 @@
-package sikrip.roaddyno.engine.dynosim;
+package sikrip.roadtuner.engine.dynosim;
 
 import static junit.framework.TestCase.assertEquals;
 
@@ -10,11 +10,11 @@ import java.util.Map;
 import org.junit.Test;
 import org.mockito.Mockito;
 
-import sikrip.roaddyno.engine.dynosim.DynoSimulator;
-import sikrip.roaddyno.model.DynoSimulationResult;
-import sikrip.roaddyno.model.LogEntry;
-import sikrip.roaddyno.model.LogValue;
-import sikrip.roaddyno.model.SimulationException;
+import sikrip.roadtuner.engine.dynosim.DynoSimulator;
+import sikrip.roadtuner.model.DynoSimulationResult;
+import sikrip.roadtuner.model.LogEntry;
+import sikrip.roadtuner.model.LogValue;
+import sikrip.roadtuner.model.SimulationException;
 
 /**
  * Unit tests for {@link DynoSimulator}

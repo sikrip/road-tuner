@@ -1,17 +1,17 @@
-package sikrip.roaddyno.engine.vvttuner;
+package sikrip.roadtuner.engine.vvttuner;
 
-import sikrip.roaddyno.model.LogEntry;
-import sikrip.roaddyno.model.RunData;
-import sikrip.roaddyno.model.WotRunBounds;
+import sikrip.roadtuner.model.LogEntry;
+import sikrip.roadtuner.model.RunData;
+import sikrip.roadtuner.model.WotRunBounds;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static sikrip.roaddyno.engine.LogValuesUtilities.smoothValues;
-import static sikrip.roaddyno.engine.LogValuesUtilities.smoothVelocity;
-import static sikrip.roaddyno.engine.WotRunDetector.getWotRunBounds;
+import static sikrip.roadtuner.engine.LogValuesUtilities.smoothValues;
+import static sikrip.roadtuner.engine.LogValuesUtilities.smoothVelocity;
+import static sikrip.roadtuner.engine.WotRunDetector.getWotRunBounds;
 
 /**
  * Responsible to find best VVT settings based on logs from Apexi PFC.

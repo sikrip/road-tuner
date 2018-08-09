@@ -8,9 +8,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import sikrip.roaddyno.model.DynoSimulationEntry;
-import sikrip.roaddyno.model.DynoSimulationResult;
-import sikrip.roaddyno.model.LogValue;
+import sikrip.roadtuner.model.DynoSimulationEntry;
+import sikrip.roadtuner.model.DynoSimulationResult;
+import sikrip.roadtuner.model.LogValue;
 import sikrip.roadtuner.web.model.RunPlot;
 
 /**

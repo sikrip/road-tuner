@@ -1,8 +1,8 @@
-package sikrip.roaddyno.engine.dynosim
+package sikrip.roadtuner.engine.dynosim
 
-import sikrip.roaddyno.logreader.VBOLogReader
-import sikrip.roaddyno.model.DynoSimulationResult
-import sikrip.roaddyno.model.LogEntry
+import sikrip.roadtuner.logreader.VBOLogReader
+import sikrip.roadtuner.model.DynoSimulationResult
+import sikrip.roadtuner.model.LogEntry
 import spock.lang.Specification
 import spock.lang.Unroll
 

@@ -19,8 +19,8 @@ import org.springframework.web.multipart.MultipartFile;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import sikrip.roaddyno.model.SimulationException;
-import sikrip.roaddyno.model.InvalidLogFileException;
+import sikrip.roadtuner.model.SimulationException;
+import sikrip.roadtuner.model.InvalidLogFileException;
 import sikrip.roadtuner.web.RoadTunerWebApplication;
 import sikrip.roadtuner.web.chart.ChartDataProvider;
 import sikrip.roadtuner.web.model.RunPlot;
