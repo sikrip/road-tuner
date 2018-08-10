@@ -69,10 +69,10 @@ class VVTTunerTest extends Specification {
                 logReader.readLog(getClass().getResource("/vvt-logs/hc-40.txt").getPath())
         ));
 
-        final Map<Double, RunData> doubleRunDataMap = tuneVVT(runDataList, 3000, 8000, 200);
+        final Map<Double, RunData> vvtRunDataMap = tuneVVT(runDataList, 3000, 8000, 200);
 
         expect: "the best run for $rpm is $runName"
-        doubleRunDataMap.get(rpm).getName() == runName
+        vvtRunDataMap.get(rpm).getName() == runName
 
         where:
         rpm     |   runName
