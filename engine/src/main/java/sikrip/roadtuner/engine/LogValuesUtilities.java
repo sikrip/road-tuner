@@ -95,14 +95,14 @@ public final class LogValuesUtilities {
 		}
 
 		if (start < logSize - 1) {
-			int end;
-			for (end = start + 1; end < rawEntries.size(); end++) {
-				if (rawEntries.get(end).getTps().getValue() < tpsWotPercent * maxTps) {
+			int firstOffThrottleIdx;
+			for (firstOffThrottleIdx = start + 1; firstOffThrottleIdx < rawEntries.size(); firstOffThrottleIdx++) {
+				if (rawEntries.get(firstOffThrottleIdx).getTps().getValue() < tpsWotPercent * maxTps) {
 					break;
 				}
 			}
-            final int realEnd = Math.min(end, logSize - 1);
-            return new WotRunBounds(start, realEnd, rawEntries.get(start), rawEntries.get(realEnd));
+            final int end = Math.min(firstOffThrottleIdx, logSize - 1);
+            return new WotRunBounds(start, end, rawEntries.get(start), rawEntries.get(end));
 		}
 		return null;
 	}

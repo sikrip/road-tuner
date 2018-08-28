@@ -6,6 +6,9 @@ import java.util.List;
 import sikrip.roadtuner.model.LogEntry;
 import sikrip.roadtuner.model.WotRunBounds;
 
+import static sikrip.roadtuner.engine.LogValuesUtilities.getWotBoundsByRPM;
+import static sikrip.roadtuner.engine.LogValuesUtilities.getWotBoundsBySpeed;
+
 /**
  * Responsible to detect the start and the finish of a dyno run.
  */
@@ -66,7 +69,7 @@ public final class WotRunDetector {
 		final List<WotRunBounds> wotRunBoundsList = new ArrayList<>();
 		while (offset < logEntries.size() - 2) {
 
-			WotRunBounds wotRunBounds = LogValuesUtilities.getWotBoundsByRPM(TPS_WOT_THRESHOLD, logEntries, offset);
+			WotRunBounds wotRunBounds = getWotBoundsByRPM(TPS_WOT_THRESHOLD, logEntries, offset);
 			if (wotRunBounds == null) {
 				// no more accelerations
 				break;
@@ -98,7 +101,7 @@ public final class WotRunDetector {
 		final List<WotRunBounds> wotRunBoundsList = new ArrayList<>();
 		while (offset < logEntries.size() - 2) {
 
-			WotRunBounds wotRunBounds = LogValuesUtilities.getWotBoundsBySpeed(DECEL_COUNT_THRESHOLD, logEntries, offset);
+			WotRunBounds wotRunBounds = getWotBoundsBySpeed(DECEL_COUNT_THRESHOLD, logEntries, offset);
 			if (wotRunBounds == null) {
 				// no more accelerations
 				break;
