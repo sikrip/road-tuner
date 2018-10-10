@@ -17,9 +17,15 @@
     <div class="page-content">
         <div class="panel panel-info">
             <div class="panel-heading">
-                <h4>VVT tuner results</h4>
+                <h4>
+                    VVT tuner results
+                    <small>
+                        <a th:href="@{/vvt-tuner/load-logs}" role="button">
+                            (start over)
+                        </a>
+                    </small>
+                </h4>
             </div>
-
             <div class="panel panel-default">
                 <table class="table">
                     <thead>
