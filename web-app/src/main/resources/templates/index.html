@@ -2,41 +2,44 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 
 <head lang="en">
-    <title>Road Dyno | Welcome!</title>
-    <th:block th:include="fragments/includes :: head"></th:block>
+      <title>Road Tuner | Welcome!</title>
+      <th:block th:include="fragments/includes :: head"></th:block>
 </head>
 
 <body>
 
-<h1 th:replace="fragments/fragments :: header"></h1>
+      <h1 th:replace="fragments/fragments :: header"></h1>
 
-<div class="container">
-    <div class="page-header">
-        <h1>Road dyno
-            <small>For car enthusiasts like you!</small>
-        </h1>
-    </div>
-    <div class="jumbotron">
-        <h1>Welcome to road dyno!</h1>
-        <p>A web app that can turn your data logs into real dyno graphs!</p>
-        <p>If you have a data logger, road dyno will let you to truly evaluate your mods!</p>
-
-        <p><a class="btn btn-primary btn-lg" th:href="@{/add}" role="button">... load your WOT log now!</a></p>
-
-        <hr/>
-
-        <h4>Key features:</h4>
-        <ul>
-            <li>Real engine dynamometer, torque/hp plots for the entire RPM band</li>
-            <li>No estimates like 1/4 mi or 0-60 HP calculators, road dyno uses real measurements</li>
-            <li>Easily dyno any vehicle including 2WD and AWD vehicles</li>
-            <li>Automatically finds multiple runs in a single data log</li>
-            <li>Compare multiple graphs and save your plots to multiple formats</li>
-        </ul>
-
-    </div>
-    <div th:include="fragments/fragments :: footer"></div>
-</div>
+      <div class="container">
+            <div class="page-header">
+                  <h1>Road tuner
+                        <small>For car enthusiasts like you!</small>
+                  </h1>
+            </div>
+            <div class="jumbotron">
+                  <h1>Welcome to road tuner!</h1>
+                  <p>A collection of web apps that help you tune your car.</p>
+                  <p>
+                        - <a th:href="@{/dyno-plots}">
+                        Road dyno.
+                        <span class="sr-only">(current)</span>
+                  </a>
+                        Turn your data logs into real dyno graphs!
+                  </p>
+                  <p>
+                        - <a th:href="@{/vvt-tuner}">
+                        VVT tuner.
+                        <span class="sr-only">(current)</span>
+                  </a>
+                        Helps you tune the vvt settings on your variable valve timing engine (including Lift/Vtec
+                        activation)!
+                  </p>
+                  <p>
+                        - More to come? Who knows...
+                  </p>
+            </div>
+            <div th:include="fragments/fragments :: footer"></div>
+      </div>
 
 </body>
 </html>

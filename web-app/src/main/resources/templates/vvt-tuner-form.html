@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+
+<head lang="en">
+    <title>VVT Tuner | Load logs</title>
+    <th:block th:include="fragments/includes :: head"></th:block>
+</head>
+
+<body>
+
+    <h1 th:replace="fragments/fragments :: header"></h1>
+
+    <div class="container">
+        <div class="page-header">
+            <h1>VVT Tuner
+                <small>Select log files</small>
+            </h1>
+        </div>
+        <form class="form-horizontal page-content" th:object="${vvtTuneOptions}" th:action="@{/vvt-tuner/run}" method="post" enctype="multipart/form-data">
+
+            <input type="hidden"  name="${_csrf.parameterName}"   value="${_csrf.token}"/>
+
+            <fieldset>
+                <legend>WOT Log files</legend>
+                <div class="form-group">
+                    <div class="col-sm-6">
+                        <div class="input-group">
+                            <input type="file" required="required" name="files" multiple="" accept=".txt"/>
+                            <hr/>
+                            <p>
+                                Max file size is <strong th:text="${maxFileSize}"></strong>.
+                                For the time being, supported log format is:
+                            </p>
+                            <ul>
+                                <li>Apexi/PFC datalogit (<strong>.txt</strong>) logs</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </fieldset>
+            <fieldset>
+                <legend>Options</legend>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label" for="rpmStep">RPM step</label>
+                    <div class="col-sm-2">
+                        <div class="input-group">
+                            <input id="rpmStep" type="number" step="any" min="0" required="required" th:field="*{rpmStep}" class="form-control"/>
+                        </div>
+                        <span class="help-block">The RPM step to be used in the tune advice, usually maps the rpm step on your ECU maps.</span>
+                    </div>
+                    <label class="col-sm-2 control-label" for="rpmStep">Start RPM</label>
+                    <div class="col-sm-2">
+                        <div class="input-group">
+                            <input id="startRpm" type="number" step="any" min="0" required="required" th:field="*{startRpm}" class="form-control"/>
+                        </div>
+                        <span class="help-block">Choose the start RPM to best map your ECU settings.</span>
+                    </div>
+                    <label class="col-sm-2 control-label" for="rpmStep">End RPM</label>
+                    <div class="col-sm-2">
+                        <div class="input-group">
+                            <input id="endRpm" type="number" step="any" min="0" required="required" th:field="*{endRpm}" class="form-control"/>
+                        </div>
+                        <span class="help-block">Choose the end RPM to best map your ECU settings.</span>
+                    </div>
+                </div>
+            </fieldset>
+
+            <hr/>
+            <button type="submit" class="btn btn-primary active">Load files</button>
+            <a th:href="@{/vvt-tuner}" class="btn btn-default active">Cancel</a>
+        </form>
+        <div th:include="fragments/fragments :: footer"></div>
+    </div>
+
+</body>
+</html>

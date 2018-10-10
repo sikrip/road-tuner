@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+
+<head lang="en">
+    <title>VVT Tuner</title>
+    <th:block th:include="fragments/includes :: head"></th:block>
+</head>
+
+<body>
+
+<h1 th:replace="fragments/fragments :: header"></h1>
+
+<div class="container">
+    <div class="page-header">
+        <h1>Road tuner <small>VVT tuner</small></h1>
+    </div>
+    <div class="page-content">
+        <div class="panel panel-info">
+            <div class="panel-heading">
+                <h4>VVT tuner results</h4>
+            </div>
+
+            <div class="panel panel-default">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>RPM</th>
+                            <th>Advised setting</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="resultEnrty: ${vvtTuneResult}">
+                            <td th:text="${resultEnrty.key}"></td>
+                            <td th:text="${resultEnrty.value.name}"></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

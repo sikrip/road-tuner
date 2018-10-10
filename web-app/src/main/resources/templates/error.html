@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 
 <head lang="en">
-    <title>Road Dyno | Welcome!</title>
+    <title>Road Tuner | Welcome!</title>
     <th:block th:include="fragments/includes :: head"></th:block>
 </head>
 
@@ -12,7 +12,7 @@
 
 <div class="container">
     <div class="page-header">
-        <h1>Road dyno
+        <h1>Road Tuner
             <small>For car enthusiasts like you!</small>
         </h1>
     </div>
@@ -25,7 +25,7 @@
             <div class="panel-body">
                 <strong th:text="${errorTxt}"></strong>
                 <hr/>
-                <p><a class="btn btn-primary" th:href="@{/dyno-plots}" role="button">Back to dyno</a></p>
+                <p><a class="btn btn-primary" th:href="@{/}" role="button">Back to home</a></p>
             </div>
         </div>
     </div>

@@ -165,12 +165,6 @@ public class RoadDynoController {
 		return "tsdyno";
 	}
 
-	@RequestMapping("/contact")
-	public String contact(Model model) {
-		model.addAttribute("nav", "contact");
-		return "contact";
-	}
-
 	private String showErrorPage(Model model, String error) {
 		LOGGER.error(error);
 		model.addAttribute(RoadTunerWebApplication.ERROR_TEXT_KEY, error);

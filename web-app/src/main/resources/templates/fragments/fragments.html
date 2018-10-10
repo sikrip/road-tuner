@@ -6,28 +6,24 @@
 <nav class="navbar navbar-inverse" th:fragment="header">
     <div class="container">
         <div class="navbar-header">
-            <a class="navbar-brand" th:href="@{/}" style="padding-top: 0;">
+            <a class="navbar-brand" th:href="@{/}" style="padding-top: 0;" title="Road Tuner is still in beta version!">
                 <img th:src="@{/images/logo.png}"/>
             </a>
         </div>
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-            <ul class="nav navbar-nav navbar-right">
+            <ul class="nav navbar-nav">
                 <li th:class="${nav=='dyno-plots'}? 'active' : ''">
-                    <a th:href="@{/dyno-plots}">Dyno plots<span class="sr-only">(current)</span></a>
+                    <a th:href="@{/dyno-plots}">Road dyno<span class="sr-only">(current)</span></a>
                 </li>
 
-                <!--<li th:class="${nav=='tsdyno'}? 'active' : ''">
-                    <a th:href="@{/tsdyno}">Tuner studio plugin <span class="sr-only">(current)</span></a>
-                </li>-->
-
-                <li th:class="${nav=='help'}? 'active' : ''">
-                    <a th:href="@{/help}">Help <span class="sr-only">(current)</span></a>
+                <li th:class="${nav=='vvt-tuner'}? 'active' : ''">
+                    <a th:href="@{/vvt-tuner}">VVT tuner<span class="sr-only">(current)</span></a>
                 </li>
+
                 <li th:class="${nav=='contact'}? 'active' : ''">
                     <a th:href="@{/contact}">Contact <span class="sr-only">(current)</span></a>
                 </li>
             </ul>
-            <div style="color: #74AFAD; margin-top: 30px;" title="Road Dyno is still in beta version!"> &#123;beta!&#125; </div>
         </div>
     </div>
 </nav>
@@ -35,8 +31,8 @@
 <div th:fragment="footer">
     <hr/>
     <footer>
-        v0.3beta
-        &copy; 2018 <a th:href="@{/}">Road dyno</a>
+        v0.4beta
+        &copy; 2018 <a th:href="@{/}">Road tuner</a>
         <a class="btn btn-social-icon btn-twitter" href="https://twitter.com/sikrip">
             <span class="fa fa-twitter"></span>
         </a>
