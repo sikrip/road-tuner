@@ -25,7 +25,6 @@ import static sikrip.roadtuner.engine.vvttuner.VVTTuner.tuneVVT;
 
 @Controller
 @RequestMapping("/vvt-tuner")
-@Scope("session")
 public class VVTTunerController {
 
     private final Logger LOGGER = LoggerFactory.getLogger(VVTTunerController.class);
@@ -54,35 +53,41 @@ public class VVTTunerController {
 
     @RequestMapping(value = "/run", method = RequestMethod.POST)
     public String run(Model model, @RequestParam("files") List<MultipartFile> files, VvtTuneOptions vvtTuneOptions) {
-        final DatalogitLogReader logReader = new DatalogitLogReader();
-        final List<RunData> runDataList = new ArrayList<>();
-        for (MultipartFile file : files) {
-            try {
-                runDataList.add(new RunData(
-                        true,
-                        file.getOriginalFilename(),
-                        logReader.readLog(file.getInputStream())
-                ));
-            } catch (Exception e) {
-                LOGGER.error("Could not read file", e);
+        try {
+            final DatalogitLogReader logReader = new DatalogitLogReader();
+            final List<RunData> runDataList = new ArrayList<>();
+            for (MultipartFile file : files) {
+                try {
+                    runDataList.add(new RunData(
+                            true,
+                            file.getOriginalFilename(),
+                            logReader.readLog(file.getInputStream())
+                    ));
+                } catch (Exception e) {
+                    LOGGER.error("Could not read file", e);
+                }
             }
+
+            final Map<Double, RunData> vvtTuneResult = tuneVVT(
+                    runDataList,
+                    vvtTuneOptions.getStartRpm(),
+                    vvtTuneOptions.getEndRpm(),
+                    vvtTuneOptions.getRpmStep()
+            ).entrySet()
+                    .stream()
+                    .filter(e -> e.getValue() != null)
+                    .sorted(Map.Entry.comparingByKey())
+                    // Convert to linked hash map so that the entries remain sorted
+                    .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e2, LinkedHashMap::new));
+
+            model.addAttribute("vvtTuneResult", vvtTuneResult);
+            model.addAttribute("nav", "vvt-tuner");
+            return "vvt-tuner-results";
+        } catch (Exception e) {
+            LOGGER.error("Could not run VVT tune advice.", e);
+            return showErrorPage(model, "Could not run VVT tune advice.");
         }
 
-        final Map<Double, RunData> vvtTuneResult = tuneVVT(
-            runDataList,
-            vvtTuneOptions.getStartRpm(),
-            vvtTuneOptions.getEndRpm(),
-            vvtTuneOptions.getRpmStep()
-        ).entrySet()
-         .stream()
-         .filter(e -> e.getValue() != null)
-         .sorted(Map.Entry.comparingByKey())
-         // Convert to linked hash map so that the entries remain sorted
-         .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e2, LinkedHashMap::new));
-
-        model.addAttribute("vvtTuneResult", vvtTuneResult);
-        model.addAttribute("nav", "vvt-tuner");
-        return "vvt-tuner-results";
     }
 
     private String showErrorPage(Model model, String error) {
