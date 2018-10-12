@@ -1,8 +1,7 @@
 package sikrip.roadtuner.web.controller;
 
-import java.util.List;
-import java.util.Set;
-
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,15 +14,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
-
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import sikrip.roadtuner.model.SimulationException;
 import sikrip.roadtuner.model.InvalidLogFileException;
-import sikrip.roadtuner.web.RoadTunerWebApplication;
+import sikrip.roadtuner.model.SimulationException;
 import sikrip.roadtuner.web.chart.ChartDataProvider;
 import sikrip.roadtuner.web.model.RunPlot;
+
+import java.util.List;
+import java.util.Set;
+
+import static sikrip.roadtuner.web.utils.ControllerUtils.showErrorPage;
 
 @Controller
 @Scope("session")
@@ -59,7 +58,7 @@ public class RoadDynoController {
 			model.addAttribute("maxFileSize", maxFileSize);
 			return "select-log-file-form";
 		} else {
-			return showErrorPage(model, "Maximum number of plots reached.");
+			return showErrorPage(LOGGER, model, "Maximum number of plots reached.");
 		}
 	}
 
@@ -76,10 +75,10 @@ public class RoadDynoController {
 
 				return "update-run-form";
 			} catch (InvalidLogFileException e) {
-				return showErrorPage(model, "Could not add run. " + e.getMessage());
+				return showErrorPage(LOGGER, model, "Could not add run. " + e.getMessage());
 			}
 		} else {
-			return showErrorPage(model, "Could not add run, uploaded file is empty.");
+			return showErrorPage(LOGGER, model, "Could not add run, uploaded file is empty.");
 		}
 	}
 
@@ -92,7 +91,7 @@ public class RoadDynoController {
 			model.addAttribute("nav", "dyno-plots");
 			return "update-run-form";
 		}
-		return showErrorPage(model, String.format("Could not edit run with id %s. Run not found.", id));
+		return showErrorPage(LOGGER, model, String.format("Could not edit run with id %s. Run not found.", id));
 	}
 
 	@RequestMapping(value = "/edit", method = RequestMethod.POST)
@@ -101,7 +100,7 @@ public class RoadDynoController {
 			runPlotCollection.update(updatedRun);
 			return "redirect:/dyno-plots";
 		} catch (SimulationException e) {
-			return showErrorPage(model, "Could not update run. " + e.getMessage());
+			return showErrorPage(LOGGER, model, "Could not update run. " + e.getMessage());
 		}
 	}
 
@@ -139,7 +138,7 @@ public class RoadDynoController {
 				model.addAttribute("auxChartDef" + i, auxChartDef);
 			}
 		} catch (JsonProcessingException e) {
-			return showErrorPage(model, "Could not plot runs. " + e.getMessage());
+			return showErrorPage(LOGGER, model, "Could not plot runs. " + e.getMessage());
 		}
 		model.addAttribute("runInfoList", runPlotCollection.getRuns());
 		model.addAttribute("nav", "dyno-plots");
@@ -164,11 +163,4 @@ public class RoadDynoController {
 		model.addAttribute("nav", "tsdyno");
 		return "tsdyno";
 	}
-
-	private String showErrorPage(Model model, String error) {
-		LOGGER.error(error);
-		model.addAttribute(RoadTunerWebApplication.ERROR_TEXT_KEY, error);
-		return "error";
-	}
-
 }

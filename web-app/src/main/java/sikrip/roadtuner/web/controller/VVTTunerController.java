@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import sikrip.roadtuner.logreader.DatalogitLogReader;
 import sikrip.roadtuner.model.RunData;
-import sikrip.roadtuner.web.RoadTunerWebApplication;
 import sikrip.roadtuner.web.model.VvtTuneOptions;
 
 import java.util.ArrayList;
@@ -21,6 +20,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import static sikrip.roadtuner.engine.vvttuner.VVTTuner.tuneVVT;
+import static sikrip.roadtuner.web.utils.ControllerUtils.showErrorPage;
 
 @Controller
 @RequestMapping("/vvt-tuner")
@@ -84,15 +84,7 @@ public class VVTTunerController {
             return "vvt-tuner-results";
         } catch (Exception e) {
             LOGGER.error("Could not run VVT tune advice.", e);
-            return showErrorPage(model, "Could not run VVT tune advice.");
+            return showErrorPage(LOGGER, model, "Could not run VVT tune advice.");
         }
-
     }
-
-    private String showErrorPage(Model model, String error) {
-        LOGGER.error(error);
-        model.addAttribute(RoadTunerWebApplication.ERROR_TEXT_KEY, error);
-        return "error";
-    }
-
 }
