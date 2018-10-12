@@ -17,17 +17,10 @@
     <div class="page-content">
         <div class="panel panel-info">
             <div class="panel-heading">
-                <h4>
-                    VVT tuner results
-                    <small>
-                        <a th:href="@{/vvt-tuner/load-logs}" role="button">
-                            (start over)
-                        </a>
-                    </small>
-                </h4>
+                <h4>VVT tuner results</h4>
             </div>
-            <div class="panel panel-default">
-                <table class="table">
+            <div class="page-content">
+                <table class="table table-striped">
                     <thead>
                         <tr>
                             <th>RPM</th>
@@ -41,6 +34,8 @@
                         </tr>
                     </tbody>
                 </table>
+                <hr/>
+                <a th:href="@{/vvt-tuner/load-logs}" class="btn btn-primary">Start over</a>
             </div>
         </div>
     </div>
