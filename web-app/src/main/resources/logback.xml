@@ -5,6 +5,8 @@
             <pattern>[Road Tuner] - %d %5p %40.40c:%4L - %m%n</pattern>
         </encoder>
     </appender>
+
+    <logger name="sikrip.roadtuner.engine.dynosim" level="debug"/>
     <!-- enable these for debugging
     <logger name="org.springframework.context.annotation.ClassPathBeanDefinitionScanner" level="debug"/>
     <logger name="org.springframework.boot.context.config.ConfigFileApplicationListener" level="debug"/>

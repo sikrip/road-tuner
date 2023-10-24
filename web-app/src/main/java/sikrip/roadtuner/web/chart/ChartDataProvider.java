@@ -7,7 +7,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import sikrip.roadtuner.model.DynoSimulationEntry;
 import sikrip.roadtuner.model.DynoSimulationResult;
 import sikrip.roadtuner.model.LogValue;
@@ -99,8 +98,18 @@ public final class ChartDataProvider {
 			final Map<String, Object> labelDef = new HashMap<>();
 			DynoSimulationEntry maxPower = run.getMaxPower();
 			DynoSimulationEntry maxTorque = run.getMaxTorque();
-			labelDef.put("text", String.format("%s %.1fHP @%.0fRPM, %.1flb/ft @%.0fRPM",
-					run.getName(), maxPower.getPower(), maxPower.getRpm(), maxTorque.getTorque(), maxTorque.getRpm()));
+			labelDef.put(
+				"text",
+				String.format(
+					"%s %.1fHP @%.0fRPM, %.1flb/ft(%.1fNm) @%.0fRPM",
+					run.getName(),
+					maxPower.getPower(),
+					maxPower.getRpm(),
+					maxTorque.getTorque(),
+					maxTorque.getTorque() * 1.35581795,
+					maxTorque.getRpm()
+				)
+			);
 			labelDef.put("bold", false);
 			labelDef.put("size", 14);
 			labelDef.put("color", run.getColor());

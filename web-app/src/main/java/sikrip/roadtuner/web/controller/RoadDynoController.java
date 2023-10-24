@@ -38,7 +38,7 @@ public class RoadDynoController {
 
 	private final ChartDataProvider chartDataProvider = new ChartDataProvider();
 
-	@Value("${multipart.maxFileSize}")
+	@Value("${spring.servlet.multipart.max-file-size}")
 	private String maxFileSize;
 
 	@RequestMapping("/")

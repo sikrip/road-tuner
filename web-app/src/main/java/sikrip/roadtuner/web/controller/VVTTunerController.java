@@ -28,7 +28,7 @@ public class VVTTunerController {
 
     private final Logger LOGGER = LoggerFactory.getLogger(VVTTunerController.class);
 
-    @Value("${multipart.maxFileSize}")
+    @Value("${spring.servlet.multipart.max-file-size}")
     private String maxFileSize;
 
     @RequestMapping

@@ -1,16 +1,23 @@
 package sikrip.roadtuner.web.configuration;
 
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
-public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
+@EnableWebSecurity
+public class SecurityConfiguration {
 
-	@Override
-	protected void configure(HttpSecurity httpSecurity) throws Exception {
-		// Allow access to root without authorization
-		httpSecurity.authorizeRequests().antMatchers("/").permitAll();
+	@Bean
+	public SecurityFilterChain sessionTokenFilterChain(HttpSecurity http) throws Exception {
+		return http.securityMatcher("/**")
+			.authorizeHttpRequests(
+				(authz) -> authz
+					.requestMatchers("/**")
+					.permitAll()
+			).build();
 	}
 
 }

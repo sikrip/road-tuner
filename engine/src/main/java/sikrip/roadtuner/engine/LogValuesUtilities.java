@@ -59,7 +59,7 @@ public final class LogValuesUtilities {
 	public static List<LogEntry> smoothValues(List<LogEntry> rawEntries, String fieldName) {
 		final double[] timeValues = rawEntries.stream().mapToDouble(r -> r.getTime().getValue()).toArray();
 		final double[] fieldValues = rawEntries.stream().mapToDouble(r -> r.get(fieldName).getValue()).toArray();
-		final double[] smoothedFieldValues = new LoessInterpolator().smooth(timeValues, fieldValues);
+		final double[] smoothedFieldValues = new LoessInterpolator(0.2, 1).smooth(timeValues, fieldValues);
 
 		final List<LogEntry> smoothedEntries = new ArrayList<>();
 		for (int i = 0; i < rawEntries.size(); i++) {

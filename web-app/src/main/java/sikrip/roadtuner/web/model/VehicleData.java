@@ -4,11 +4,11 @@ import sikrip.roadtuner.model.RunInfo;
 
 public class VehicleData {
 
-    private Double finalGearRatio;
-    private Double gearRatio;
-    private Double tyreDiameter;
-    private Double carWeight;
-    private Double occupantsWeight;
+    private Double finalGearRatio = 4.3;
+    private Double gearRatio = 1.364;
+    private Double tyreDiameter = 604.0;
+    private Double carWeight = 960.0;
+    private Double occupantsWeight = 91.0;
     private Double frontalArea = 1.7; // sqm
     private Double coefficientOfDrag = 0.31;
 

@@ -11,7 +11,15 @@
             <label class="col-sm-2 control-label" for="fgr">Tyre diameter</label>
             <div class="col-sm-3">
                 <div class="input-group">
-                    <input id="tyreDiameter" type="number" step="any" min="0" required="required" th:field="*{tyreDiameter}" class="form-control"/>
+                    <input
+                        id="tyreDiameter"
+                        type="number"
+                        step="any"
+                        min="0"
+                        required="required"
+                        th:field="*{tyreDiameter}"
+                        class="form-control"
+                    />
                     <div class="input-group-addon" id="tyreDiameter-alt">mm (0 inch)</div>
                 </div>
                 <span class="help-block">The diameter of the driving wheels in <strong>millimeters</strong> (equivalent in inches).</span>

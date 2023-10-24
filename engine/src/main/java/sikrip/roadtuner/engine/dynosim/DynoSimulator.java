@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import sikrip.roadtuner.engine.LogValuesUtilities;
 import sikrip.roadtuner.model.DynoSimulationEntry;
 import sikrip.roadtuner.model.DynoSimulationResult;
@@ -11,9 +13,18 @@ import sikrip.roadtuner.model.LogEntry;
 import sikrip.roadtuner.model.SimulationException;
 
 /**
- * Simulates a dyno for a given run based on the log values, gearing weight and aerodynamic attributes of the car.
+ * Simulates a dyno for a given run based on the log values,
+ * gearing weight and aerodynamic attributes of the car.
  */
 public final class DynoSimulator {
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(DynoSimulator.class);
+
+	/**
+	 * The ratio of the log entries that will be used for the simulation.
+	 * Usually the last part of the log entries are not usable due to hitting the rev limiter.
+	 */
+	private static final double USABLE_LOG_SIZE = 0.95;
 
 	private static final int MIN_LOG_ENTRIES_COUNT = 10;
 
@@ -21,7 +32,9 @@ public final class DynoSimulator {
 	}
 
 	/**
-	 * Simulates a dyno for a given run based on the provided log values, gearing weight and aerodynamic attributes of the car.
+	 * Simulates a dyno for a given run based on the provided log values,
+	 * gearing weight and aerodynamic attributes of the car.
+	 *
 	 * The log entries must have RPM as velocity indicator.
 	 *
 	 * @param rpmLogEntries
@@ -47,9 +60,9 @@ public final class DynoSimulator {
 
 		validateParameters(rpmLogEntries, fgr, gr, tyreDiameter, carWeight, occupantsWeight, fa, cd);
 
-		Iterator<LogEntry> logEntryIterator;
+		final List<LogEntry> smoothedLogEntries;
 		try {
-			logEntryIterator = LogValuesUtilities.smoothVelocity(rpmLogEntries).iterator();
+			smoothedLogEntries = LogValuesUtilities.smoothVelocity(rpmLogEntries);
 		} catch (Exception e) {
 			throw new SimulationException("Could not smooth rpm values.", e);
 		}
@@ -58,7 +71,7 @@ public final class DynoSimulator {
 		List<DynoSimulationEntry> dynoRunEntries = new ArrayList<>();
 
 		final double totalWeight = carWeight + occupantsWeight;
-
+		final Iterator<LogEntry> logEntryIterator = smoothedLogEntries.subList(0, (int)(smoothedLogEntries.size() * USABLE_LOG_SIZE)).iterator();
 		while (logEntryIterator.hasNext()) {
 			if (from == null) {
 				from = logEntryIterator.next();
@@ -80,6 +93,9 @@ public final class DynoSimulator {
 				double airDragPower = PowerCalculator.calculateDragPower(toSpeed, fa, cd);
 				double rollingDragPower = PowerCalculator.calculateRollingDragPower(totalWeight, toSpeed);
 
+				LOGGER.debug("Time Diff: {}, Speed Diff: {}, Total:{}",
+					toTime - fromTime, toSpeed - fromSpeed, accelerationPower + airDragPower + rollingDragPower
+				);
 				dynoRunEntries.add(new DynoSimulationEntry(refRPM, accelerationPower + airDragPower + rollingDragPower));
 			}
 		}
@@ -119,15 +135,15 @@ public final class DynoSimulator {
 		List<DynoSimulationEntry> dynoRunEntries = new ArrayList<>();
 
 
-		Iterator<LogEntry> logEntryIterator = null;
+		final List<LogEntry> smoothedLogEntries;
 		try {
-			logEntryIterator = LogValuesUtilities.smoothVelocity(speedLogEntries).iterator();
+			smoothedLogEntries = LogValuesUtilities.smoothVelocity(speedLogEntries);
 		} catch (Exception e) {
 			throw new SimulationException("Could not smooth speed values.", e);
 		}
 
 		final double totalWeight = carWeight + occupantsWeight;
-
+		final Iterator<LogEntry> logEntryIterator = smoothedLogEntries.subList(0, (int)(smoothedLogEntries.size() * 0.9)).iterator();
 		while (logEntryIterator.hasNext()) {
 			if (from == null) {
 				from = logEntryIterator.next();
