@@ -28,8 +28,8 @@ import static sikrip.roadtuner.web.utils.ControllerUtils.showErrorPage;
 @Scope("session")
 public class RoadDynoController {
 
-	private static final int MAX_AUXILIARY_PLOTS = 2;
 	private final Logger LOGGER = LoggerFactory.getLogger(RoadDynoController.class);
+	private static final int MAX_AUXILIARY_PLOTS = 2;
 
 	@Autowired
 	private ObjectMapper objectMapper;

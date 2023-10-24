@@ -18,8 +18,6 @@ import sikrip.roadtuner.model.SimulationException;
  */
 public final class DynoSimulator {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(DynoSimulator.class);
-
 	/**
 	 * The ratio of the log entries that will be used for the simulation.
 	 * Usually the last part of the log entries are not usable due to hitting the rev limiter.
@@ -92,10 +90,6 @@ public final class DynoSimulator {
 				double accelerationPower = PowerCalculator.calculateAccelerationPower(totalWeight, fromSpeed, toSpeed, fromTime, toTime);
 				double airDragPower = PowerCalculator.calculateDragPower(toSpeed, fa, cd);
 				double rollingDragPower = PowerCalculator.calculateRollingDragPower(totalWeight, toSpeed);
-
-				LOGGER.debug("Time Diff: {}, Speed Diff: {}, Total:{}",
-					toTime - fromTime, toSpeed - fromSpeed, accelerationPower + airDragPower + rollingDragPower
-				);
 				dynoRunEntries.add(new DynoSimulationEntry(refRPM, accelerationPower + airDragPower + rollingDragPower));
 			}
 		}
