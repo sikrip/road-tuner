@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+
+<head lang="en">
+    <title>WOT Tuner</title>
+    <th:block th:include="fragments/includes :: head"></th:block>
+</head>
+
+<body>
+
+<h1 th:replace="fragments/fragments :: header"></h1>
+
+<div class="container">
+    <div class="page-header">
+        <h1>Road tuner <small>WOT tuner</small></h1>
+    </div>
+    <div class="jumbotron">
+        <h1>Welcome to WOT tuner!</h1>
+        <p>
+            ....
+        </p>
+        <p><a class="btn btn-primary btn-lg" th:href="@{/wot-tuner/read-fuel-map}" role="button">... load your logs now!</a></p>
+    </div>
+    <div class="page-header">
+        <h1>Need
+            <small>help?</small>
+        </h1>
+    </div>
+
+    <div class="page-content">
+        <div class="panel panel-info">
+            <div class="panel-heading">
+                <h4>What is VVT tuner?</h4>
+            </div>
+
+            <div class="panel-body">
+                VVT tuner can help you tune the vvt settings on your variable valve timing engine (including Lift/Vtec
+                activation) by using logged data with various VVT settings.
+            </div>
+            <div class="panel-heading">
+                <h4>How should I create the log files?</h4>
+            </div>
+
+            <div class="panel-body">
+                <p>You need to log wide open throttle runs with various VVT / VVTLi / VTec settings.</p>
+                <p>
+                    For example, for the 2zz Toyota engine with the Apexi PowerFC ECU, one should log
+                    wide open throttle runs with VVT setting set to 10, 20, 30, 40, 50 having the lift activation high
+                    enough (ex. 7500) starting from ~3K RPM and going up to ~7K(no lift activation) in order to acquire
+                    data for the low cam. Then put the lift activation low enough (say 3500 RPM) and log wide open
+                    throttle runs(from 3500 RPM to red line) with VVT set to 10, 20, 30, 40 and 50 in order to acquire
+                    data for the high cam.
+                </p>
+                <p>
+                    Also make sure that you <strong>give each file name a descriptive name representing the VVT settings
+                    used</strong>. For example, give the log files names like <strong>low-cam-vvt-10.txt</strong>.
+                </p>
+                <p>
+                    Finally, put all the log files in one folder and then <strong>load all of these files to this app</strong>.
+                </p>
+            </div>
+        </div>
+    </div>
+    <div th:include="fragments/fragments :: footer"></div>
+</div>
+
+</body>
+</html>
