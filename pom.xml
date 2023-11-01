@@ -60,6 +60,12 @@
             <version>3.11.0</version>
         </dependency>
 
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.18.30</version>
+        </dependency>
+
         <!-- SLF4J - API -->
         <dependency>
             <groupId>org.slf4j</groupId>

@@ -20,6 +20,10 @@
                     <a th:href="@{/vvt-tuner}">VVT tuner<span class="sr-only">(current)</span></a>
                 </li>
 
+                <li th:class="${nav=='wot-tuner'}? 'active' : ''">
+                    <a th:href="@{/wot-tuner}">WOT tuner <span class="sr-only">(current)</span></a>
+                </li>
+
                 <li th:class="${nav=='contact'}? 'active' : ''">
                     <a th:href="@{/contact}">Contact <span class="sr-only">(current)</span></a>
                 </li>

@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+
+<body>
+    <div th:fragment="wotTable(title, wotTunerProperties, table)">
+        <h3 th:text="${title}"></h3>
+        <div class="row page-content">
+            <div class="col-sm-1">
+                <table>
+                    <tr>
+                        <td>
+                            -/-
+                        </td>
+                    </tr>
+                    <tr th:each="load, status: ${wotTunerProperties.loadLabels}">
+                        <td>
+                            <strong th:text="${#numbers.formatDecimal(load, 5, 0)}"></strong >
+                            <span th:text="${'(' + (status.index + 1) + ')'}"></span >
+                        </td>
+                    <tr>
+                </table>
+            </div>
+            <div class="col-sm-10">
+                <table>
+                    <tr>
+                        <td th:each="rpm: ${wotTunerProperties.rpmLabels}" style="min-width: 63px;">
+                            <strong th:text='${#numbers.formatDecimal(rpm, 4, 0)}'></strong >
+                        </td>
+                    <tr>
+                </table>
+                <table>
+                    <tr th:each="row: ${table}">
+                        <td th:each="item: ${row}" style="padding-right: 20px">
+                            <span th:if="${item == 0}" th:text="${#numbers.formatDecimal(item, 2, 3)}"></span >
+                            <span th:if="${item > 0}" th:text="${#numbers.formatDecimal(item, 2, 3)}" style="color: blue"></span >
+                            <span th:if="${item < 0}" th:text="${#numbers.formatDecimal(item, 2, 3)}" style="color: red"></span >
+                        </td>
+                    <tr>
+                </table>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
