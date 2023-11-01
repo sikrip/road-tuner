@@ -10,16 +10,111 @@
 
 <h1 th:replace="fragments/fragments :: header"></h1>
 
-<div class="container">
+<div class="container" style="width: 80%">
     <div class="page-header">
         <h1>Road tuner <small>WOT tuner</small></h1>
     </div>
-    <div class="jumbotron">
-        <h1>Welcome to WOT tuner!</h1>
-        <p>
-            ....
-        </p>
-        <p><a class="btn btn-primary btn-lg" th:href="@{/wot-tuner/read-fuel-map}" role="button">... load your logs now!</a></p>
+    <form class="form-horizontal page-content" th:action="@{/wot-tuner/read-fuel-map}" method="post" enctype="multipart/form-data">
+        <input type="hidden"  name="${_csrf.parameterName}"   value="${_csrf.token}"/>
+        <fieldset>
+            <legend>Current fuel map</legend>
+            <div class="form-group">
+                <div class="col-sm-6">
+                    <div class="input-group">
+                        <input type="file" required="required" name="file" accept="fuel.map"/>
+                    </div>
+                </div>
+            </div>
+        </fieldset>
+        <button type="submit" class="btn btn-primary active">Load map</button>
+    </form>
+    <div th:if="${currentFuelMap != null}">
+        <div th:replace="fragments/wot-table :: wotTable('Current fuel Map', ${wotTunerProperties}, ${currentFuelMap})"></div>
+        <hr/>
+        <form class="form-horizontal page-content" th:object="${wotTunerProperties}" th:action="@{/wot-tuner/run}" method="post" enctype="multipart/form-data">
+            <input type="hidden"  name="${_csrf.parameterName}"   value="${_csrf.token}"/>
+            <fieldset>
+                <legend>Options</legend>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label" for="timeHeader">Time Header</label>
+                    <div class="col-sm-2">
+                        <div class="input-group">
+                            <input id="timeHeader" type="text" required="required" th:field="*{timeHeader}" class="form-control"/>
+                        </div>
+                    </div>
+                    <label class="col-sm-2 control-label" for="rpmHeader">RPM Header</label>
+                    <div class="col-sm-2">
+                        <div class="input-group">
+                            <input id="rpmHeader" type="text" required="required" th:field="*{rpmHeader}" class="form-control"/>
+                        </div>
+                    </div>
+                    <label class="col-sm-2 control-label" for="afrHeader">AFR Header</label>
+                    <div class="col-sm-2">
+                        <div class="input-group">
+                            <input id="afrHeader" type="text" required="required" th:field="*{afrHeader}" class="form-control"/>
+                        </div>
+                    </div>
+                    <label class="col-sm-2 control-label" for="throttleHeader">Throttle Header</label>
+                    <div class="col-sm-2">
+                        <div class="input-group">
+                            <input id="throttleHeader" type="text" required="required" th:field="*{throttleHeader}" class="form-control"/>
+                        </div>
+                    </div>
+                    <label class="col-sm-2 control-label" for="rpmIdxHeader">PRM Idx Header</label>
+                    <div class="col-sm-2">
+                        <div class="input-group">
+                            <input id="rpmIdxHeader" type="text" required="required" th:field="*{rpmIdxHeader}" class="form-control"/>
+                        </div>
+                    </div>
+                    <label class="col-sm-2 control-label" for="loadIdxHeader">Load Idx Header</label>
+                    <div class="col-sm-2">
+                        <div class="input-group">
+                            <input id="loadIdxHeader" type="text" required="required" th:field="*{loadIdxHeader}" class="form-control"/>
+                        </div>
+                    </div>
+                    <label class="col-sm-2 control-label" for="wotVolts">WOT Volts(min)</label>
+                    <div class="col-sm-2">
+                        <div class="input-group">
+                            <input id="wotVolts" type="number" required="required" th:field="*{wotVolts}" class="form-control"/>
+                        </div>
+                    </div>
+                    <label class="col-sm-2 control-label" for="accelEnrichSeconds">Accel Enrich Seconds</label>
+                    <div class="col-sm-2">
+                        <div class="input-group">
+                            <input id="accelEnrichSeconds" type="number" required="required" th:field="*{accelEnrichSeconds}" class="form-control"/>
+                        </div>
+                    </div>
+                    <label class="col-sm-2 control-label" for="minNumberOfSamples">Min Number of samples</label>
+                    <div class="col-sm-2">
+                        <div class="input-group">
+                            <input id="minNumberOfSamples" type="number" required="required" th:field="*{minNumberOfSamples}" class="form-control"/>
+                        </div>
+                    </div>
+                    <label class="col-sm-2 control-label" for="wotTargetAfr">WOT Target Afr</label>
+                    <div class="col-sm-2">
+                        <div class="input-group">
+                            <input id="wotTargetAfr" type="number" required="required" th:field="*{wotTargetAfr}" class="form-control"/>
+                        </div>
+                    </div>
+                </div>
+            </fieldset>
+            <fieldset>
+                <legend>WOT Log file</legend>
+                <div class="form-group">
+                    <div class="col-sm-6">
+                        <div class="input-group">
+                            <input type="file" required="required" name="file" accept=".txt,.csv"/>
+                        </div>
+                    </div>
+                </div>
+            </fieldset>
+            <button type="submit" class="btn btn-primary active">Analyze</button>
+        </form>
+        <div th:if="${wotTuneResult != null}">
+            <div th:replace="fragments/wot-table :: wotTable('Logged AFR', ${wotTunerProperties}, ${wotTuneResult.loggedAFRTable})"></div>
+            <div th:replace="fragments/wot-table :: wotTable('New Fuel Map AFR', ${wotTunerProperties}, ${wotTuneResult.newFuelMap})"></div>
+            <div th:replace="fragments/wot-table :: wotTable('New-Old Fuel Map', ${wotTunerProperties}, ${wotTuneResult.fuelMapDiff})"></div>
+        </div>
     </div>
     <div class="page-header">
         <h1>Need
@@ -30,39 +125,53 @@
     <div class="page-content">
         <div class="panel panel-info">
             <div class="panel-heading">
-                <h4>What is VVT tuner?</h4>
+                <h4>What is WOT tuner?</h4>
+            </div>
+            <div class="panel-body">
+                WOT tuner analyzes ECU logs in order to produce adjusted fuel tables at WOT conditions.
+                The existing fuel map is expected in a '.map' file (tab seperated) and a new fuel map will be
+                produced based on the provided log.
             </div>
 
-            <div class="panel-body">
-                VVT tuner can help you tune the vvt settings on your variable valve timing engine (including Lift/Vtec
-                activation) by using logged data with various VVT settings.
-            </div>
             <div class="panel-heading">
                 <h4>How should I create the log files?</h4>
             </div>
-
             <div class="panel-body">
-                <p>You need to log wide open throttle runs with various VVT / VVTLi / VTec settings.</p>
+                <p>You need to log wide open throttle runs in order to get the existing AFR values under WOT.</p>
                 <p>
-                    For example, for the 2zz Toyota engine with the Apexi PowerFC ECU, one should log
-                    wide open throttle runs with VVT setting set to 10, 20, 30, 40, 50 having the lift activation high
-                    enough (ex. 7500) starting from ~3K RPM and going up to ~7K(no lift activation) in order to acquire
-                    data for the low cam. Then put the lift activation low enough (say 3500 RPM) and log wide open
-                    throttle runs(from 3500 RPM to red line) with VVT set to 10, 20, 30, 40 and 50 in order to acquire
-                    data for the high cam.
+                    Start from ~3K-4K RPM and go up to rev limit.
+                </p>
+            </div>
+
+            <div class="panel-heading">
+                <h4>Guide me step by step please.</h4>
+            </div>
+            <div class="panel-body">
+                <p>
+                    <ol>
+                        <li>Load your current map (example file here)</li>
+                        <li>Choose the correct options for your log file</li>
+                        <li>Load your log file</li>
+                        <li>Hit the "Analyze" button.</li>
+                    </ol>
                 </p>
                 <p>
-                    Also make sure that you <strong>give each file name a descriptive name representing the VVT settings
-                    used</strong>. For example, give the log files names like <strong>low-cam-vvt-10.txt</strong>.
-                </p>
-                <p>
-                    Finally, put all the log files in one folder and then <strong>load all of these files to this app</strong>.
+                    The analysis result will be 3 tables:
+                    <ol>
+                        <li>The logged AFR table with only the WOT cells filled-in</li>
+                        <li>The new fuel map table AFR. This is adjusted only in the WOT cells.</li>
+                        <li>
+                            The diff of the new fuel map minus the old fuel table.
+                            This will help you to check the changes.
+                            Less fuel is shown with <span style="color: red">red</span> and more fuel is shown in
+                            <span style="color: blue">blue</span>.
+                        </li>
+                    </ol>
                 </p>
             </div>
         </div>
     </div>
     <div th:include="fragments/fragments :: footer"></div>
 </div>
-
 </body>
 </html>
