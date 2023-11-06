@@ -19,5 +19,5 @@ public class WotTunerProperties {
     private double wotVolts = 4.0;
     private double accelEnrichSeconds = 0.1;
     private int minNumberOfSamples = 3;
-    private double wotTargetAfr = 13.0;
+    private double wotTargetAfr = 13.1;
 }

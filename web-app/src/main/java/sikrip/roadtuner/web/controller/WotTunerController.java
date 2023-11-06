@@ -19,6 +19,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import sikrip.roadtuner.engine.wottuner.WotTuner;
 import sikrip.roadtuner.logreader.DatalogitLogReader;
+import sikrip.roadtuner.logreader.PowerTuneLogReader;
+import sikrip.roadtuner.model.InvalidLogFileException;
 import sikrip.roadtuner.model.LogEntry;
 import sikrip.roadtuner.model.WotTuneResult;
 import sikrip.roadtuner.model.WotTunerProperties;
@@ -29,7 +31,6 @@ import sikrip.roadtuner.model.WotTunerProperties;
 public class WotTunerController {
 
     private final Logger LOGGER = LoggerFactory.getLogger(WotTunerController.class);
-
     private WotTunerProperties wotTunerProperties = new WotTunerProperties();
     private WotTuneResult wotTuneResult = null;
     private double[][] currentFuelMap = null;
@@ -85,14 +86,23 @@ public class WotTunerController {
     public String run(Model model, @RequestParam("file") MultipartFile file, WotTunerProperties wotTunerProperties) {
         try {
             this.wotTunerProperties = wotTunerProperties;
-            final DatalogitLogReader logReader = new DatalogitLogReader();
-            final List<LogEntry> logEntries = logReader.readLog(file.getInputStream());
+            final List<LogEntry> logEntries = readLog(file);
             wotTuneResult = WotTuner.analyze(logEntries, currentFuelMap, wotTunerProperties);
             model.addAttribute("wotTuneResult", wotTuneResult);
             return "wot-tuner";
         } catch (Exception e) {
             LOGGER.error("Could not run WOT tuner.", e);
             return showErrorPage(LOGGER, model, "Could not run WOT tuner.");
+        }
+    }
+
+    private static List<LogEntry> readLog(MultipartFile file) throws IOException {
+        try {
+            final DatalogitLogReader logReader = new DatalogitLogReader();
+            final List<LogEntry> logEntries = logReader.readLog(file.getInputStream());
+            return logEntries;
+        } catch (InvalidLogFileException e) {
+            return PowerTuneLogReader.readEcuLog(file.getInputStream());
         }
     }
 }
