@@ -14,20 +14,22 @@
     <div class="page-header">
         <h1>Road tuner <small>WOT tuner</small></h1>
     </div>
-    <form class="form-horizontal page-content" th:action="@{/wot-tuner/read-fuel-map}" method="post" enctype="multipart/form-data">
-        <input type="hidden"  name="${_csrf.parameterName}"   value="${_csrf.token}"/>
-        <fieldset>
-            <legend>Current fuel map</legend>
-            <div class="form-group">
-                <div class="col-sm-6">
-                    <div class="input-group">
-                        <input type="file" required="required" name="file" accept="fuel.map"/>
+    <div th:if="${currentFuelMap == null}">
+        <form class="form-horizontal page-content" th:action="@{/wot-tuner/read-fuel-map}" method="post" enctype="multipart/form-data">
+            <input type="hidden"  name="${_csrf.parameterName}"   value="${_csrf.token}"/>
+            <fieldset>
+                <legend>Current fuel map</legend>
+                <div class="form-group">
+                    <div class="col-sm-6">
+                        <div class="input-group">
+                            <textarea id="currentFuelMapStr" required="required" name="currentFuelMapStr" rows="20" cols="160"></textarea>
+                        </div>
                     </div>
                 </div>
-            </div>
-        </fieldset>
-        <button type="submit" class="btn btn-primary active">Load map</button>
-    </form>
+            </fieldset>
+            <button type="submit" class="btn btn-primary active">Load map</button>
+        </form>
+    </div>
     <div th:if="${currentFuelMap != null}">
         <div th:replace="fragments/wot-table :: wotTable('Current fuel Map', ${wotTunerProperties}, ${currentFuelMap})"></div>
         <hr/>
@@ -117,6 +119,7 @@
             <button type="button" id="fcedit-log-file" class="btn">FCEdit</button>
             <button type="button" id="powertune-log-file" class="btn">Powertune</button>
             <button type="submit" class="btn btn-primary active">Analyze</button>
+            <a th:href="@{/wot-tuner/reset}">Start over</a>
         </form>
         <div th:if="${wotTuneResult != null}">
             <div th:replace="fragments/wot-table :: wotTable('Logged AFR', ${wotTunerProperties}, ${wotTuneResult.loggedAFRTable})"></div>
@@ -157,7 +160,7 @@
             <div class="panel-body">
                 <p>
                     <ol>
-                        <li>Load your current map (example file <a href="fuel.map">here</a>)</li>
+                        <li>Load your current map. Copy and paste from your tune app.</li>
                         <li>Choose the correct options for your log file</li>
                         <li>Load your log file</li>
                         <li>Hit the "Analyze" button.</li>

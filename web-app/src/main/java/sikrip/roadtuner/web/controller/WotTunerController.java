@@ -1,11 +1,5 @@
 package sikrip.roadtuner.web.controller;
 
-import static sikrip.roadtuner.web.utils.ControllerUtils.showErrorPage;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -24,6 +18,13 @@ import sikrip.roadtuner.model.InvalidLogFileException;
 import sikrip.roadtuner.model.LogEntry;
 import sikrip.roadtuner.model.WotTuneResult;
 import sikrip.roadtuner.model.WotTunerProperties;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.StringReader;
+import java.util.List;
+
+import static sikrip.roadtuner.web.utils.ControllerUtils.showErrorPage;
 
 @Controller
 @Scope("session")
@@ -61,8 +62,8 @@ public class WotTunerController {
     }
 
     @RequestMapping(value = "read-fuel-map", method = RequestMethod.POST)
-    public String readFuelMap(Model model, @RequestParam("file") MultipartFile file) {
-        try (final BufferedReader fuelMapReader = new BufferedReader(new InputStreamReader(file.getInputStream()))) {
+    public String readFuelMap(Model model, @RequestParam("currentFuelMapStr") String currentFuelMapStr) {
+        try (final BufferedReader fuelMapReader = new BufferedReader(new StringReader(currentFuelMapStr))){
             currentFuelMap = new double[wotTunerProperties.getFuelTableSize()][wotTunerProperties.getFuelTableSize()];
             String line;
             int rowIdx = 0;
