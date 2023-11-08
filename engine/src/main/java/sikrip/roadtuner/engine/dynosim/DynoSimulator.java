@@ -3,9 +3,6 @@ package sikrip.roadtuner.engine.dynosim;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import sikrip.roadtuner.engine.LogValuesUtilities;
 import sikrip.roadtuner.model.DynoSimulationEntry;
 import sikrip.roadtuner.model.DynoSimulationResult;
@@ -22,7 +19,7 @@ public final class DynoSimulator {
 	 * The ratio of the log entries that will be used for the simulation.
 	 * Usually the last part of the log entries are not usable due to hitting the rev limiter.
 	 */
-	private static final double USABLE_LOG_SIZE = 0.95;
+	private static final double USABLE_LOG_SIZE = 0.97;
 
 	private static final int MIN_LOG_ENTRIES_COUNT = 10;
 
@@ -57,7 +54,7 @@ public final class DynoSimulator {
 												double carWeight, double occupantsWeight, double fa, double cd) throws SimulationException {
 
 		validateParameters(rpmLogEntries, fgr, gr, tyreDiameter, carWeight, occupantsWeight, fa, cd);
-
+		rpmLogEntries = augmentLogEntries(rpmLogEntries);
 		final List<LogEntry> smoothedLogEntries;
 		try {
 			smoothedLogEntries = LogValuesUtilities.smoothVelocity(rpmLogEntries);
@@ -137,7 +134,7 @@ public final class DynoSimulator {
 		}
 
 		final double totalWeight = carWeight + occupantsWeight;
-		final Iterator<LogEntry> logEntryIterator = smoothedLogEntries.subList(0, (int)(smoothedLogEntries.size() * 0.9)).iterator();
+		final Iterator<LogEntry> logEntryIterator = smoothedLogEntries.subList(0, (int)(smoothedLogEntries.size() * USABLE_LOG_SIZE)).iterator();
 		while (logEntryIterator.hasNext()) {
 			if (from == null) {
 				from = logEntryIterator.next();
@@ -194,5 +191,23 @@ public final class DynoSimulator {
 		if (cd <= 0) {
 			throw new SimulationException("Coefficient of drag must be a positive number.");
 		}
+	}
+
+	/**
+	 * Add some extra entries to the end of the log with the same velocity(RPM/SPEED) as the last entry
+	 * and with the time increased by 0.2 seconds for each entry in order to be able to utilize the whole log
+	 * (these entries will be removed after the smoothing process).
+	 *
+	 * This process helps the smoothing algorithm to produce better results.
+	 */
+	private static List<LogEntry> augmentLogEntries(List<LogEntry> logEntries) {
+		final List<LogEntry> augmentedLogEntries = new ArrayList<>(logEntries);
+		final LogEntry lastEntry = logEntries.get(logEntries.size() - 1);
+		for (int i = 1; i < logEntries.size() * (1 - USABLE_LOG_SIZE); i++) {
+			final LogEntry copy = lastEntry.getCopy();
+			copy.set(lastEntry.getTimeKey(), copy.getTime().getValue() + 0.2 * i, copy.getTime().getUnit());
+			augmentedLogEntries.add(copy);
+		}
+		return augmentedLogEntries;
 	}
 }

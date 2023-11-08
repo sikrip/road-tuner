@@ -47,6 +47,10 @@ public class LogEntry {
 		return values.get(valueKey);
 	}
 
+	public void set(String valueKey, double value, String unit) {
+		values.put(valueKey, new LogValue<>(value, unit));
+	}
+
 	public LogEntry getCopy() {
 		final Map<String, LogValue<Double>> valuesCopy = new HashMap<>();
 
@@ -56,6 +60,10 @@ public class LogEntry {
 		}
 
 		return new LogEntry(valuesCopy, timeKey, velocityKey);
+	}
+
+	public String getTimeKey() {
+		return timeKey;
 	}
 
 	public Set<String> getDataKeys() {
