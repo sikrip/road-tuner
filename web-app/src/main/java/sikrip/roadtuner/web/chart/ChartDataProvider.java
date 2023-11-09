@@ -113,7 +113,7 @@ public final class ChartDataProvider {
 			labelDef.put("bold", false);
 			labelDef.put("size", 14);
 			labelDef.put("color", run.getColor());
-			labelDef.put("x", 70);
+			labelDef.put("x", 75);
 			labelDef.put("y", y);
 
 			labelDefinitions.add(labelDef);
@@ -189,16 +189,16 @@ public final class ChartDataProvider {
 			// Power graph
 			graph.put("id", "Graph-" + POWER_FIELD + iRun);
 			graph.put("lineColor", run.getColor());
-			graph.put("lineThickness", 3);
+			graph.put("lineThickness", 1);
 			graph.put("title", run.getName() + " power");
 			graph.put("type", "smoothedLine");
 			graph.put("xField", RPM_AXIS);
 			graph.put("yField", POWER_FIELD + iRun);
+
+			graph.put("bullet", "round");
+			graph.put("bulletSize", 4);
+			graph.put("balloonText", "Power: [["+ POWER_FIELD + iRun +"]]");
 			graphs.add(graph);
-			// TODO add bullets?
-			//graph.put("balloonText", "[[title]] [[value]] @[[category]]");//FIXME
-			//graph.put("bullet", "round");
-			//graph.put("bulletSize", 3);
 
 			// Torque graph
 			graph = new HashMap<>();
