@@ -22,10 +22,10 @@ public final class ChartDataProvider {
 	private static final String TORQUE_FIELD = "torque_";
 
 	private final Map<String, Object> root = new HashMap<>();
-	private final DecimalFormat df = new DecimalFormat("#.0");
+	private final DecimalFormat valuesFormat = new DecimalFormat("#.0");
 
 	public ChartDataProvider() {
-		df.setRoundingMode(RoundingMode.DOWN);
+		valuesFormat.setRoundingMode(RoundingMode.DOWN);
 	}
 
 	/**
@@ -47,7 +47,7 @@ public final class ChartDataProvider {
 		createAxesDefinitions("Hp | lb/ft", runs);
 		createLegendDefinition();
 		createTitlesDefinition("Wheel power / torque");
-		createDataDefinition(runs);
+		createMainDataDefinition(runs);
 
 		// TODO add trendLines root.put("trendLines", new ArrayList<>());
 		// TODO add guides root.put("guides", new ArrayList<>());
@@ -84,7 +84,7 @@ public final class ChartDataProvider {
 
 		createTitlesDefinition(field);
 
-		createDataDefinition(runs, field);
+		createAuxDataDefinition(runs, field);
 
 		return root;
 	}
@@ -197,7 +197,7 @@ public final class ChartDataProvider {
 
 			graph.put("bullet", "round");
 			graph.put("bulletSize", 4);
-			graph.put("balloonText", "Power: [["+ POWER_FIELD + iRun +"]]");
+			graph.put("balloonText", "RPM:[[" + RPM_AXIS +"]]" + " Power: [["+ POWER_FIELD + iRun +"]]");
 			graphs.add(graph);
 
 			// Torque graph
@@ -216,13 +216,13 @@ public final class ChartDataProvider {
 		root.put("graphs", graphs);
 	}
 
-	private void createDataDefinition(List<RunPlot> runs) {
+	private void createMainDataDefinition(List<RunPlot> runs) {
 		final List<Map<String, Object>> dataProvider = new ArrayList<>();
 		final List<Double> rpmValues = getRpmValuesUnion(runs);
 		for (Double rpm : rpmValues) {
 
 			final Map<String, Object> dataEntry = new HashMap<>();
-			dataEntry.put(RPM_AXIS, rpm);
+			dataEntry.put(RPM_AXIS, rpm.intValue());
 
 			for (int iRun = 0; iRun < runs.size(); iRun++) {
 
@@ -231,8 +231,8 @@ public final class ChartDataProvider {
 				DynoSimulationEntry simulationEntry = simulationResult.getResultAt(rpm);
 
 				if (simulationEntry != null) {
-					String power = df.format(simulationEntry.getPower());
-					String torque = df.format(simulationEntry.getTorque());
+					String power = valuesFormat.format(simulationEntry.getPower());
+					String torque = valuesFormat.format(simulationEntry.getTorque());
 					dataEntry.put(POWER_FIELD + iRun, power);
 					dataEntry.put(TORQUE_FIELD + iRun, torque);
 				}
@@ -262,7 +262,7 @@ public final class ChartDataProvider {
 		root.put("graphs", graphs);
 	}
 
-	private void createDataDefinition(List<RunPlot> runs, String field) {
+	private void createAuxDataDefinition(List<RunPlot> runs, String field) {
 
 		List<Map<String, Object>> dataProvider = new ArrayList<>();
 
@@ -270,12 +270,12 @@ public final class ChartDataProvider {
 		for (Double rpm : rpmValues) {
 
 			Map<String, Object> dataEntry = new HashMap<>();
-			dataEntry.put(RPM_AXIS, rpm);
+			dataEntry.put(RPM_AXIS, rpm.intValue());
 
 			for (int iRun = 0; iRun < runs.size(); iRun++) {
 				LogValue<?> logValue = runs.get(iRun).getResult().getLogEntryAt(rpm, field);
 				if (logValue != null) {
-					dataEntry.put(field + iRun, df.format(logValue.getValue()));
+					dataEntry.put(field + iRun, valuesFormat.format(logValue.getValue()));
 				}
 			}
 			dataProvider.add(dataEntry);
